@@ -1,0 +1,3 @@
+<font size='1' color='00FF40'>Module de gestion des attaques par <b>V&eacute;rit&eacute;</b><br />
+modifi&eacute; par ericc</font>
+<a href='http://www.ogsteam.fr/forums/viewtopic.php?id=1358'>Informations</a>
