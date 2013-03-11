@@ -134,7 +134,8 @@ echo"<td width='410px' align='center'>";
    	/**   GRAPHIQUE   **/
    	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
    	/** FIN GRAPHIQUE **/
-   	echo  create_pie($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");
+   	//echo  create_pie($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");
+   	echo  create_pie_numbers($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");
    	/*echo "<script type='text/javascript'>
       			function number_format(number, decimals, dec_point, thousands_sep) {
        			var n = !isFinite(+number) ? 0 : +number, 

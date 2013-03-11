@@ -106,7 +106,8 @@ if((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)
 	/** GRAPHIQUE **/
 	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 	/** GRAPHIQUE **/	
-	echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
+	//echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
+	echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
 }
 
 echo"</td></tr>";

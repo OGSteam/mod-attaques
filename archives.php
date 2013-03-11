@@ -101,14 +101,16 @@ echo"<td width='410px' align='center'>";
 /** GRAPHIQUE **/
 echo "<div id='graphique1' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 /** GRAPHIQUE **/
-echo create_pie(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Ressources gagnées", "graphique1");
+//echo create_pie(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Ressources gagnées", "graphique1");
+echo  create_pie_numbers(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Ressources gagnées", "graphique1");
 ?>
 <br/>
 <?php
 /** GRAPHIQUE **/
 echo "<div id='graphique2' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 /** GRAPHIQUE **/
-echo create_pie($total_gains . "_x_" . $total_recy, "Gains_x_Recyclages", "Gains - Recyclages", "graphique2");
+//echo create_pie($total_gains . "_x_" . $total_recy, "Gains_x_Recyclages", "Gains - Recyclages", "graphique2");
+echo  create_pie_numbers($total_gains . "_x_" . $total_recy, "Gains_x_Recyclages", "Gains - Recyclages", "graphique2");
 ?>
 <?php
 
