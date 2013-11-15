@@ -50,6 +50,7 @@ $bbcolor=unserialize($bbcolor[0]);
 	{
 		//On recupère la liste complète des attaques de la période afin de pouvoir les compter
 		$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data["user_id"]." AND MONTH(FROM_UNIXTIME(attack_date))=".$month." AND YEAR(FROM_UNIXTIME(attack_date))=".$year."";
+	
 		$list = $db->sql_query($query);
 		
 		$nb_ancattack = mysql_num_rows($list);
@@ -173,6 +174,9 @@ $nb_attack = mysql_num_rows($result);
 
 //Cacul pour obtenir les gains
 $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data["user_id"]." AND attack_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY attack_user_id"; 
+
+//echo $query;
+
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
@@ -231,12 +235,34 @@ if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut
 echo"</td>";*/
 
 
+echo "<td width='25%'>".
+				"<table width='100%'><colgroup><col width='40%'/><col/></colgroup><tbody>".
+				"<tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($attack_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($attack_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium</b></td>".
+				"<td class='deuterium number' style='font-size: 18px;'>" . number_format($attack_deut, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains</b></td>" . 
+				"<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Pertes</b></td>" .
+				"<td class='perte number' style='font-size: 18px;'>" . number_format($attack_pertes, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute;</b></td>" .
+				"<td class='renta number' style='font-size: 18px;'>" . number_format($renta, 0, ',', ' ') . "</td>" .
+				"</tr><tbody></table></td>";
+
 // Afficher l'image du graphique
-echo"<td width='410px' align='center'>";
+echo"<td width='75%' align='center'>";
 
 if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)) && (!isset($attack_pertes))){
 	echo "Pas de graphique disponible";
-}else{
+} else {
 	/** GRAPHIQUE **/
 	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 	/** GRAPHIQUE **/
@@ -245,26 +271,8 @@ if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut
 }
 echo"</td></tr>";
 
-//Affichage des gains en métal, en cristal et en deut
-$attack_metal = number_format($attack_metal, 0, ',', ' ');
-$attack_cristal = number_format($attack_cristal, 0, ',', ' ');
-$attack_deut = number_format($attack_deut, 0, ',', ' ');
-echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>Métal gagné : ".$attack_metal."<br>Cristal gagné : ".$attack_cristal."<br>Deutérium gagné : ".$attack_deut."<br>";
 
-//Affichage du total des gains
-$totalgains = number_format($totalgains, 0, ',', ' ');
-echo "<b>Soit un total de : ".$totalgains."</b><br><br>";
-
-//Affichage du total des pertes
-$attack_pertes = number_format($attack_pertes, 0, ',', ' ');
-echo"<b>Total des pertes attaquant : ".$attack_pertes."</b>";
-
-//Affichage de la rentabilité des attaques
-$renta = number_format($renta, 0, ',', ' ');
-
-echo"<br><br><b>Rentabilité : ".$renta."</b>";
-echo"</big></big>";
-echo"</big></big></font></td></tr></table>";
+echo "</table>";
 echo"</p></fieldset><br><br>";
 
 //Création du field pour voir la liste des attaques

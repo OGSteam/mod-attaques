@@ -123,10 +123,24 @@ list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgains);
 //Calcul des gains totaux
 $totalgains=$recy_metal+$recy_cristal;
 
-echo"<table width='100%'><tr align='left' valign='center'>";
+//echo"<table width='100%'><tr align='left' valign='center'>";
+
+echo"<table width='100%'><tr align='left'>";
+echo "<td width='25%'>".
+				"<table width='100%'><colgroup><col width='40%'/><col/></colgroup><tbody>".
+				"<tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($recy_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($recy_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains</b></td>" . 
+				"<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" .
+				"</tr><tbody></table></td>";
 
 // Afficher l'image du graphique
-echo"<td width='410px' align='center'>";
+echo"<td width='75%' align='center'>";
 //echo $recy_metal."?".(!isset($recy_metal));
    if ((!isset($recy_metal)) && (!isset($recy_cristal)) && $recy_metal==0 && $recy_cristal==0) {
    	echo "Pas de graphique disponible";
@@ -134,108 +148,24 @@ echo"<td width='410px' align='center'>";
    	/**   GRAPHIQUE   **/
    	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
    	/** FIN GRAPHIQUE **/
-   	//echo  create_pie($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");
-   	echo  create_pie_numbers($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");
-   	/*echo "<script type='text/javascript'>
-      			function number_format(number, decimals, dec_point, thousands_sep) {
-       			var n = !isFinite(+number) ? 0 : +number, 
-           		prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-           		sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-   		        s = '',
-   		        toFixedFix = function (n, prec) {
-   		            var k = Math.pow(10, prec);
-   		            return '' + Math.round(n * k) / k;
-   		        };
-       			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
-       			s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-   			    if (s[0].length > 3) {
-   			        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);    }
-   			    if ((s[1] || '').length < prec) {
-   			        s[1] = s[1] || '';
-   			        s[1] += new Array(prec - s[1].length + 1).join('0');
-   			    }    return s.join(dec);
-   			}
-   			
-   		var chart;
-	   	chart = new Highcharts.Chart({
-	         chart: {
-	            renderTo: 'graphique',
-	            defaultSeriesType: 'pie',
-	            margin: [50, 200, 60, 170]
-	         },
-	         title: {
-	            text: 'Proportion des gains des recyclages affichées'
-	         },
-	         plotArea: {
-	            shadow: null,
-	            borderWidth: null,
-	            backgroundColor: null
-	         },
-	         tooltip: {
-	            formatter: function() {
-	               return '<b>'+ this.point.name +'</b>: '+ number_format(this.y, 0, ',', ' ');
-	            }
-	         },
-	         plotOptions: {
-	            pie: {
-	               allowPointSelect: true,
-	               cursor: 'pointer',
-	               dataLabels: {
-	                  enabled: true,
-	                  formatter: function() {
-	                     return this.point.name;
-	                  },
-	                  color: 'white',
-	                  style: {
-	                     font: '13px Trebuchet MS, Verdana, sans-serif'
-	                  }
-	               }
-	            }
-	         },
-	         legend: {
-	            layout: 'vertical',
-	            style: {
-	               left: 'auto',
-	               bottom: 'auto',
-	               left: '50px',
-	               top: '50px'
-	            }
-	         },
-	         series: [{
-	            type: 'pie',
-	            name: 'Gain des Recyclages',
-	            data: [";
-					if($recy_metal!=0){
-				    	echo "['<b>Métal</b>', ".number_format($recy_metal, 0, ',', '')."]";
-					}
-					if($recy_cristal!=0){
-				    	//echo ",['<b>Cristal</b>', ".number_format($recy_cristal, 0, ',', '')."]";
-						echo ",{
-							name: '<b>Cristal</b>',
-							y: ".number_format($recy_cristal, 0, ',', '').",
-							sliced: true,
-							selected: true
-						}";
-					}
-	         echo "]
-	         }]
-   		});
-      </script>";*/
-   	//echo "<img src='index.php?action=graphic_pie&values=".$recy_metal."_x_".$recy_cristal."&legend=Metal_x_Cristal&title=Proportion%20des%20gains%20des%20recyclages%20affich%E9es' alt='".T_("Attaques_pasdegraphique")."'>";
+   	echo  create_pie_numbers($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");   	
    }
-   echo"</td></tr>";
+   
+echo"</td></tr>";
+echo "</table>";
 
+//echo"<table width='100%'><tr align='left' valign='center'>";
 //Affichage des gains en métal, en cristal et en deut
-$recy_metal = number_format($recy_metal, 0, ',', ' ');
-$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>Métal recyclé : ".$recy_metal."<br>Cristal recyclé : ".$recy_cristal."<br><br>";
+//$recy_metal = number_format($recy_metal, 0, ',', ' ');
+//$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
+//echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>Métal recyclé : ".$recy_metal."<br>Cristal recyclé : ".$recy_cristal."<br><br>";
 
 //Affichage du total des gains
-$totalgains = number_format($totalgains, 0, ',', ' ');
-echo "<b>Soit un total de : ".$totalgains."</b><br><br>";
+//$totalgains = number_format($totalgains, 0, ',', ' ');
+//echo "<b>Soit un total de : ".$totalgains."</b><br><br>";
 
-echo"</big></big>";
-echo"</big></big></font></td></tr></table>";
+//echo"</big></big>";
+//echo"</big></big></font></td></tr></table>";
 echo"</p></fieldset><br><br>";
 
 //Création du field pour voir la liste des attaques

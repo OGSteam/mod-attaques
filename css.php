@@ -23,6 +23,25 @@ div.attack_box_background {
      width: 100%;
      z-index: 99;
 }
+
+.metal {
+	color: #AFAFAF;	
+}
+.cristal {
+	color: #74D0F1;	
+}
+.deuterium {
+	color: #34C924;	
+}
+.perte {
+	color: #FF0921;	
+}
+.renta {
+	color: #ED7F10;	
+}
+.number {
+	text-align: right;
+}
 </style>
 <?php
 

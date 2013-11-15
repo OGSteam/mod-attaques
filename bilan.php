@@ -99,6 +99,43 @@ list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgainsrecy);
 $totalgains=$attack_metal+$attack_cristal+$attack_deut;
 
 echo"<table width='100%'><tr align='left'>";
+echo "<td width='25%'>".
+				"<table width='100%'><colgroup><col width='55%'/><col/></colgroup><tbody>".
+				"<tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal gagn&eacute;</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($attack_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal gagn&eacute;</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($attack_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium gagn&eacute;</b></td>".
+				"<td class='deuterium number' style='font-size: 18px;'>" . number_format($attack_deut, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains attaques</b></td>" . 
+				"<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Pertes attaques</b></td>" .
+				"<td class='perte number' style='font-size: 18px;'>" . number_format($attack_pertes, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute; attaques</b></td>" .
+				"<td class='renta number' style='font-size: 18px;'>" . number_format(($totalgains-$attack_pertes), 0, ',', ' ') . "</td>" .
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal recycl&eacute;</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($recy_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal recycl&eacute;</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($recy_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains recyclages</b></td>" . 
+				"<td class='renta number' style='font-size: 18px;'>" . number_format(($recy_metal+$recy_cristal), 0, ',', ' ') . "</td>" .
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Rentabilité totale</b></td>" . 
+				"<td class='renta number' style='font-size: 18px;'>" . number_format((($totalgains-$attack_pertes) + ($recy_metal+$recy_cristal)), 0, ',', ' ') . "</td>" .
+				"</tr><tbody></table></td>";
+
+// Afficher l'image du graphique
+echo"<td width='75%' align='center'>";
 
 if((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)) && (!isset($attack_pertes)) && (!isset($recy_metal)) && (!isset($recy_cristal))) {
 	echo "Pas de graphique disponible";
@@ -110,44 +147,12 @@ if((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)
 	echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
 }
 
+
 echo"</td></tr>";
 
-//Affichage des gains en métal, en cristal et en deut
-$attack_metal = number_format($attack_metal, 0, ',', ' ');
-$attack_cristal = number_format($attack_cristal, 0, ',', ' ');
-$attack_deut = number_format($attack_deut, 0, ',', ' ');
-echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>M&eacute;tal gagn&eacute; : ".$attack_metal."<br>Cristal gagn&eacute; : ".$attack_cristal."<br>Deut&eacute;rium gagn&eacute; : ".$attack_deut."<br>";
 
-//Calcul des gains totaux
-$totalgainsrecy=$recy_metal+$recy_cristal;
+echo "</table>";
 
-//Calcul de la rentabilité
-$renta = $totalgainsrecy+$totalgains-$attack_pertes;
-
-//Affichage du total des gains
-$totalgains = number_format($totalgains, 0, ',', ' ');
-echo "<b>Soit un total de : ".$totalgains."</b><br><br>";
-
-//Affichage du total des pertes
-$attack_pertes = number_format($attack_pertes, 0, ',', ' ');
-echo"<b>Total des pertes attaquant : ".$attack_pertes."</b>";
-
-//Affichage de la rentabilité des attaques
-$renta = number_format($renta, 0, ',', ' ');
-
-//Affichage des gains en métal, en cristal et en deut
-$recy_metal = number_format($recy_metal, 0, ',', ' ');
-$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-echo "<p align='left'><font color='#FFFFFF'>Métal recyclé : ".$recy_metal."<br>Cristal recyclé : ".$recy_cristal."<br>";
-
-//Affichage du total des gains
-$totalgainsrecy = number_format($totalgainsrecy, 0, ',', ' ');
-echo "<b>Soit un total de : ".$totalgainsrecy."</b><br><br>";
-
-
-echo"<b>Rentabilité : ".$renta."</b>";
-echo"</big></big>";
-echo"</big></big></font></td></tr></table>";
 echo"</p></fieldset>";
 
 if ($config['histo']==1)

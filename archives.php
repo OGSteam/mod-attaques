@@ -93,10 +93,89 @@ $renta = $total_gains-$archives_pertes+$archives_recy_metal+$archives_recy_crist
 $total_recy = $archives_recy_metal+$archives_recy_cristal;
 
 echo"<fieldset><legend><b><font color='#0080FF'>Archives des attaques du mois de ".$date_from."</font></b></legend>";
-echo"<table width='100%'><tr align='left'>";
+//echo"<table width='100%'><tr align='left'>";
 
 // Afficher l'image du graphique
-echo"<td width='410px' align='center'>";
+//echo"<td width='410px' align='center'>";
+
+
+//Separateur de milliers
+/*$archives_nb_attaques = number_format($archives_nb_attaques, 0, ',', ' ');
+$archives_metal = number_format($archives_metal, 0, ',', ' ');
+$archives_cristal = number_format($archives_cristal, 0, ',', ' ');
+$archives_deut = number_format($archives_deut, 0, ',', ' ');
+$total_gains = number_format($total_gains, 0, ',', ' ');
+$archives_pertes = number_format($archives_pertes, 0, ',', ' ');
+$renta = number_format($renta, 0, ',', ' ');
+$archives_recy_metal = number_format($archives_recy_metal, 0, ',', ' ');
+$archives_recy_cristal = number_format($archives_recy_cristal, 0, ',', ' ');
+$total_recy = number_format ($total_recy, 0, ',', ' ');*/
+
+//On prépare les resultats au format bbcode
+$bbcode = "[b]Résultats des attaques de ".$user_data['user_name']."[/b]\n";
+$bbcode .="du mois de ".$date_from."\n\n";
+$bbcode .="Nombre d'attaques durant le mois : ".number_format($archives_nb_attaques, 0, ',', ' ')."\n\n";
+$bbcode .="Métal gagné : ".number_format($archives_metal, 0, ',', ' ')."\n";
+$bbcode .="Cristal gagné : ".number_format($archives_cristal, 0, ',', ' ')."\n";
+$bbcode .="Deuterium gagné : ".number_format($archives_deut, 0, ',', ' ')."\n\n";
+$bbcode .="Total des ressources gagnées : ".number_format($total_gains, 0, ',', ' ')."\n";
+$bbcode .="Total des pertes attaquant : ".number_format($archives_pertes, 0, ',', ' ')."\n\n";
+$bbcode .="Total du métal recyclé : ".number_format($archives_recy_metal, 0, ',', ' ')."\n";
+$bbcode .="Total du cristal recyclé : ".number_format($archives_recy_cristal, 0, ',', ' ')."\n\n";
+if ($renta > 0) $bbcode .="Rentabilité : [color=#00FF40]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
+else $bbcode .="Rentabilité : [color=#FF0000]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
+$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]Généré par le module de gestion des attaques[/url]";
+
+echo"<table width='100%'><tr align='left'>";
+echo "<td width='40%'>".
+				"<table width='100%'><colgroup><col width='55%'/><col/></colgroup><tbody>".
+				"<tr>".
+				"<td style='font-size: 18px;color: white;'><b>Nombre d'attaques durant le mois</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($archives_nb_attaques, 0, ',', ' ') . "</td>" .
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal gagn&eacute;</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($archives_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal gagn&eacute;</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($archives_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium gagn&eacute;</b></td>".
+				"<td class='deuterium number' style='font-size: 18px;'>" . number_format($archives_deut, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains attaques</b></td>" . 
+				"<td class='number' style='font-size: 18px;color: white;'>" . number_format($total_gains, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Pertes attaques</b></td>" .
+				"<td class='perte number' style='font-size: 18px;'>" . number_format($archives_pertes, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute; attaques</b></td>" .
+				"<td class='renta number' style='font-size: 18px;'>" . number_format(($total_gains-$archives_pertes), 0, ',', ' ') . "</td>" .
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>M&eacute;tal recycl&eacute;</b></td>".
+				"<td class='metal number' style='font-size: 18px;'>" . number_format($archives_recy_metal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Cristal recycl&eacute;</b></td>".
+				"<td class='cristal number' style='font-size: 18px;'>" . number_format($archives_recy_cristal, 0, ',', ' ') . "</td>" .
+				"</tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Gains recyclages</b></td>" . 
+				"<td class='renta number' style='font-size: 18px;'>" . number_format(($archives_recy_metal+$archives_recy_cristal), 0, ',', ' ') . "</td>" .
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
+				"<td style='font-size: 18px;color: white;'><b>Rentabilité totale</b></td>" . 
+				"<td class='renta number' style='font-size: 18px;'>" . number_format((($total_gains-$archives_pertes) + ($archives_recy_metal+$archives_recy_cristal)), 0, ',', ' ') . "</td>" .
+				"</tr>".
+				"<tr><td colspan='2'>&#160;</td></tr>".
+				"<tr><td colspan='2'>&#160;</td></tr>".
+				"<tr><td colspan='2'>&#160;</td></tr>".
+				"<tr><td colspan='2'>".
+				"<big>Résultats en BBCode</big><br/>".
+				"<a href='#haut' onclick='selectionner()'>Selectionner</a>".
+				"<form method='post'><textarea rows='3' cols='15' id='bbcode'>" . $bbcode . "</textarea></form>".
+				"</td></tr><tbody></table>".
+				"</td>";
+
+// Afficher l'image du graphique
+echo"<td width='60%' align='center'>";
 
 /** GRAPHIQUE **/
 echo "<div id='graphique1' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
@@ -114,55 +193,6 @@ echo  create_pie_numbers($total_gains . "_x_" . $total_recy, "Gains_x_Recyclages
 ?>
 <?php
 
-//Separateur de milliers
-$archives_nb_attaques = number_format($archives_nb_attaques, 0, ',', ' ');
-$archives_metal = number_format($archives_metal, 0, ',', ' ');
-$archives_cristal = number_format($archives_cristal, 0, ',', ' ');
-$archives_deut = number_format($archives_deut, 0, ',', ' ');
-$total_gains = number_format($total_gains, 0, ',', ' ');
-$archives_pertes = number_format($archives_pertes, 0, ',', ' ');
-$renta = number_format($renta, 0, ',', ' ');
-$archives_recy_metal = number_format($archives_recy_metal, 0, ',', ' ');
-$archives_recy_cristal = number_format($archives_recy_cristal, 0, ',', ' ');
-$total_recy = number_format ($total_recy, 0, ',', ' ');
-
-//On prépare les resultats au format bbcode
-$bbcode = "[b]Résultats des attaques de ".$user_data['user_name']."[/b]\n";
-$bbcode .="du mois de ".$date_from."\n\n";
-$bbcode .="Nombre d'attaques durant le mois : ".$archives_nb_attaques."\n\n";
-$bbcode .="Métal gagné : ".$archives_metal."\n";
-$bbcode .="Cristal gagné : ".$archives_cristal."\n";
-$bbcode .="Deuterium gagné : ".$archives_deut."\n\n";
-$bbcode .="Total des ressources gagnées : ".$total_gains."\n";
-$bbcode .="Total des pertes attaquant : ".$archives_pertes."\n\n";
-$bbcode .="Total du métal recyclé : ".$archives_recy_metal."\n";
-$bbcode .="Total du cristal recyclé : ".$archives_recy_cristal."\n\n";
-if ($renta > 0) $bbcode .="Rentabilité : [color=#00FF40]".$renta."[/color]\n\n";
-else $bbcode .="Rentabilité : [color=#FF0000]".$renta."[/color]\n\n";
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]Généré par le module de gestion des attaques[/url]";
-
-//On affiche les résultats
-echo"</td>";
-echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>";
-echo"Nombre d'attaques durant le mois : ".$archives_nb_attaques."";
-echo"<br>";
-echo"<br>";
-echo"Métal gagné : ".$archives_metal."<br>";
-echo"Cristal gagné : ".$archives_cristal."<br>";
-echo"Deuterium gagné : ".$archives_deut."";
-echo"<br>";
-echo"<br>";
-echo"Total des ressources gagnées : ".$total_gains."<br>";
-echo"Total des pertes attaquant : ".$archives_pertes."<br>";
-echo"Total du métal recyclé : ".$archives_recy_metal."<br>";
-echo"Total du cristal recyclé : ".$archives_recy_cristal."<br>";
-echo"<br>";
-echo"<br>";
-echo"Rentabilité : ".$renta."</p>";
-echo"<br></big>";
-echo"Résultats en BBCode<br>";
-echo"</big><a href='#haut' onclick='selectionner()'>Selectionner</a>";
-echo"<form method='post'><textarea rows='3' cols='15' id='bbcode'>$bbcode</textarea></form>";
 echo"</td>";
 echo"</tr>";
 echo"</table>";

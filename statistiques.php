@@ -244,8 +244,7 @@ $series = "{name: 'Métal', data: [".$metal."] }, " .
 
 echo "</div>";
 
-
-
+// *****************************************************************************************************
 
 echo "<fieldset><legend><b><font color='#0080FF'>Rentabilité Mensuelle</font></b></legend>";
 
@@ -337,7 +336,172 @@ echo "<script type='text/javascript'>
 	           series: [".$series."]
 	   });
 </script>";
+
 //echo "<img src='index.php?action=attaques&graphic=mois' alt='".T_("Attaques_pasdegraphique")."' />";
 echo "</fieldset>";
 
+// *******************************************************************************************************************
+
+
+//Cacul pour obtenir les gains
+//$query = "SELECT attack_user_id, SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes), WEEKOFYEAR(FROM_UNIXTIME(attack_date)) FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_date >= ".$debutdumois." AND attack_date <= ".$findumois." GROUP BY attack_user_id";
+
+$query = "SELECT user_stat_name, user_id, ". 
+		 "SUM(attacks.attack_metal), ". 
+		 "(SELECT SUM(recy_metal) FROM ogspy_asgard_attaques_recyclages WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_metal, ". 
+		 "SUM(attacks.attack_cristal), ". 
+		 "(SELECT SUM(recy_cristal) FROM ogspy_asgard_attaques_recyclages WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_cristal, ". 
+		 "SUM(attacks.attack_deut), SUM(attacks.attack_pertes) ". 
+		 "FROM ogspy_asgard_user users ". 
+		 "INNER JOIN ogspy_asgard_attaques_attaques attacks ON attacks.attack_user_id = users.user_id ". 
+		 "WHERE attacks.attack_date BETWEEN 1367359200 AND 1370037599 ". 
+		 "GROUP BY users.user_id ".
+		 "ORDER BY user_stat_name ASC";
+
+$resultgains = $db->sql_query($query);
+
+//echo $query;
+
+/*$i=0;
+$seriesglobal="";
+while(list($user, $attack_user_id, $attack_metal, $recy_metal, $attack_cristal, $recy_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains) ){
+	$i++;
+	$renta = (($attack_metal + $recy_metal + $attack_cristal + $recy_cristal + $attack_deut) - $attack_pertes);
+	
+	if($renta > 0 && !(strpos($seriesglobal,$user) !== FALSE)) {
+		if($i > 1){
+			$seriesglobal .= ",";
+		}		
+		$serie = "{name: '" . $user . "', data: ["  . $attack_metal . "," . $recy_metal . "," . $attack_cristal . "," .$recy_cristal . "," . $attack_deut . "," . $attack_pertes . "," . $renta . "]}";
+		$seriesglobal .= $serie;
+	}
+}*/
+
+$names=array();
+$values=array();
+while(list($user, $user_id, $attack_metal, $recy_metal, $attack_cristal, $recy_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains) ){
+	$i++;
+	$renta = (($attack_metal + $recy_metal + $attack_cristal + $recy_cristal + $attack_deut) - $attack_pertes);
+	
+	if($renta > 0){
+		array_push($names,$user);
+		array_push($values,$renta);
+	}
+}
+
+$noms="";
+$valeurs="";
+for($i = 0; $i < count($names); ++$i) {
+	if($i > 0){
+		$noms .= "_x_";
+		$valeurs .= "_x_";
+	}
+    $noms .= $names[$i];
+    $valeurs .= $values[$i];
+}
+
+//echo $noms;
+//echo $valeurs;
+
+echo "<fieldset><legend><b><font color='#0080FF'>Rentabilité Mensuelle Globale</font></b></legend>";
+
+/** GRAPHIQUE **/
+echo "<div id='graphiquemoisglobal' style='height: 350px; width: 850px; margin: 0pt auto; clear: both;'></div>";
+/** GRAPHIQUE **/
+
+echo  create_pie_numbers($valeurs, $noms, "Historique du mois", "graphiquemoisglobal");
+/*
+echo "<script type='text/javascript'>
+   			function number_format(number, decimals, dec_point, thousands_sep) {
+    			var n = !isFinite(+number) ? 0 : +number, 
+        		prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        		sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+		        s = '',
+		        toFixedFix = function (n, prec) {
+		            var k = Math.pow(10, prec);
+		            return '' + Math.round(n * k) / k;
+		        };
+    			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    			s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+			    if (s[0].length > 3) {
+			        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);    }
+			    if ((s[1] || '').length < prec) {
+			        s[1] = s[1] || '';
+			        s[1] += new Array(prec - s[1].length + 1).join('0');
+			    }    return s.join(dec);
+			}
+			
+		var chart;
+		
+			chart = new Highcharts.Chart({
+	            chart: {
+	                type: 'column',
+	                renderTo: 'graphiquemoisglobal',
+	                defaultSeriesType: 'column',
+			         backgroundColor: {
+			         		linearGradient: [0, 0, 250, 500],
+				         	stops: [
+				            	[0, 'rgb(48, 48, 96)'],
+				            	[1, 'rgb(0, 0, 0)']
+				         	]
+				      },
+				      borderColor: '#000000',
+				      borderWidth: 2,
+				      className: 'white-container',
+				      plotBackgroundColor: 'rgba(255, 255, 255, .1)',
+				      plotBorderColor: '#CCCCCC',
+				      plotBorderWidth: 1
+	            },
+	            title: {
+	                text: 'Rentabilite Globale du mois'
+	            },
+	            xAxis: {
+	                categories: ['Metal', 'Metal recycle', 'Cristal', 'Cristal recycle', 'Deuterium', 'Pertes', 'Rentabilite']
+	            },
+	            yAxis: {
+	                min: 0,
+	                title: {
+	                    text: 'Total'
+	                },
+	                stackLabels: {
+	                    enabled: true,
+	                    style: {
+	                        fontWeight: 'bold',
+	                        color: 'white'
+	                    }
+	                }
+	            },
+	            legend: {
+		         layout: 'vertical',
+		         style: {
+				   left: 'auto',
+				   bottom: 'auto',
+		           right: '50px',
+		           top: '50px'
+				 },
+				 itemStyle: {
+			         font: '9pt Trebuchet MS, Verdana, sans-serif',
+			         color: '#A0A0A0'
+			     },
+		         align: 'center',
+		         verticalAlign: 'top',
+		         x: 100,
+		         y: 70
+		      },
+	            tooltip: {
+	                formatter: function() {
+	                    return '<b>'+ this.x +'</b><br/>'+
+	                        this.series.name +': '+ number_format(this.y, 0, ',', ' ') +'<br/>'+
+	                        'Total: '+ number_format(this.point.stackTotal, 0, ',', ' ');
+	                }
+	            },
+	            plotOptions: {
+	                column: {
+	                    stacking: 'normal'
+	                }
+	            },
+	            series: [".$seriesglobal."]
+        	});
+</script>";*/
+echo "</fieldset>";
 ?>
