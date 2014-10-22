@@ -1,13 +1,12 @@
-# Projet OGSpy #
+# Module OGSpy Gestion des attaques#
 
-Le projet crée en 2006 est une aide pour un jeu de gestion de vaisseaux spaciaux.
+Ce module permet d'analyser l'ensemble des rapports de combats récupérés via le mod Xtense.
 
-Le but de cet outil est de récupérer l'ensemble des informations du Jeu pour ensuite les regrouper et les exploiter.
+Le but de cet outil est de récupérer l'ensemble des informations pour en retirer des statistiques telles que les rentabilités, les gains,... et toutes vos propositions.
 
 ### Que contient ce dépôt ? ###
 
-* OGSpy Version 3.1.3
-* Librairies externes comme JQuery
+* Le mod attaques
 * Accord de License
 
 ### How do I get set up? ###
