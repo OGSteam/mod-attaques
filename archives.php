@@ -71,7 +71,7 @@ $date_from = mktime(0, 0, 0, $pub_mois, 01, $pub_annee);
 $sql = "SELECT archives_nb_attaques, archives_date, archives_metal, archives_cristal, archives_deut, archives_pertes, archives_recy_metal, archives_recy_cristal, archives_id FROM ".TABLE_ATTAQUES_ARCHIVES." WHERE archives_user_id=".$user_data["user_id"]." AND archives_date=".$date_from."";
 $result = $db->sql_query($sql);
 
-$nb_result = mysql_num_rows($result);
+$nb_result = $db->sql_numrows($result);
 
 if($nb_result == 0)
 {

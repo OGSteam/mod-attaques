@@ -282,7 +282,7 @@ if ($version == "0.8c")
 if ($version == "0.8d")
   {
   //On vérifie que la table xtense_callbacks existe (Xtense2)
-  if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
+  if( $db->sql_numrows( $db->sql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
     {
     // Si oui, on récupère le n° d'id du mod
     $query = "SELECT `id` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";

@@ -388,7 +388,7 @@ echo "<table width='60%' border='0'>
 </tr>";
 echo "<tr>";
 //On vérifie que la table xtense_callbacks existe
-if( ! mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
+if( ! $db->sql_numrows( $db->sql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
   {
   echo "<th>la barre Xtense2 semble ne pas &ecirc;tre install&eacute;e</th>";
   }else{
@@ -401,7 +401,7 @@ if( ! mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."xtense_cal
   $query = "SELECT `id` FROM ".$table_prefix."xtense_callbacks"." WHERE `mod_id`=".$attack_id;
   $result = $db->sql_query($query);
   // On doit avoir 2 entrées dans la table : une pour les RC, une pour les RR
-  if (mysql_num_rows($result) != 2)
+  if ($db->sql_numrows($result) != 2)
     {
     echo "<th>Le module 'Gestion des Attaques' n'est pas enregistr&eacute; aupr&egrave;s de Xtense2</th>";
     echo "<tr>";

@@ -62,10 +62,10 @@ $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCL
 $resultgains_recy = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
-$nb_attack = mysql_num_rows($attaques);
+$nb_attack = $db->sql_numrows($attaques);
 
 //On recupère le nombre de recyclages
-$nb_recy = mysql_num_rows($recyclages);
+$nb_recy = $db->sql_numrows($recyclages);
 
 //On récupère la date au bon format
 $pub_date_from = strftime("%d %b %Y", $pub_date_from);

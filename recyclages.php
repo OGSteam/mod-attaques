@@ -80,7 +80,7 @@ $query = "SELECT recy_coord, recy_date, recy_metal, recy_cristal, recy_id FROM "
 $result = $db->sql_query($query);
 
 //On recupère le nombre de recyclages
-$nb_recy = mysql_num_rows($result);
+$nb_recy = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains des recyclages
 $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data["user_id"]." AND recy_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY recy_user_id"; 

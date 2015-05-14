@@ -34,7 +34,7 @@ if($yesterday < 1) $yesterday = 1;
 $query = "SELECT MONTH(FROM_UNIXTIME(attack_date)) AS month, YEAR(FROM_UNIXTIME(attack_date)) AS year, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut, SUM(attack_pertes) as pertes FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data['user_id']." AND MONTH(FROM_UNIXTIME(attack_date)) <> $mois GROUP BY month"; 
 $result = $db->sql_query($query);
 
-$nb_result = mysql_num_rows($result);
+$nb_result = $db->sql_numrows($result);
 
 //Si le nombre d'attaques n'appartenant pas au mois actuel est different de 0, on entre alors dans la partie sauvegarde des résultats anterieurs
 if ($nb_result != 0)
@@ -53,7 +53,7 @@ $bbcolor=unserialize($bbcolor[0]);
 	
 		$list = $db->sql_query($query);
 		
-		$nb_ancattack = mysql_num_rows($list);
+		$nb_ancattack = $db->sql_numrows($list);
 		
 		//On recupere les gains des recyclages
 		$query = "SELECT SUM(recy_metal) as metal_recy, SUM(recy_cristal) as cristal_recy FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data["user_id"]." AND MONTH(FROM_UNIXTIME(recy_date))=".$month." AND YEAR(FROM_UNIXTIME(recy_date))=".$year." GROUP BY recy_user_id"; 
@@ -170,7 +170,7 @@ $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack
 $result = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
-$nb_attack = mysql_num_rows($result);
+$nb_attack = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains
 $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data["user_id"]." AND attack_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY attack_user_id"; 

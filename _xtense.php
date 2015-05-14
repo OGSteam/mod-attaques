@@ -131,7 +131,7 @@ function attack_rc($rapport)
 			//On vérifie que cette attaque n'a pas déja été enregistrée
 			$query = "SELECT attack_id FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id='".$user_data['user_id']."' AND attack_date='$timestamp' AND attack_coord='$coord_attaque' ";
 			$result = $db->sql_query($query);
-			$nb = mysql_num_rows($result);
+			$nb = $db->sql_numrows($result);
 			
 			if ($nb == 0)
 			{
@@ -160,7 +160,7 @@ function attack_rr($rapport) {
         //On vérifie que ce recyclage n'a pas déja été enregistrée
 		$query = "SELECT recy_id FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id='".$user_data['user_id']."' AND recy_date='$timestamp' AND recy_coord='$coordonne' ";
 		$result = $db->sql_query($query);
-		$nb = mysql_num_rows($result);
+		$nb = $db->sql_numrows($result);
         // Si on ne trouve rien
         if ($nb == 0) {
 			//On insere ces données dans la base de données

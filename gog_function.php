@@ -89,7 +89,7 @@ $config=unserialize($config[0]);
       //On vérifie que cette attaque n'a pas déja été enregistrée
       $query = "SELECT id FROM ".TABLE_GAME." WHERE sender='$user_data[user_id]' AND date='$date' AND attaquant='$attaquant[1]' ";
       $result = $db->sql_query($query);
-      $nb = mysql_num_rows($result);
+      $nb = $db->sql_numrows($result);
       // Si le RC existe déjà on sort 
       if ($nb != 0) return 3;
       //Insert dans la base de données

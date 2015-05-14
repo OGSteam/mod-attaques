@@ -76,7 +76,7 @@ $db->sql_query($query);
 
 
 //On vérifie que la table ogspy_mod_config
-if( ! mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."mod_config"."'")))
+if( ! $db->sql_numrows( $db->sql_query("SHOW TABLES LIKE '".$table_prefix."mod_config"."'")))
   {
   // sinon on la crée 
   $query = "CREATE TABLE `ogspy_mod_config` (
@@ -98,7 +98,7 @@ $query = "INSERT INTO ".TABLE_MOD_CFG." VALUES ('Attaques','bbcodes','".$sqldata
 $db->sql_query($query);
 
 //On vérifie que la table xtense_callbacks existe (Xtense2)
-if( mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
+if( $db->sql_numrows( $db->sql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
   {
   // Si oui, on récupère le n° d'id du mod
   $query = "SELECT `id` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";

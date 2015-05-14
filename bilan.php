@@ -47,7 +47,7 @@ $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack
 $result = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
-$nb_attack = mysql_num_rows($result);
+$nb_attack = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains
 $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data["user_id"]." AND attack_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY attack_user_id"; 
