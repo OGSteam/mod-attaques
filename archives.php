@@ -2,7 +2,7 @@
 /**
 * archives.php
 * @package Attaques
-* @author VeritÈ modifiÈ par ericc
+* @author Verit√© modifi√© par ericc
 * @link http://www.ogsteam.fr
 * @version : 0.8a
 */
@@ -17,11 +17,11 @@ document.getElementById('bbcode').select();
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-//On vÈrifie que le mod est activÈ
+//On v√©rifie que le mod est activ√©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
-//DÈfinitions
+//D√©finitions
 global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;
 
 $query = "SELECT archives_date FROM ".TABLE_ATTAQUES_ARCHIVES." WHERE `archives_user_id`='".$user_data["user_id"]."'";
@@ -33,10 +33,10 @@ echo"<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques ";
 echo help("changer_affichage");
 echo"</font></b></legend>";
 
-echo"Afficher mes rÈsultats anterieurs : ";
+echo"Afficher mes r√©sultats anterieurs : ";
 echo"<form action='index.php?action=attaques&page=archive' method='post'>";
 echo"mois : <input type='text' name='mois' size='2' maxlength='2' value='$pub_mois' /> ";
-echo"annÈe : ";
+echo"ann√©e : ";
 echo"<input type='text' name='annee' size='4' maxlength='4' value='$pub_annee' />";
 echo"<br /><br />";
 echo"<table border=0><tr>";
@@ -57,8 +57,8 @@ echo"<input type='submit'	value='Afficher' name='B1'></form>";
 echo"</fieldset>";
 echo"<br><br>";
 
-//Si le message de sauvegarde des resultats est dÈfini, on l'affiche
-if (isset($pub_message)) echo"<font color='FF0000'><big>La liste de vos attaques Ètant anterieure ‡ ce mois, elle a ÈtÈ supprimÈe. Les rÈsultats de vos attaques ont ÈtÈ sauvegardÈs, ils seront dÈsormais accessibles sur cette page</big></font>";
+//Si le message de sauvegarde des resultats est d√©fini, on l'affiche
+if (isset($pub_message)) echo"<font color='FF0000'><big>La liste de vos attaques √©tant anterieure √† ce mois, elle a √©t√© supprim√©e. Les r√©sultats de vos attaques ont √©t√© sauvegard√©s, ils seront d√©sormais accessibles sur cette page</big></font>";
 
 if ((isset($pub_mois)) && (isset($pub_annee)))
 {
@@ -87,7 +87,7 @@ list($archives_nb_attaques, $archives_date, $archives_metal, $archives_cristal, 
 
 $date_from = strftime("%b %Y", $date_from);
 
-//On fait les calculs du total des gains, et la rentabilitÈ, et du total des recyclages
+//On fait les calculs du total des gains, et la rentabilit√©, et du total des recyclages
 $total_gains = $archives_metal+$archives_cristal+$archives_deut;
 $renta = $total_gains-$archives_pertes+$archives_recy_metal+$archives_recy_cristal;
 $total_recy = $archives_recy_metal+$archives_recy_cristal;
@@ -111,20 +111,20 @@ $archives_recy_metal = number_format($archives_recy_metal, 0, ',', ' ');
 $archives_recy_cristal = number_format($archives_recy_cristal, 0, ',', ' ');
 $total_recy = number_format ($total_recy, 0, ',', ' ');*/
 
-//On prÈpare les resultats au format bbcode
-$bbcode = "[b]RÈsultats des attaques de ".$user_data['user_name']."[/b]\n";
+//On pr√©pare les resultats au format bbcode
+$bbcode = "[b]R√©sultats des attaques de ".$user_data['user_name']."[/b]\n";
 $bbcode .="du mois de ".$date_from."\n\n";
 $bbcode .="Nombre d'attaques durant le mois : ".number_format($archives_nb_attaques, 0, ',', ' ')."\n\n";
-$bbcode .="MÈtal gagnÈ : ".number_format($archives_metal, 0, ',', ' ')."\n";
-$bbcode .="Cristal gagnÈ : ".number_format($archives_cristal, 0, ',', ' ')."\n";
-$bbcode .="Deuterium gagnÈ : ".number_format($archives_deut, 0, ',', ' ')."\n\n";
-$bbcode .="Total des ressources gagnÈes : ".number_format($total_gains, 0, ',', ' ')."\n";
+$bbcode .="M√©tal gagn√© : ".number_format($archives_metal, 0, ',', ' ')."\n";
+$bbcode .="Cristal gagn√© : ".number_format($archives_cristal, 0, ',', ' ')."\n";
+$bbcode .="Deuterium gagn√© : ".number_format($archives_deut, 0, ',', ' ')."\n\n";
+$bbcode .="Total des ressources gagn√©es : ".number_format($total_gains, 0, ',', ' ')."\n";
 $bbcode .="Total des pertes attaquant : ".number_format($archives_pertes, 0, ',', ' ')."\n\n";
-$bbcode .="Total du mÈtal recyclÈ : ".number_format($archives_recy_metal, 0, ',', ' ')."\n";
-$bbcode .="Total du cristal recyclÈ : ".number_format($archives_recy_cristal, 0, ',', ' ')."\n\n";
-if ($renta > 0) $bbcode .="RentabilitÈ : [color=#00FF40]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
-else $bbcode .="RentabilitÈ : [color=#FF0000]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]GÈnÈrÈ par le module de gestion des attaques[/url]";
+$bbcode .="Total du m√©tal recycl√© : ".number_format($archives_recy_metal, 0, ',', ' ')."\n";
+$bbcode .="Total du cristal recycl√© : ".number_format($archives_recy_cristal, 0, ',', ' ')."\n\n";
+if ($renta > 0) $bbcode .="Rentabilit√© : [color=#00FF40]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
+else $bbcode .="Rentabilit√© : [color=#FF0000]".number_format($renta, 0, ',', ' ')."[/color]\n\n";
+$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]G√©n√©r√© par le module de gestion des attaques[/url]";
 
 echo"<table width='100%'><tr align='left'>";
 echo "<td width='40%'>".
@@ -161,14 +161,14 @@ echo "<td width='40%'>".
 				"<td class='renta number' style='font-size: 18px;'>" . number_format(($archives_recy_metal+$archives_recy_cristal), 0, ',', ' ') . "</td>" .
 				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
 				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
-				"<td style='font-size: 18px;color: white;'><b>RentabilitÈ totale</b></td>" . 
+				"<td style='font-size: 18px;color: white;'><b>Rentabilit√© totale</b></td>" . 
 				"<td class='renta number' style='font-size: 18px;'>" . number_format((($total_gains-$archives_pertes) + ($archives_recy_metal+$archives_recy_cristal)), 0, ',', ' ') . "</td>" .
 				"</tr>".
 				"<tr><td colspan='2'>&#160;</td></tr>".
 				"<tr><td colspan='2'>&#160;</td></tr>".
 				"<tr><td colspan='2'>&#160;</td></tr>".
 				"<tr><td colspan='2'>".
-				"<big>RÈsultats en BBCode</big><br/>".
+				"<big>R√©sultats en BBCode</big><br/>".
 				"<a href='#haut' onclick='selectionner()'>Selectionner</a>".
 				"<form method='post'><textarea rows='3' cols='15' id='bbcode'>" . $bbcode . "</textarea></form>".
 				"</td></tr><tbody></table>".
@@ -180,8 +180,8 @@ echo"<td width='60%' align='center'>";
 /** GRAPHIQUE **/
 echo "<div id='graphique1' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 /** GRAPHIQUE **/
-//echo create_pie(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "MÈtal_x_Cristal_x_DeutÈrium_x_Pertes", "Ressources gagnÈes", "graphique1");
-echo  create_pie_numbers(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "MÈtal_x_Cristal_x_DeutÈrium_x_Pertes", "Ressources gagnÈes", "graphique1");
+//echo create_pie(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "M√©tal_x_Cristal_x_Deut√©rium_x_Pertes", "Ressources gagn√©es", "graphique1");
+echo  create_pie_numbers(($archives_metal+$archives_recy_metal) . "_x_" . ($archives_cristal+$archives_recy_cristal) . "_x_" . $archives_deut . "_x_" . $archives_pertes, "M√©tal_x_Cristal_x_Deut√©rium_x_Pertes", "Ressources gagn√©es", "graphique1");
 ?>
 <br/>
 <?php

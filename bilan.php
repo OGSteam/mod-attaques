@@ -2,21 +2,21 @@
 /**
 * bilan.php 
  * @package Attaques
- * @author Verité
+ * @author VeritÃ©
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
+//On vÃ©rifie que le mod est activÃ©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 // Appel des Javascripts
 echo"<script type='text/javascript' language='javascript' src='".FOLDER_ATTCK."/attack.js'></script>";
 
-//Définitions
+//DÃ©finitions
 global $db, $table_prefix;
 
 //Gestion des dates
@@ -30,7 +30,7 @@ if($septjours < 1) $septjours = 1;
 if($yesterday < 1) $yesterday = 1;
 
 
-//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jours,
+//Si les dates d'affichage ne sont pas dÃ©finies, on affiche par dÃ©faut les attaques du jours,
 if(!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
 else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 
@@ -46,7 +46,7 @@ $pub_date_to = intval($pub_date_to);
 $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data["user_id"]." AND attack_date BETWEEN ".$pub_date_from." and ".$pub_date_to."  ORDER BY attack_date DESC,attack_id DESC";
 $result = $db->sql_query($query);
 
-//On recupère le nombre d'attaques
+//On recupÃ¨re le nombre d'attaques
 $nb_attack = mysql_num_rows($result);
 
 //Cacul pour obtenir les gains
@@ -58,12 +58,12 @@ $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCL
 $resultgainsrecy = $db->sql_query($query);
 
 
-//On récupère la date au bon format
+//On rÃ©cupÃ¨re la date au bon format
 $pub_date_from = strftime("%d %b %Y", $pub_date_from);
 $pub_date_to = strftime("%d %b %Y", $pub_date_to);
 
 
-//Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
+//CrÃ©ation du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo"<fieldset><legend><b><font color='#0080FF'>Date d'affichage du bilan ";
 echo help("changer_affichage");
 echo"</font></b></legend>";
@@ -85,14 +85,14 @@ echo"<input type='submit' value='Afficher' name='B1'></form>";
 echo"</fieldset>";
 echo"<br><br>";
 
-//Création du field pour voir les gains des attaques
+//CrÃ©ation du field pour voir les gains des attaques
 echo"<fieldset><legend><b><font color='#0080FF'>Bilan du ".$pub_date_from." au ".$pub_date_to." </font></b></legend>";
 echo"<table width='100%'><tr align='left'>";
 		
-//Résultat requete
+//RÃ©sultat requete
 list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);	
 
-//Résultat requete
+//RÃ©sultat requete
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgainsrecy);	
 
 //Calcul des gains totaux
@@ -130,7 +130,7 @@ echo "<td width='25%'>".
 				"<td class='renta number' style='font-size: 18px;'>" . number_format(($recy_metal+$recy_cristal), 0, ',', ' ') . "</td>" .
 				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
 				"</tr><tr><td colspan='2'>&#160;</td></tr><tr>".
-				"<td style='font-size: 18px;color: white;'><b>Rentabilité totale</b></td>" . 
+				"<td style='font-size: 18px;color: white;'><b>RentabilitÃ© totale</b></td>" . 
 				"<td class='renta number' style='font-size: 18px;'>" . number_format((($totalgains-$attack_pertes) + ($recy_metal+$recy_cristal)), 0, ',', ' ') . "</td>" .
 				"</tr><tbody></table></td>";
 
@@ -143,8 +143,8 @@ if((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)
 	/** GRAPHIQUE **/
 	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 	/** GRAPHIQUE **/	
-	//echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
-	echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
+	//echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "MÃ©tal_x_Cristal_x_DeutÃ©rium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
+	echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "MÃ©tal_x_Cristal_x_DeutÃ©rium_x_Pertes", "Bilan des Attaques et Recyclages", "graphique");
 }
 
 
@@ -165,20 +165,20 @@ if ($config['histo']==1)
 	$query="SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id=".$user_data['user_id']." and MONTH(FROM_UNIXTIME(attack_date))=".$mois." and YEAR(FROM_UNIXTIME(attack_date))=".$annee." GROUP BY day";
 	$query2="SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data['user_id']." and MONTH(FROM_UNIXTIME(recy_date))=".$mois." and YEAR(FROM_UNIXTIME(recy_date))=".$annee." GROUP BY day";
 	
-	// requète SQL pour récupérer le total par ressource par jour
+	// requÃ¨te SQL pour rÃ©cupÃ©rer le total par ressource par jour
 	$result = $db->sql_query($query);
 	
 	// Initialisation des variables et tableau
 	
 	$barre = array();
-	// Lecture de la base de données et stockage des valeurs dans le tableau
+	// Lecture de la base de donnÃ©es et stockage des valeurs dans le tableau
 	if ( $pub_subaction !="recyclage") {
 		while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
 			$barre[$jour][0]=$metal;
 			$barre[$jour][1]=$cristal;
 			$barre[$jour][2]=$deut;
 		  
-			// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+			// on recherche la valeur la plus grande pour dÃ©finir la valeur maxi de l'axe Y
 			if ($metal>$maxy) {
 				$maxy=$metal;
 			}
@@ -203,7 +203,7 @@ if ($config['histo']==1)
 			$barre[$jour][0] += $metal;
 			$barre[$jour][1] += $cristal;
 	
-			// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+			// on recherche la valeur la plus grande pour dÃ©finir la valeur maxi de l'axe Y
 			if ($metal>$maxy) {
 				$maxy=$metal;
 			}
@@ -290,7 +290,7 @@ echo "<script type='text/javascript'>
 	      yAxis: {
 	         min: 0,
 	         title: {
-	            text: 'Quantité'
+	            text: 'QuantitÃ©'
 	         }
 	      },
 	      legend: {

@@ -26,7 +26,7 @@ $darkpink = new DarkPink;
 $tbcolor = array ($red,$blue,$green,$yellow,$cyan,$magenta,$orange,$pink,$purple,$white,$darkred,$darkgreen,$darkblue,$darkyellow,$darkpink);
 $num_color = 0;
 
-//récupère la liste des users actifs
+//rÃ©cupÃ¨re la liste des users actifs
 $query="SELECT `user_id`,`user_name`,`user_active` from ".TABLE_USER." ORDER BY `user_id`";
 $result=$db->sql_query($query);
 $count = 0;

@@ -7,7 +7,7 @@
  *
  */
  /**
- * barplot.php génération d'histogramme en barres 3D 
+ * barplot.php gÃ©nÃ©ration d'histogramme en barres 3D 
  * @package Attaques
  * @author  ericc
  * @link http://www.ogsteam.fr
@@ -18,7 +18,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 // Appel de la librairie Artichow pour tracer des histogrammes
 //require_once "library/artichow/BarPlot.class.php";
 global $db, $table_prefix, $prefixe;
-// Gestion des dates - récupère le mois et l'année courants 
+// Gestion des dates - rÃ©cupÃ¨re le mois et l'annÃ©e courants 
 $mois = date("m");
 $annee = date("Y");
 
@@ -35,20 +35,20 @@ switch ($pub_subaction) {
     break;
 }
 
-// requète SQL pour récupérer le total par ressource par jour
+// requÃ¨te SQL pour rÃ©cupÃ©rer le total par ressource par jour
  $result = $db->sql_query($query);
 
 // Initialisation des variables et tableau
 
 $barre = array();
-// Lecture de la base de données et stockage des valeurs dans le tableau
+// Lecture de la base de donnÃ©es et stockage des valeurs dans le tableau
 if ( $pub_subaction !="recyclage") {
 	while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
 	    $barre[$jour][0]=$metal;
 	    $barre[$jour][1]=$cristal;
 	    $barre[$jour][2]=$deut;
 	    
-	    // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+	    // on recherche la valeur la plus grande pour dÃ©finir la valeur maxi de l'axe Y
 	    if ($metal>$maxy) {$maxy=$metal;}
 	    if ($cristal>$maxy) {$maxy=$cristal;}
 	    if ($deut>$maxy)  {$maxy=$deut;}
@@ -63,7 +63,7 @@ if (isset($query2)) {
     $barre[$jour][0] += $metal;
     $barre[$jour][1] += $cristal;
     
-    // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+    // on recherche la valeur la plus grande pour dÃ©finir la valeur maxi de l'axe Y
     if ($metal>$maxy) {$maxy=$metal;}
     if ($cristal>$maxy) {$maxy=$cristal;}
   }

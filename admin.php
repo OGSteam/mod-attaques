@@ -9,7 +9,7 @@
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
+//On vÃ©rifie que le mod est activÃ©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
@@ -20,7 +20,7 @@ $result = $db->sql_query($query);
 $bbcolor = $db->sql_fetch_row($result);
 $bbcolor=unserialize($bbcolor[0]);
 
-// Paramètres de configurations transmis par le form
+// ParamÃ¨tres de configurations transmis par le form
 if (isset($pub_submit))
 {
   if (isset($pub_transp)) 
@@ -56,9 +56,9 @@ if (isset($pub_submit))
   }
   echo "<font size='2' color='00FF40'>configuration sauvegard&eacute;e</font><br />";
 }
-// Fin paramètres de configuration
+// Fin paramÃ¨tres de configuration
 
-// Paramètres couleurs BBcodes
+// ParamÃ¨tres couleurs BBcodes
 if (isset($pub_submitbb))
   {
   $bbcolor['title']=substr($pub_title,0,7);
@@ -69,18 +69,18 @@ if (isset($pub_submitbb))
   $bbcolor['c_r']=substr($pub_c_r,0,7);
   $bbcolor['perte']=substr($pub_perte,0,7);
   $bbcolor['renta']=substr($pub_renta,0,7);
-  //echo "#".dechex(hexdec(substr($pub_title,0,7)))."\n\r"; test de validation de code hexa .. pb si débute par 00 
+  //echo "#".dechex(hexdec(substr($pub_title,0,7)))."\n\r"; test de validation de code hexa .. pb si dÃ©bute par 00 
   $sqldata=serialize($bbcolor);
   //$query = "INSERT INTO ".TABLE_MOD_CFG." VALUES ('Attaques','bbcodes','".$sqldata."')";
   $query = "UPDATE ".TABLE_MOD_CFG." SET value = '".$sqldata."' WHERE `mod` = 'Attaques' and `config`='bbcodes'";
   $db->sql_query($query);
   echo "<font size='2' color='00FF40'>Couleurs BBcode enregistr&eacute;es</font><br />";
   }
-// Fin paramètres couleurs BBcodes
+// Fin paramÃ¨tres couleurs BBcodes
 // Purge des anciennes archives
 if (isset($pub_submitpurg))
   {
-  // On récupère les dates des archives présentes dans la base de données par ordre croissant 
+  // On rÃ©cupÃ¨re les dates des archives prÃ©sentes dans la base de donnÃ©es par ordre croissant 
   $query = "SELECT DISTINCT `archives_date` FROM ".TABLE_ATTAQUES_ARCHIVES." order by `archives_date`";
   $result = $db->sql_query($query);
   while (list($date)=$db->sql_fetch_row($result))
@@ -101,14 +101,14 @@ if (isset($pub_submitpurg))
   echo "<font size='2' color='00FF40'>purge effectu&eacute;e</font><br />";
   }
 // Fin de la purge
-// Nettoyage des valeurs non attribués dans la DB
+// Nettoyage des valeurs non attribuÃ©s dans la DB
 if (isset($pub_submitid))
   {
-  //on récupère les données recues par $_POST sans oublié d'enlevé les slash ^^
+  //on rÃ©cupÃ¨re les donnÃ©es recues par $_POST sans oubliÃ© d'enlevÃ© les slash ^^
   $userid = unserialize(stripslashes($pub_val_id));
   foreach ($userid as $value)
     {
-    // En fonction du type de la table, on génère la query
+    // En fonction du type de la table, on gÃ©nÃ¨re la query
     if ($value[0] == "archive")
       {
       $query="DELETE FROM ".TABLE_ATTAQUES_ARCHIVES." WHERE `archives_user_id`=".$value[1];
@@ -137,7 +137,7 @@ if (isset($pub_submitid))
 // Connexion Xtense2
 if (isset($pub_submitxt2))
   {
-  // on récupère le n° d'id du mod
+  // on rÃ©cupÃ¨re le nÂ° d'id du mod
   $query = "SELECT `id` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
   $result = $db->sql_query($query);
   $attack_id = $db->sql_fetch_row($result);
@@ -145,17 +145,17 @@ if (isset($pub_submitxt2))
   // on fait du nettoyage au cas ou 
   $query = "DELETE FROM `".$table_prefix."xtense_callbacks"."` WHERE `mod_id`=".$attack_id;
   $db->sql_query($query);
-  // Insert les données pour récuperer les RC 
+  // Insert les donnÃ©es pour rÃ©cuperer les RC 
   $query = "INSERT INTO ".$table_prefix."xtense_callbacks"." ( `mod_id` , `function` , `type` )
 				VALUES ( '".$attack_id."', 'attack_rc', 'rc')";
 	$db->sql_query($query);
-	// Insert les données pour récuperer les RR
+	// Insert les donnÃ©es pour rÃ©cuperer les RR
 	$query = "INSERT INTO ".$table_prefix."xtense_callbacks"." ( `mod_id` , `function` , `type` )
 				VALUES ( '".$attack_id."', 'attack_rr', 'rc_cdr')";
 	$db->sql_query($query);
   }
 
-// Appel des Javscripts pour le Colorpicker - Pris à Oxyfox et REStyler
+// Appel des Javscripts pour le Colorpicker - Pris Ã  Oxyfox et REStyler
 echo "<link rel='stylesheet' type='text/css' href='".FOLDER_ATTCK."/ColorPicker/ColorPicker.css' />
 <script type='text/javascript' src='".FOLDER_ATTCK."/ColorPicker/CP_Class.js'></script>
 <script type='text/javascript'>
@@ -172,11 +172,11 @@ window.onresize = function()
 	fctShow();
 }
 </script>";
-// cadre autour des paramètres
+// cadre autour des paramÃ¨tres
 echo"<fieldset><legend><b><font color='#0080FF'>Administration&nbsp;";
 echo help("Administration");
 echo "</font></b></legend>";
-// Formulaire des paramètres du module
+// Formulaire des paramÃ¨tres du module
 echo "<form name='form1' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
 echo "<table width='60%' border='0'>
 <tr>
@@ -272,10 +272,10 @@ echo "<br />";
 echo "<form name='form3' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
 echo "<table width='60%' border='0'>
 <tr>
-  <td class='c' colspan='5'>Base de données&nbsp;".help("mysql")."&nbsp;</td>
+  <td class='c' colspan='5'>Base de donnÃ©es&nbsp;".help("mysql")."&nbsp;</td>
 </tr>";
 echo "<tr>";
-// On récupère les dates des archives présentes dans la base de données par ordre croissant 
+// On rÃ©cupÃ¨re les dates des archives prÃ©sentes dans la base de donnÃ©es par ordre croissant 
 $query = "SELECT DISTINCT `archives_date` FROM ".TABLE_ATTAQUES_ARCHIVES." order by `archives_date`";
 $result = $db->sql_query($query);
 //reinitialise l'array
@@ -283,19 +283,19 @@ $ann=array();
 while (list($date)=$db->sql_fetch_row($result))
   {$ann[]=$date;}
 echo "<th colspan='5'>Vous avez des archives depuis ".date("M Y",$ann[0]).". A partir de quand souhaitez vous purger ?</th></tr><tr>";
-// On affiche la liste des dates présentes avec un checkbox
+// On affiche la liste des dates prÃ©sentes avec un checkbox
 $count=0;
 for($i=0; $i<count($ann); $i++)
   {
   echo "<th><input type='radio' name='purge' value='".$ann[$i]."' > ".date("M Y",$ann[$i])."</th>";
   $count += 1;
-  // on limite à 5 cases par ligne pour la mise en forme
+  // on limite Ã  5 cases par ligne pour la mise en forme
   if (($count/5)== (intval($count/5)))
     {
     echo "</tr><tr>";
     }
   }
-// Pour la beauté du geste, si le nb de case ne tombe pas juste, on complète par des cases vides
+// Pour la beautÃ© du geste, si le nb de case ne tombe pas juste, on complÃ¨te par des cases vides
 if (($count/5) != (intval($count/5)))
     {
     for ($i=1; $i<=(((intval($count/5)+1)*5)-$count); $i++)
@@ -306,7 +306,7 @@ if (($count/5) != (intval($count/5)))
 echo "</tr>";
 echo "<tr><td colspan='5' class='c' align='center'><input name='submitpurg' type='submit' value='Envoyer'></td></tr>";
 echo "</table></form>";
-// Controle de la base de données
+// Controle de la base de donnÃ©es
 $query = "SELECT DISTINCT `archives_user_id` FROM ".TABLE_ATTAQUES_ARCHIVES." ORDER BY `archives_user_id`";
 $result = $db->sql_query($query);
 $arch=array();
@@ -323,7 +323,7 @@ $recy=array();
 while (list($data)=$db->sql_fetch_row($result))
   {$recy[]=$data;}
 $inval_id=0;
-//récupère la liste des users actifs
+//rÃ©cupÃ¨re la liste des users actifs
 $query="SELECT `user_id`,`user_active` from ".TABLE_USER." ORDER BY `user_id`";
 $result=$db->sql_query($query);
 $count = 0;
@@ -337,12 +337,12 @@ while (list($userid,$actif)=$db->sql_fetch_row($result))
     $count+=1;
     }
   }
-//On vérifie si les ID trouvé dans la DB sont dans la liste des userid actifs
+//On vÃ©rifie si les ID trouvÃ© dans la DB sont dans la liste des userid actifs
 for ($i=0; $i<count($arch); $i++)
   {
   if (!in_array($arch[$i],$membre))
     {
-    // si non, on sauvegarde l'ID trouvé avec le type de la table correspondant et on incrémente le compteur
+    // si non, on sauvegarde l'ID trouvÃ© avec le type de la table correspondant et on incrÃ©mente le compteur
     $id[]=array("archive",$arch[$i]);
     $inval_id++;
     }
@@ -363,7 +363,7 @@ for ($i=0; $i<count($recy); $i++)
     $inval_id++;
     }
   }
-//Si j'ai trouvé des données orphelines et seulement dans ce cas, j'affiche un simple form
+//Si j'ai trouvÃ© des donnÃ©es orphelines et seulement dans ce cas, j'affiche un simple form
 if ($inval_id > 0)
   {
   //On serialize l'array pour le transmettre par $_POST dans le form
@@ -387,20 +387,20 @@ echo "<table width='60%' border='0'>
   <td class='c' colspan='5'>Xtense 2&nbsp;".help("xtense")."&nbsp;</td>
 </tr>";
 echo "<tr>";
-//On vérifie que la table xtense_callbacks existe
+//On vÃ©rifie que la table xtense_callbacks existe
 if( ! mysql_num_rows( mysql_query("SHOW TABLES LIKE '".$table_prefix."xtense_callbacks"."'")))
   {
   echo "<th>la barre Xtense2 semble ne pas &ecirc;tre install&eacute;e</th>";
   }else{
-  // Si oui, on récupère le n° d'id du mod
+  // Si oui, on rÃ©cupÃ¨re le nÂ° d'id du mod
   $query = "SELECT `id` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
   $result = $db->sql_query($query);
   $attack_id = $db->sql_fetch_row($result);
   $attack_id = $attack_id[0];
-  // Maintenant on vérifie que le mod est déclaré dans la table
+  // Maintenant on vÃ©rifie que le mod est dÃ©clarÃ© dans la table
   $query = "SELECT `id` FROM ".$table_prefix."xtense_callbacks"." WHERE `mod_id`=".$attack_id;
   $result = $db->sql_query($query);
-  // On doit avoir 2 entrées dans la table : une pour les RC, une pour les RR
+  // On doit avoir 2 entrÃ©es dans la table : une pour les RC, une pour les RR
   if (mysql_num_rows($result) != 2)
     {
     echo "<th>Le module 'Gestion des Attaques' n'est pas enregistr&eacute; aupr&egrave;s de Xtense2</th>";

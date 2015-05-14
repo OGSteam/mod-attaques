@@ -2,21 +2,21 @@
 /**
 * bbcode.php 
  * @package Attaques
- * @author VeritÈ modifiÈ par ericc
+ * @author Verit√© modifi√© par ericc
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vÈrifie que le mod est activÈ
+//On v√©rifie que le mod est activ√©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 // Appel des Javascripts
 echo"<script type='text/javascript' language='javascript' src='".FOLDER_ATTCK."/attack.js'></script>";
 
-//DÈfinitions
+//D√©finitions
 global $db, $table_prefix;
 
 // lecture des bbcodes dans la db
@@ -35,7 +35,7 @@ $yesterday = $date-1;
 if($septjours < 1) $septjours = 1;
 if($yesterday < 1) $yesterday = 1;
 
-//Si les dates d'affichage ne sont pas dÈfinies, on affiche par dÈfaut les attaques du jours,
+//Si les dates d'affichage ne sont pas d√©finies, on affiche par d√©faut les attaques du jours,
 if(!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
 else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 
@@ -61,17 +61,17 @@ $resultgains = $db->sql_query($query);
 $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data["user_id"]." AND recy_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY recy_user_id";
 $resultgains_recy = $db->sql_query($query);
 
-//On recupËre le nombre d'attaques
+//On recup√®re le nombre d'attaques
 $nb_attack = mysql_num_rows($attaques);
 
-//On recupËre le nombre de recyclages
+//On recup√®re le nombre de recyclages
 $nb_recy = mysql_num_rows($recyclages);
 
-//On rÈcupËre la date au bon format
+//On r√©cup√®re la date au bon format
 $pub_date_from = strftime("%d %b %Y", $pub_date_from);
 $pub_date_to = strftime("%d %b %Y", $pub_date_to);
 
-//CrÈation du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
+//Cr√©ation du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo"<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques et des recyclages en BBCode ";
 echo help("changer_affichage");
 echo"</font></b></legend>";
@@ -96,22 +96,22 @@ echo"<br><br>";
 $bbcode = "[color=".$bbcolor['title']."] [b]Liste des attaques de ".$user_data['user_name']."[/b] [/color]\n";
 $bbcode .="du ".$pub_date_from." au ".$pub_date_to."\n\n";
 
-//RÈsultat requete
+//R√©sultat requete
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($attaques))
 {	
-	$attack_date = strftime("%d %b %Y ‡ %Hh%M", $attack_date);
+	$attack_date = strftime("%d %b %Y √† %Hh%M", $attack_date);
 	$attack_metal = number_format($attack_metal, 0, ',', ' ');
 	$attack_cristal = number_format($attack_cristal, 0, ',', ' ');
 	$attack_deut = number_format($attack_deut, 0, ',', ' ');
 	$attack_pertes = number_format($attack_pertes, 0, ',', ' ');
 	$bbcode .="Le ".$attack_date." victoire en ".$attack_coord.".\n";
-	$bbcode .="[color=".$bbcolor['m_g']."]".$attack_metal."[/color] de mÈtal, [color=".$bbcolor['c_g']."]".$attack_cristal."[/color] de cristal et [color=".$bbcolor['d_g']."]".$attack_deut."[/color] de deuterium ont ÈtÈ rapportÈs.\n";
-	$bbcode .="Les pertes s'ÈlËvent ‡ [color=".$bbcolor['perte']."]".$attack_pertes."[/color].\n\n";
+	$bbcode .="[color=".$bbcolor['m_g']."]".$attack_metal."[/color] de m√©tal, [color=".$bbcolor['c_g']."]".$attack_cristal."[/color] de cristal et [color=".$bbcolor['d_g']."]".$attack_deut."[/color] de deuterium ont √©t√© rapport√©s.\n";
+	$bbcode .="Les pertes s'√©l√®vent √† [color=".$bbcolor['perte']."]".$attack_pertes."[/color].\n\n";
 }
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]GÈnÈrÈ par le module de gestion des attaques[/url]";
+$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]G√©n√©r√© par le module de gestion des attaques[/url]";
 
 
-//CrÈation du field pour voir la liste des attaques en BBCode
+//Cr√©ation du field pour voir la liste des attaques en BBCode
 echo"<fieldset><legend><b><font color='#0080FF'>Liste des attaques en BBCode du ".$pub_date_from." au ".$pub_date_to." ";
 echo help("bbcode");
 echo"</font></b></legend>";
@@ -124,19 +124,19 @@ echo"</fieldset>";
 $bbcode = "[color=".$bbcolor['title']."][b]Liste des recyclages de ".$user_data['user_name']."[/b] [/color]\n";
 $bbcode .="du ".$pub_date_from." au ".$pub_date_to."\n\n";
 
-//RÈsultat requete
+//R√©sultat requete
 while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fetch_row($recyclages))
 {	
-	$recy_date = strftime("%d %b %Y ‡ %Hh%M", $recy_date);
+	$recy_date = strftime("%d %b %Y √† %Hh%M", $recy_date);
 	$recy_metal = number_format($recy_metal, 0, ',', ' ');
 	$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
 	$bbcode .="Le ".$recy_date." recyclage en ".$recy_coord.".\n";
-	$bbcode .="[color=".$bbcolor['m_r']."]".$recy_metal."[/color] de mÈtal, [color=".$bbcolor['c_r']."]".$recy_cristal."[/color] de cristal ont ÈtÈ recyclÈs.\n\n";
+	$bbcode .="[color=".$bbcolor['m_r']."]".$recy_metal."[/color] de m√©tal, [color=".$bbcolor['c_r']."]".$recy_cristal."[/color] de cristal ont √©t√© recycl√©s.\n\n";
 }
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]GÈnÈrÈ par le module de gestion des attaques[/url]";
+$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]G√©n√©r√© par le module de gestion des attaques[/url]";
 
 
-//CrÈation du field pour voir la liste des recyclages en BBCode
+//Cr√©ation du field pour voir la liste des recyclages en BBCode
 echo"<fieldset><legend><b><font color='#0080FF'>Liste des recyclages en BBCode du ".$pub_date_from." au ".$pub_date_to." ";
 echo help("bbcode");
 echo"</font></b></legend>";
@@ -146,14 +146,14 @@ echo"<br>";
 echo"<br>";
 echo"</fieldset>";
 
-//RÈsultat requetes
+//R√©sultat requetes
 list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgains_recy);	
 	
 //Calcul des gains totaux
 $totalgains=$attack_metal+$attack_cristal+$attack_deut+$recy_metal+$recy_cristal;
 
-//Calcul de la rentabilitÈ
+//Calcul de la rentabilit√©
 $renta = $totalgains-$attack_pertes;
 
 //Formatage
@@ -166,24 +166,24 @@ $recy_metal = number_format($recy_metal, 0, ',', ' ');
 $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
 $renta = number_format($renta, 0, ',', ' ');
 
-//On prÈpare les resultats au format bbcode
-$bbcode = "[color=".$bbcolor['title']."][b]RÈsultats des attaques et recyclages de ".$user_data['user_name']."[/b] [/color]\n";
+//On pr√©pare les resultats au format bbcode
+$bbcode = "[color=".$bbcolor['title']."][b]R√©sultats des attaques et recyclages de ".$user_data['user_name']."[/b] [/color]\n";
 $bbcode .="du ".$pub_date_from." au ".$pub_date_to."\n\n";
 $bbcode .="Nombre d'attaques durant cette periode : ".$nb_attack."\n\n";
-$bbcode .="MÈtal gagnÈ : [color=".$bbcolor['m_g']."]".$attack_metal."[/color]\n";
-$bbcode .="Cristal gagnÈ : [color=".$bbcolor['c_g']."]".$attack_cristal."[/color]\n";
-$bbcode .="Deuterium gagnÈ : [color=".$bbcolor['d_g']."]".$attack_deut."[/color]\n\n";
-$bbcode .="Total des ressources gagnÈes : [color=".$bbcolor['renta']."]".$totalgains."[/color]\n";
+$bbcode .="M√©tal gagn√© : [color=".$bbcolor['m_g']."]".$attack_metal."[/color]\n";
+$bbcode .="Cristal gagn√© : [color=".$bbcolor['c_g']."]".$attack_cristal."[/color]\n";
+$bbcode .="Deuterium gagn√© : [color=".$bbcolor['d_g']."]".$attack_deut."[/color]\n\n";
+$bbcode .="Total des ressources gagn√©es : [color=".$bbcolor['renta']."]".$totalgains."[/color]\n";
 $bbcode .="Total des pertes attaquant : [color=".$bbcolor['perte']."]".$attack_pertes."[/color]\n\n";
 $bbcode .="Nombre de recyclages durant cette periode : ".$nb_recy."\n\n";
-$bbcode .="Metal recyclÈ : [color=".$bbcolor['m_r']."]".$recy_metal."[/color]\n";
-$bbcode .="Cristal recyclÈ : [color=".$bbcolor['c_r']."]".$recy_cristal."[/color]\n\n";
-if ($renta > 0) $bbcode .="RentabilitÈ : [color=".$bbcolor['renta']."]".$renta."[/color]\n\n";
-else $bbcode .="RentabilitÈ : [color=".$bbcolor['perte']."]".$renta."[/color]\n\n";
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]GÈnÈrÈ par le module de gestion des attaques[/url]";
+$bbcode .="Metal recycl√© : [color=".$bbcolor['m_r']."]".$recy_metal."[/color]\n";
+$bbcode .="Cristal recycl√© : [color=".$bbcolor['c_r']."]".$recy_cristal."[/color]\n\n";
+if ($renta > 0) $bbcode .="Rentabilit√© : [color=".$bbcolor['renta']."]".$renta."[/color]\n\n";
+else $bbcode .="Rentabilit√© : [color=".$bbcolor['perte']."]".$renta."[/color]\n\n";
+$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]G√©n√©r√© par le module de gestion des attaques[/url]";
 
 
-//CrÈation du field pour voir les gains en BBCode
+//Cr√©ation du field pour voir les gains en BBCode
 echo"<fieldset><legend><b><font color='#0080FF'>Gains en BBCode du ".$pub_date_from." au ".$pub_date_to." ";
 echo help("bbcode");
 echo"</font></b></legend>";

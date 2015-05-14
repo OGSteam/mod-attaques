@@ -3,10 +3,10 @@
 Fonctions du modules
 
  * @package Attaques
- * @author Vérité - réécrit par ericc
+ * @author VÃ©ritÃ© - rÃ©Ã©crit par ericc
  * @link http://www.ogsteam.fr
  * @version : 0.8a
- * dernière modification : 28 Dec 2007
+ * derniÃ¨re modification : 28 Dec 2007
  */
 //------------------------------------------------------------------------------------------------------------------- 
 // Renvoi 1 si l'utilisateur est admin, coadmin ou manager
@@ -16,7 +16,7 @@ function IsUserAdmin(){
 	else return 0;
 }
 //-------------------------------------------------------------------------------------------------------------------
-// Création du menu
+// CrÃ©ation du menu
 function menu($pub_page){
 	global $pages;
 	// Definition des pages du module

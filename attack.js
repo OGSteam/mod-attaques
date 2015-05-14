@@ -1,5 +1,5 @@
 // JavaScript Document
-// Copie la date passé en argument dans la variable correspondante
+// Copie la date passÃ© en argument dans la variable correspondante
 function setDateFrom(fromdate) {
 	document.getElementById("date_from").value=fromdate;
 }

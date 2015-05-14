@@ -2,7 +2,7 @@
 /**
 * footer.php 
 * @package Attaques
-* @author Verité / ericc
+* @author VeritÃ© / ericc
 * @link http://www.ogsteam.fr
 * @version 0.8e
 * Affichage de la version du module dans le pied de page

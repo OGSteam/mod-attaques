@@ -2,33 +2,33 @@
 /**
 * import_rc.php
 * @package Attaques
-* @author Verité - ericc 
+* @author VeritÃ© - ericc 
 * @link http://www.ogsteam.fr
 * @version : 0.8b
 **/
 
 /**
-* Importation d'un RC dans le mod à partir d'une barre (extension firefox)
-* @param string $rapport Rapport à importer
-* @return 0 si mod non activé
+* Importation d'un RC dans le mod Ã  partir d'une barre (extension firefox)
+* @param string $rapport Rapport Ã  importer
+* @return 0 si mod non activÃ©
 * @return 1 si RC non valide
 * @return 2 si $pseudo n'est pas l'attaquant du RC
-* @return 3 si le RC a déja été enregistré
-* @return 4 si le RC à bien été inséré
+* @return 3 si le RC a dÃ©ja Ã©tÃ© enregistrÃ©
+* @return 4 si le RC Ã  bien Ã©tÃ© insÃ©rÃ©
 **/
 function import_rc($rapport)
 {
-  //Définitions
+  //DÃ©finitions
   global $db, $table_prefix, $user_data;
   define("TABLE_ATTAQUES_ATTAQUES", $table_prefix."attaques_attaques");
-  //récupération des paramètres de config
+  //rÃ©cupÃ©ration des paramÃ¨tres de config
   $query = "SELECT value FROM `".TABLE_MOD_CFG."` WHERE `mod`='Attaques' and `config`='config'";
   $result = $db->sql_query($query);
   $config = $db->sql_fetch_row($result);
   $config=unserialize($config[0]);  
   // Initialisation variable pour insertion GameOgame
   $rc_game=$rapport;
-  // On vérifie que gameOgame est bien installé et actif
+  // On vÃ©rifie que gameOgame est bien installÃ© et actif
   $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `title`='gameOgame' LIMIT 1";
   $result = $db->sql_query($query);
   $data = mysql_fetch_assoc($result);
@@ -50,14 +50,14 @@ function import_rc($rapport)
    //fwrite($handle,$config[defenseur]);
    //fwrite($handle,"\r\n");  */
 	
-	//On vérifie que le mod est activé
+	//On vÃ©rifie que le mod est activÃ©
    $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
    if (!$db->sql_numrows($db->sql_query($query))) return 0;
 
    $rapport = str_replace(".","",$rapport);  
-   //Compatibilité UNIX/Windows
+   //CompatibilitÃ© UNIX/Windows
    $rapport = str_replace("\r\n","\n",$rapport);
-   //Compatibilité IE/Firefox
+   //CompatibilitÃ© IE/Firefox
    $rapport = str_replace("\t",' ',$rapport);
 
     //$handle=fopen("test.txt","a");
@@ -66,24 +66,24 @@ function import_rc($rapport)
    //fwrite($handle,$config[defenseur]);
    //fwrite($handle,"\r\n");  
    //On regarde si le rapport soumis est un RC
-   if (!preg_match('#Les\sflottes\ssuivantes\sse\ssont\saffrontées\sle\s(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2}) :#',$rapport,$date))
+   if (!preg_match('#Les\sflottes\ssuivantes\sse\ssont\saffrontÃ©es\sle\s(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2}) :#',$rapport,$date))
    {
       return 1;
    }
-   //On vérifie que le pseudo de l'attaquant est bien le pseudo du joueur
+   //On vÃ©rifie que le pseudo de l'attaquant est bien le pseudo du joueur
   preg_match('#Attaquant\s.{3,110}\[(.{5,8})]#',$rapport,$pre_coordA);
   $coord_attaquant = $pre_coordA[1];
   
   //fwrite($handle,$coord_attaquant);
   //fwrite($handle,"\r\n");
   
-  preg_match('#Défenseur\s.*\[(.*)]#',$rapport,$pre_coordD);
+  preg_match('#DÃ©fenseur\s.*\[(.*)]#',$rapport,$pre_coordD);
   $coord_defenseur = $pre_coordD[1];
   
   //fwrite($handle,$coord_defenseur);
   //fwrite($handle,"\r\n"); 
     
-   //On regarde dans les coordonnées de l'espace personnel du joueur qui insère les données via le plugin si les coordonnées de l'attaquant correspondent à une de ses planètes
+   //On regarde dans les coordonnÃ©es de l'espace personnel du joueur qui insÃ¨re les donnÃ©es via le plugin si les coordonnÃ©es de l'attaquant correspondent Ã  une de ses planÃ¨tes
   $query = "SELECT coordinates FROM ".TABLE_USER_BUILDING." WHERE user_id='$user_data[user_id]'";
   $result = $db->sql_query($query);
   $attaquant = 0;
@@ -97,24 +97,24 @@ function import_rc($rapport)
   if($attaquant != 1 && $defenseur != 1) return 2;
   
 
-  // récuperation des ressources pillées
-  preg_match('#(\d*)\sunités\sde\smétal,\s(\d*)\sunités\sde\scristal\set\s(\d*)\sunités\sde\sdeutérium#',$rapport,$ressources);
+  // rÃ©cuperation des ressources pillÃ©es
+  preg_match('#(\d*)\sunitÃ©s\sde\smÃ©tal,\s(\d*)\sunitÃ©s\sde\scristal\set\s(\d*)\sunitÃ©s\sde\sdeutÃ©rium#',$rapport,$ressources);
 
   if ($attaquant == 1)
   {
-    //Récupération des pertes Attaquant 
-    preg_match('#attaquant\sa\sperdu\sau\stotal\s(\d*)\sunités#',$rapport,$pertesA);
+    //RÃ©cupÃ©ration des pertes Attaquant 
+    preg_match('#attaquant\sa\sperdu\sau\stotal\s(\d*)\sunitÃ©s#',$rapport,$pertesA);
     $pertes = $pertesA[1];
     $coord_attaque = $coord_defenseur; 
    }
   if ($defenseur == 1 && $config[defenseur] == 1)
   {
-    // récupération des pertes défenseurs
-    preg_match('#défenseur\sa\sperdu\sau\stotal\s(\d*)\sunités#',$rapport,$pertesD);
+    // rÃ©cupÃ©ration des pertes dÃ©fenseurs
+    preg_match('#dÃ©fenseur\sa\sperdu\sau\stotal\s(\d*)\sunitÃ©s#',$rapport,$pertesD);
     $pertes = $pertesD[1];
-    //les coordonnées de l'attaque deviennent celle de l'attaquant
+    //les coordonnÃ©es de l'attaque deviennent celle de l'attaquant
     $coord_attaque = $coord_attaquant;
-    //on soustrait les ressources volées
+    //on soustrait les ressources volÃ©es
     $ressources[1] = -$ressources[1];
     $ressources[2] = -$ressources[2];
     $ressources[3] = -$ressources[3];
@@ -122,17 +122,17 @@ function import_rc($rapport)
     
   $timestamp = mktime($date[3],$date[4],$date[5],$date[1],$date[2],date('Y'));
       
-   //Puis les informations pour les coordonnées
-  //preg_match('#Défenseur\s.+\[(.+)]#',$rapport,$pre_coord);
+   //Puis les informations pour les coordonnÃ©es
+  //preg_match('#DÃ©fenseur\s.+\[(.+)]#',$rapport,$pre_coord);
   //$coord_attaque = $pre_coord[1];
    
-   //On vérifie que cette attaque n'a pas déja été enregistrée
+   //On vÃ©rifie que cette attaque n'a pas dÃ©ja Ã©tÃ© enregistrÃ©e
    $query = "SELECT attack_id FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id='$user_data[user_id]' AND attack_date='$timestamp' AND attack_coord='$coord_attaque' ";
    $result = $db->sql_query($query);
    $nb = mysql_num_rows($result);
    if ($nb != 0) return 3;
    
-   //On insere ces données dans la base de données
+   //On insere ces donnÃ©es dans la base de donnÃ©es
    $query = "INSERT INTO ".TABLE_ATTAQUES_ATTAQUES." ( `attack_id` , `attack_user_id` , `attack_coord` , `attack_date` , `attack_metal` , `attack_cristal` , `attack_deut` , `attack_pertes` )
       VALUES (
          NULL , '$user_data[user_id]', '$coord_attaque', '$timestamp', '$ressources[1]', '$ressources[2]', '$ressources[3]', '$pertes'
@@ -149,12 +149,12 @@ function import_rc($rapport)
 }
 
 /**
-* Importation d'un Rapport de recyclage dans le mod à partir d'une barre (extension firefox)
-* @param string $rapport Rapport à importer
-* @return 0 si mod non activé
-* @return 1 si le rapport a été correctement enregistré
+* Importation d'un Rapport de recyclage dans le mod Ã  partir d'une barre (extension firefox)
+* @param string $rapport Rapport Ã  importer
+* @return 0 si mod non activÃ©
+* @return 1 si le rapport a Ã©tÃ© correctement enregistrÃ©
 * @return 2 si le rapport n'est pas correcte
-* @return 3 si le rapport a déja été enregistré
+* @return 3 si le rapport a dÃ©ja Ã©tÃ© enregistrÃ©
 **/
 
 //Fonction d'ajout d'un rapport de recyclage
@@ -165,19 +165,19 @@ function import_recycl ( $pub_rapport )
   $handle=fopen("firespy.txt","a");
   $data = $pub_rapport;
   fwrite($handle,$data);
-  if ( defined ( 'OGS_PLUGIN_DEBUG' ) ) fwrite ( $fp, 'Début importation rapport de recyclage(import_recycl) ' . count ( $pub_rapport )." lignes\n" );
-  //if (preg_match('#(\d{2})-(\d{2})\s+(\d{2})\:(\d{2})\:(\d{2})\s+Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdébris\saux\scoordonnées#',$pub_rapport,$tab_recy_header)===false)
-  if (preg_match('#.+(\d{2})-(\d{2})\s+(\d{2})\:(\d{2})\:(\d{2})\s+Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdébris#',$pub_rapport,$tab_recy_header)===false)
+  if ( defined ( 'OGS_PLUGIN_DEBUG' ) ) fwrite ( $fp, 'DÃ©but importation rapport de recyclage(import_recycl) ' . count ( $pub_rapport )." lignes\n" );
+  //if (preg_match('#(\d{2})-(\d{2})\s+(\d{2})\:(\d{2})\:(\d{2})\s+Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdÃ©bris\saux\scoordonnÃ©es#',$pub_rapport,$tab_recy_header)===false)
+  if (preg_match('#.+(\d{2})-(\d{2})\s+(\d{2})\:(\d{2})\:(\d{2})\s+Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdÃ©bris#',$pub_rapport,$tab_recy_header)===false)
     return 2;
   
   $timestamp = mktime($tab_recy_header[3],$tab_recy_header[4],$tab_recy_header[5],$tab_recy_header[1],$tab_recy_header[2],date('Y'));
   if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "Analyse rapport recyclage(".count($tab_recy_header)."): ".$tab_recy_header[1]." ".$tab_recy_header[2]." ".$tab_recy_header[3]." ".$tab_recy_header[4]." ".$tab_recy_header[5]." ".$tab_recy_header[6]."\n");
   
-  if (preg_match('#Vos\s(\d+)\srecycleurs\sont\sune\scapacité\stotale\sde\s([\d\.]+).\s([\d\.]+)\sunités\sde\smétal\set\s([\d\.]+)\sunités\sde\scristal\ssont\sdispersées\sdans\sce\schamp.\sVous\savez\scollecté\s([\d\.]+)\sunités\sde\smétal\set\s([\d\.]+)\sunités\sde\scristal.#',$pub_rapport,$tab_recy_body)===false)
+  if (preg_match('#Vos\s(\d+)\srecycleurs\sont\sune\scapacitÃ©\stotale\sde\s([\d\.]+).\s([\d\.]+)\sunitÃ©s\sde\smÃ©tal\set\s([\d\.]+)\sunitÃ©s\sde\scristal\ssont\sdispersÃ©es\sdans\sce\schamp.\sVous\savez\scollectÃ©\s([\d\.]+)\sunitÃ©s\sde\smÃ©tal\set\s([\d\.]+)\sunitÃ©s\sde\scristal.#',$pub_rapport,$tab_recy_body)===false)
     return 2;
   if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "Analyse rapport recyclage(".count($tab_recy_body)."): ".$tab_recy_body[1]." ".$tab_recy_body[2]." ".$tab_recy_body[3]." ".$tab_recy_body[4]." ".$tab_recy_body[5]." ".$tab_recy_body[6]."\n");
   
-  preg_match('#Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdébris.*\[(.*)]#',$pub_rapport,$recy_coord);
+  preg_match('#Flotte\s+Rapport\sd\'exploitation\sdu\schamp\sde\sdÃ©bris.*\[(.*)]#',$pub_rapport,$recy_coord);
   $recy_coord=$recy_coord[1];
   if (!isset($recy_coord)or($recy_coord==""))
     {
@@ -186,16 +186,16 @@ function import_recycl ( $pub_rapport )
     
   $recy_metal = str_replace('.', '', $tab_recy_body[5]);
   $recy_cristal = str_replace('.', '',$tab_recy_body[6]);
-  if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "Analyse rapport recyclage: métal $recy_metal, cristal $recy_cristal à $recy_coord \n");
+  if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "Analyse rapport recyclage: mÃ©tal $recy_metal, cristal $recy_cristal Ã  $recy_coord \n");
   
-  //On vérifie que ce recyclage n'a pas déja été enregistré
+  //On vÃ©rifie que ce recyclage n'a pas dÃ©ja Ã©tÃ© enregistrÃ©
   $query = "SELECT recy_id  FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id ='$user_data[user_id]' AND recy_date = '$timestamp' AND recy_coord = '$recy_coord' ";
-  if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "requète verif recyclage: ".$query."\n");
+  if (defined("OGS_PLUGIN_DEBUG")) fwrite($fp, "requÃ¨te verif recyclage: ".$query."\n");
   $result = $db->sql_query($query);
   $nb = $db->sql_numrows($result);
-  if ($nb > 0) return 3; // déjà enregistré
+  if ($nb > 0) return 3; // dÃ©jÃ  enregistrÃ©
   
-  //On insere ces données dans la base de données
+  //On insere ces donnÃ©es dans la base de donnÃ©es
   $query = "INSERT INTO ".TABLE_ATTAQUES_RECYCLAGES." ( `recy_id` , `recy_user_id` , `recy_coord` , `recy_date` , `recy_metal` , `recy_cristal` )
     VALUES ( NULL , '$user_data[user_id]', '$recy_coord', '$timestamp', '$recy_metal', '$recy_cristal' )";
   $db->sql_query($query);

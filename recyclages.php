@@ -2,7 +2,7 @@
 /**
 * recyclages.php 
  * @package Attaques
- * @author Verité/ericc
+ * @author VeritÃ©/ericc
  * @link http://www.ogsteam.fr
  * @version : 0.8b
  */
@@ -10,14 +10,14 @@
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-//On vérifie que le mod est activé
+//On vÃ©rifie que le mod est activÃ©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 // Appel des Javascripts
 echo"<script type='text/javascript' language='javascript' src='".FOLDER_ATTCK."/attack.js'></script>";
 
-//Définitions
+//DÃ©finitions
 global $db, $table_prefix;
 
 //Gestion des dates
@@ -36,7 +36,7 @@ if (isset($pub_recy_id))
 {
 	$pub_recy_id = intval($pub_recy_id);
 
-	//On récupère l'id de l'utilisateur qui a enregistré cette attaque
+	//On rÃ©cupÃ¨re l'id de l'utilisateur qui a enregistrÃ© cette attaque
 	$query = "SELECT recy_user_id FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_id='$pub_recy_id'";
 	$result = $db->sql_query($query);
 	list($user) = $db->sql_fetch_row($result);
@@ -45,7 +45,7 @@ if (isset($pub_recy_id))
 	{
 		$query = "DELETE FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_id='$pub_recy_id'";
 		$db->sql_query($query);
-		echo"<blink><font color='FF0000'>Le recyclage a bien été supprimée.</font></blink>";
+		echo"<blink><font color='FF0000'>Le recyclage a bien Ã©tÃ© supprimÃ©e.</font></blink>";
 		
 		//On ajoute l'action dans le log
 		$line = $user_data['user_name']." supprime l'un de ses recyclage dans le module de gestion des attaques";
@@ -58,14 +58,14 @@ if (isset($pub_recy_id))
 		echo"<blink><font color='FF0000'>Vous n'avez pas le droit d'effacer ce recyclage !!!</font></blink>";
 		
 		//On ajoute l'action dans le log
-		$line = $user_data[user_name]." a tenté de supprimer un recyclage qui appartient à un autre utilisateurs dans le module de gestion des attaques";
+		$line = $user_data[user_name]." a tentÃ© de supprimer un recyclage qui appartient Ã  un autre utilisateurs dans le module de gestion des attaques";
 		$fichier = "log_".date("ymd").'.log';
 		$line = "/*".date("d/m/Y H:i:s").'*/ '.$line;
 		write_file(PATH_LOG_TODAY.$fichier, "a", $line);
 	}
 }
 
-//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jours,
+//Si les dates d'affichage ne sont pas dÃ©finies, on affiche par dÃ©faut les attaques du jours,
 if(!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
 else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 
@@ -79,18 +79,18 @@ $pub_date_to = intval($pub_date_to);
 $query = "SELECT recy_coord, recy_date, recy_metal, recy_cristal, recy_id FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data["user_id"]." AND recy_date BETWEEN ".$pub_date_from." and ".$pub_date_to."  ORDER BY recy_date DESC,recy_id DESC";
 $result = $db->sql_query($query);
 
-//On recupère le nombre de recyclages
+//On recupÃ¨re le nombre de recyclages
 $nb_recy = mysql_num_rows($result);
 
 //Cacul pour obtenir les gains des recyclages
 $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data["user_id"]." AND recy_date BETWEEN ".$pub_date_from." and ".$pub_date_to." GROUP BY recy_user_id"; 
 $resultgains = $db->sql_query($query);
 
-//On récupère la date au bon format
+//On rÃ©cupÃ¨re la date au bon format
 $pub_date_from = strftime("%d %b %Y", $pub_date_from);
 $pub_date_to = strftime("%d %b %Y", $pub_date_to);
 
-//Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
+//CrÃ©ation du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo"<fieldset><legend><b><font color='#0080FF'>Date d'affichage des recyclages ";
 echo help("changer_affichage");
 echo"</font></b></legend>";
@@ -112,12 +112,12 @@ echo"<input type='submit' value='Afficher' name='B1'></form>";
 echo"</fieldset>";
 echo"<br><br>";
 
-//Création du field pour voir les gains des attaques
-echo"<fieldset><legend><b><font color='#0080FF'>Résultats des recyclages du ".$pub_date_from." au ".$pub_date_to." ";
+//CrÃ©ation du field pour voir les gains des attaques
+echo"<fieldset><legend><b><font color='#0080FF'>RÃ©sultats des recyclages du ".$pub_date_from." au ".$pub_date_to." ";
 echo help("resultats");
 echo"</font></b></legend>";
 
-//Résultat requete
+//RÃ©sultat requete
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgains);	
 
 //Calcul des gains totaux
@@ -148,17 +148,17 @@ echo"<td width='75%' align='center'>";
    	/**   GRAPHIQUE   **/
    	echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
    	/** FIN GRAPHIQUE **/
-   	echo  create_pie_numbers($recy_metal . "_x_" . $recy_cristal, "Métal_x_Cristal", "Gains des recyclages", "graphique");   	
+   	echo  create_pie_numbers($recy_metal . "_x_" . $recy_cristal, "MÃ©tal_x_Cristal", "Gains des recyclages", "graphique");   	
    }
    
 echo"</td></tr>";
 echo "</table>";
 
 //echo"<table width='100%'><tr align='left' valign='center'>";
-//Affichage des gains en métal, en cristal et en deut
+//Affichage des gains en mÃ©tal, en cristal et en deut
 //$recy_metal = number_format($recy_metal, 0, ',', ' ');
 //$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-//echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>Métal recyclé : ".$recy_metal."<br>Cristal recyclé : ".$recy_cristal."<br><br>";
+//echo "<td><p align='left'><font color='#FFFFFF'><big><big><big>MÃ©tal recyclÃ© : ".$recy_metal."<br>Cristal recyclÃ© : ".$recy_cristal."<br><br>";
 
 //Affichage du total des gains
 //$totalgains = number_format($totalgains, 0, ',', ' ');
@@ -168,7 +168,7 @@ echo "</table>";
 //echo"</big></big></font></td></tr></table>";
 echo"</p></fieldset><br><br>";
 
-//Création du field pour voir la liste des attaques
+//CrÃ©ation du field pour voir la liste des attaques
 echo"<fieldset><legend><b><font color='#0080FF'>Liste des recyclages du ".$pub_date_from." au ".$pub_date_to." ";
 echo" : ".$nb_recy." recyclage(s) ";
 echo help("liste_recy");
@@ -177,10 +177,10 @@ echo"</font></b></legend>";
 //Tableau donnant la liste des attaques
 echo"<table width='100%'>";
 echo"<tr>";
-echo"<td class=".'c'." align=".'center'."><b>Coordonnées</b></td>";
+echo"<td class=".'c'." align=".'center'."><b>CoordonnÃ©es</b></td>";
 echo"<td class=".'c'." align=".'center'."><b>Date du recyclage</b></td>";
-echo"<td class=".'c'." align=".'center'."><b>Métal Recyclé</b></td>";
-echo"<td class=".'c'." align=".'center'."><b>Cristal Recyclé</b></td>";
+echo"<td class=".'c'." align=".'center'."><b>MÃ©tal RecyclÃ©</b></td>";
+echo"<td class=".'c'." align=".'center'."><b>Cristal RecyclÃ©</b></td>";
 echo"<td class=".'c'." align=".'center'."><b><font color='#FF0000'>Supprimer</font></b></td>";
 
 echo"</tr>";
@@ -188,7 +188,7 @@ echo"<tr>";
 
 while( list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($result) )
 {
-	$recy_date = strftime("%d %b %Y à %Hh%M", $recy_date);
+	$recy_date = strftime("%d %b %Y Ã  %Hh%M", $recy_date);
 	$recy_metal = number_format($recy_metal, 0, ',', ' ');
 	$recy_cristal = number_format($recy_cristal, 0, ',', ' ');
 	echo"<th align='center'>".$recy_coord."</th>";
@@ -211,7 +211,7 @@ if ($config['histo']==1)
 	
 	$query="SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id=".$user_data['user_id']." and MONTH(FROM_UNIXTIME(recy_date))=".$mois." and YEAR(FROM_UNIXTIME(recy_date))=".$annee." GROUP BY day";
 	
-	// requète SQL pour récupérer le total par ressource par jour
+	// requÃ¨te SQL pour rÃ©cupÃ©rer le total par ressource par jour
 	$result = $db->sql_query($query);
 	
 	// Initialisation des variables et tableau
@@ -251,9 +251,9 @@ if ($config['histo']==1)
 		}
 	}
 	
-	$series = "{name: 'Métal', data: [".$metal."] }, " .
+	$series = "{name: 'MÃ©tal', data: [".$metal."] }, " .
 			  "{name: 'Cristal', data: [".$cristal."] }, " .
-			  "{name: 'Deutérium', data: [".$deuterium."] }";
+			  "{name: 'DeutÃ©rium', data: [".$deuterium."] }";
 		
 /** GRAPHIQUE **/
 echo "<div id='graphiquemois' style='height: 350px; width: 1200px; margin: 0pt auto; clear: both;'></div>";
@@ -308,7 +308,7 @@ echo "<script type='text/javascript'>
 	      yAxis: {
 	         min: 0,
 	         title: {
-	            text: 'Quantité'
+	            text: 'QuantitÃ©'
 	         }
 	      },
 	      legend: {

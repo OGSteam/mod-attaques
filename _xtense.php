@@ -79,7 +79,7 @@ function attack_rc($rapport)
 		$pertes = $rapport['result']['a_lost'];
 		$timestamp = $rapport['date'];
 		
-		//Récupération des coordonnées des attaquants
+		//RÃ©cupÃ©ration des coordonnÃ©es des attaquants
 		$att=0;
 		$coords_attaquants = array();
 		while ($rapport['n'][$att]['type']=='A')
@@ -87,7 +87,7 @@ function attack_rc($rapport)
 			$coords_attaquants[$att] = $rapport['n'][$att]['coords'];
 			$att++;
 		}
-		//Récupération des coordonnées des défenseurs
+		//RÃ©cupÃ©ration des coordonnÃ©es des dÃ©fenseurs
 		$def=0;
 		$coords_defenseurs = array();
 		while ((isset($rapport['n'][$att+$def])) && ($rapport['n'][$att+$def]['type']=='D'))
@@ -96,10 +96,10 @@ function attack_rc($rapport)
 			$def++;
 		}
 		
-		//Coordonnées où a eu lieu l'attaque
+		//CoordonnÃ©es oÃ¹ a eu lieu l'attaque
 		$coord_attaque = $coords_defenseurs['0'];
 		
-		//On regarde dans les coordonnées de l'espace personnel du joueur qui insère les données via le plugin si il fait partie des attaquants et/ou des défenseurs
+		//On regarde dans les coordonnÃ©es de l'espace personnel du joueur qui insÃ¨re les donnÃ©es via le plugin si il fait partie des attaquants et/ou des dÃ©fenseurs
 		$query = "SELECT coordinates FROM ".TABLE_USER_BUILDING." WHERE user_id='".$user_data['user_id']."'";
 		$result = $db->sql_query($query);
 		$attaquant = 0;
@@ -120,22 +120,22 @@ function attack_rc($rapport)
 		{
 			if ($defenseur == 1 && $attack_config['defenseur'] == 1)
 			{
-				//Récupération des pertes défenseurs
+				//RÃ©cupÃ©ration des pertes dÃ©fenseurs
 				$pertes = $rapport['result']['d_lost'];
-				//On soustrait les ressources volées
+				//On soustrait les ressources volÃ©es
 				$winmetal = -$winmetal;
 				$wincristal = -$wincristal;
 				$windeut = -$windeut;
 			}
 
-			//On vérifie que cette attaque n'a pas déja été enregistrée
+			//On vÃ©rifie que cette attaque n'a pas dÃ©ja Ã©tÃ© enregistrÃ©e
 			$query = "SELECT attack_id FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_user_id='".$user_data['user_id']."' AND attack_date='$timestamp' AND attack_coord='$coord_attaque' ";
 			$result = $db->sql_query($query);
 			$nb = mysql_num_rows($result);
 			
 			if ($nb == 0)
 			{
-				//On insere ces données dans la base de données
+				//On insere ces donnÃ©es dans la base de donnÃ©es
 				$query = "INSERT INTO ".TABLE_ATTAQUES_ATTAQUES." ( `attack_id` , `attack_user_id` , `attack_coord` , `attack_date` , `attack_metal` , `attack_cristal` , `attack_deut` , `attack_pertes` )
 					VALUES (
 						NULL , '".$user_data['user_id']."', '".$coord_attaque."', '".$timestamp."', '".$winmetal."', '".$wincristal."', '".$windeut."', '".$pertes."')";
@@ -157,13 +157,13 @@ function attack_rr($rapport) {
     else {
         $timestamp = $rapport['time'];
         $coordonne = $rapport['coords'][0].":".$rapport['coords'][1].":".$rapport['coords'][2];
-        //On vérifie que ce recyclage n'a pas déja été enregistrée
+        //On vÃ©rifie que ce recyclage n'a pas dÃ©ja Ã©tÃ© enregistrÃ©e
 		$query = "SELECT recy_id FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id='".$user_data['user_id']."' AND recy_date='$timestamp' AND recy_coord='$coordonne' ";
 		$result = $db->sql_query($query);
 		$nb = mysql_num_rows($result);
         // Si on ne trouve rien
         if ($nb == 0) {
-			//On insere ces données dans la base de données
+			//On insere ces donnÃ©es dans la base de donnÃ©es
 			$query = "INSERT INTO ".TABLE_ATTAQUES_RECYCLAGES." ( `recy_id` , `recy_user_id` , `recy_coord` , `recy_date` , `recy_metal` , `recy_cristal` )
 				VALUES (
 					NULL , '".$user_data['user_id']."', '".$coordonne."', '".$timestamp."', '".$rapport['M_reco']."', '".$rapport['C_reco']."')";
@@ -183,7 +183,7 @@ function remove_htm($rapport) {
 
 function read_config() {
   global $attack_config,$db;
-//récupération des paramètres de config
+//rÃ©cupÃ©ration des paramÃ¨tres de config
   $query = "SELECT value FROM `".TABLE_MOD_CFG."` WHERE `mod`='Attaques' and `config`='config'";
   $result = $db->sql_query($query);
   while ($data = mysql_fetch_row($result)) {

@@ -2,7 +2,7 @@
 /**
  * archives.php 
  * @package Attaques
- * @author Verité modifié par ericc
+ * @author VeritÃ© modifiÃ© par ericc
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
@@ -10,7 +10,7 @@
  //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 //lang_module_page('Attaques');
-//On vérifie que le mod est activé
+//On vÃ©rifie que le mod est activÃ©
 $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
@@ -76,15 +76,15 @@ $resultgainsrecy = $db->sql_query($query);
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgainsrecy);	
 
 
-//Définitions
+//DÃ©finitions
 global $db, $table_prefix, $prefixe;
 
-echo "<fieldset><legend><b><font color='#0080FF'>Rentabilité Hebdomadaire</font></b></legend>";
+echo "<fieldset><legend><b><font color='#0080FF'>RentabilitÃ© Hebdomadaire</font></b></legend>";
 /** GRAPHIQUE **/
 echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
 /** GRAPHIQUE **/
-//echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Attaques et Recyclages", "graphique");
-echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Attaques et Recyclages", "graphique");
+//echo create_pie(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "MÃ©tal_x_Cristal_x_DeutÃ©rium_x_Pertes", "Attaques et Recyclages", "graphique");
+echo  create_pie_numbers(($attack_metal+$recy_metal) . "_x_" . ($attack_cristal+$recy_cristal) . "_x_" . $attack_deut . "_x_" . $attack_pertes, "MÃ©tal_x_Cristal_x_DeutÃ©rium_x_Pertes", "Attaques et Recyclages", "graphique");
 /*
 echo "<script type='text/javascript'>
    			function number_format(number, decimals, dec_point, thousands_sep) {
@@ -237,16 +237,16 @@ while(list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack
 	  
 }
 
-$series = "{name: 'Métal', data: [".$metal."] }, " .
+$series = "{name: 'MÃ©tal', data: [".$metal."] }, " .
 		  "{name: 'Cristal', data: [".$cristal."] }, " .
-		  "{name: 'Deutérium', data: [".$deuterium."] }, " .
+		  "{name: 'DeutÃ©rium', data: [".$deuterium."] }, " .
 		  "{name: 'Pertes', data: [".$pertes."] }";
 
 echo "</div>";
 
 // *****************************************************************************************************
 
-echo "<fieldset><legend><b><font color='#0080FF'>Rentabilité Mensuelle</font></b></legend>";
+echo "<fieldset><legend><b><font color='#0080FF'>RentabilitÃ© Mensuelle</font></b></legend>";
 
 /** GRAPHIQUE **/
 echo "<div id='graphiquemois' style='height: 350px; width: 410px; margin: 0pt auto; clear: both;'></div>";
@@ -301,7 +301,7 @@ echo "<script type='text/javascript'>
 	      yAxis: {
 	         min: 0,
 	         title: {
-	            text: 'Quantité'
+	            text: 'QuantitÃ©'
 	         }
 	      },
 	      legend: {
@@ -403,7 +403,7 @@ for($i = 0; $i < count($names); ++$i) {
 //echo $noms;
 //echo $valeurs;
 
-echo "<fieldset><legend><b><font color='#0080FF'>Rentabilité Mensuelle Globale</font></b></legend>";
+echo "<fieldset><legend><b><font color='#0080FF'>RentabilitÃ© Mensuelle Globale</font></b></legend>";
 
 /** GRAPHIQUE **/
 echo "<div id='graphiquemoisglobal' style='height: 350px; width: 850px; margin: 0pt auto; clear: both;'></div>";

@@ -2,20 +2,20 @@
 /**
 * index.php 
  * @package Attaques
- * @author Verité - réécrit par ericc
+ * @author VeritÃ© - rÃ©Ã©crit par ericc
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-//On vérifie que le mod est activé
+//On vÃ©rifie que le mod est activÃ©
 $query = "SELECT `active`,`root` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die('Mod désactivé !');
+if (!$db->sql_numrows($db->sql_query($query))) die('Mod dÃ©sactivÃ© !');
 $result = $db->sql_query($query);
 list($active,$root) = $db->sql_fetch_row($result);
 
-// définition du dossier du modules
+// dÃ©finition du dossier du modules
 define('FOLDER_ATTCK','mod/'.$root);
 //Definition des tables du module
 define("TABLE_ATTAQUES_ATTAQUES", $table_prefix."attaques_attaques");
@@ -35,7 +35,7 @@ if (isset($pub_graphic))
   }
 */
 
-//récupération des paramètres de config
+//rÃ©cupÃ©ration des paramÃ¨tres de config
 $query = "SELECT value FROM `".TABLE_MOD_CFG."` WHERE `mod`='Attaques' and `config`='config'";
 $result = $db->sql_query($query);
 $config = $db->sql_fetch_row($result);
@@ -44,7 +44,7 @@ $config=unserialize($config[0]);
 // Appel des fonctions du module
 include(FOLDER_ATTCK."/attack_include.php");
 /**
-*Récupère le fichier de langue pour la langue approprié
+*RÃ©cupÃ¨re le fichier de langue pour la langue appropriÃ©
 */
 if (!empty($server_config['language'])) {
 	if (is_dir(FOLDER_ATTCK."/languages/".$server_config['language'])) {
@@ -56,7 +56,7 @@ if (!empty($server_config['language'])) {
 	}
 } else {
 	if (!is_dir(FOLDER_ATTCK."/languages/french")) {
-		echo "Retélécharger le mod via : <a href='http://www.ogsteam.fr/downloadmod.php?mod=Attaques'>Zip link</a><br />\n";
+		echo "RetÃ©lÃ©charger le mod via : <a href='http://www.ogsteam.fr/downloadmod.php?mod=Attaques'>Zip link</a><br />\n";
 		exit;
 	} else {
 		require_once(FOLDER_ATTCK."/languages/french/lang_main.php");
@@ -64,7 +64,7 @@ if (!empty($server_config['language'])) {
 	}
 }
 
-// Entête du site
+// EntÃªte du site
 require_once("views/page_header.php");
 // Insertion du css pour layer transparent si valider dans la configuration
 if ($config['layer']==1)
@@ -72,13 +72,13 @@ if ($config['layer']==1)
 include(FOLDER_ATTCK."/css.php");
 }
 //Menu
-// Si la page a afficher n'est pas définie, on affiche la première
+// Si la page a afficher n'est pas dÃ©finie, on affiche la premiÃ¨re
 if (!isset($pub_page)) $pub_page = "attaques";
 menu($pub_page);
 
 // Affichage du layer transparent
 echo"<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
-//On  affiche de la page demandée
+//On  affiche de la page demandÃ©e
 if ($pub_page == "attaques") include("attaques.php");
 elseif ($pub_page == "recyclages") include("recyclages.php");
 elseif ($pub_page == "bilan") include("bilan.php");
@@ -87,7 +87,7 @@ elseif ($pub_page == "archive") include("archives.php");
 elseif ($pub_page == "statistiques") include("statistiques.php");
 elseif ($pub_page == "admin") include("admin.php");
 elseif ($pub_page == "changelog") include("changelog.php");
-//Si la page a afficher n'est pas définie, on affiche la première
+//Si la page a afficher n'est pas dÃ©finie, on affiche la premiÃ¨re
 else include("attaques.php");
 
 // Fin du layer transparent
