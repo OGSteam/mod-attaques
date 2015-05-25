@@ -104,7 +104,7 @@ function attack_rc($rapport)
 		$result = $db->sql_query($query);
 		$attaquant = 0;
 		$defenseur = 0;
-		while((list($coordinates) = mysql_fetch_row($result)) && ($defenseur==0))
+		while((list($coordinates) = $db->sql_fetch_row($result)) && ($defenseur==0))
 		{
 			if(in_array($coordinates, $coords_attaquants))
 				$attaquant = 1;
@@ -186,7 +186,7 @@ function read_config() {
 //récupération des paramètres de config
   $query = "SELECT value FROM `".TABLE_MOD_CFG."` WHERE `mod`='Attaques' and `config`='config'";
   $result = $db->sql_query($query);
-  while ($data = mysql_fetch_row($result)) {
+  while ($data = $db->sql_fetch_row($result)) {
     $attack_config=unserialize($data[0]); 
   }
 }
