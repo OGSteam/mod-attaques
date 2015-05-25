@@ -108,7 +108,7 @@ while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack
 	$bbcode .="[color=".$bbcolor['m_g']."]".$attack_metal."[/color] de métal, [color=".$bbcolor['c_g']."]".$attack_cristal."[/color] de cristal et [color=".$bbcolor['d_g']."]".$attack_deut."[/color] de deuterium ont été rapportés.\n";
 	$bbcode .="Les pertes s'élèvent à [color=".$bbcolor['perte']."]".$attack_pertes."[/color].\n\n";
 }
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]Généré par le module de gestion des attaques[/url]";
+$bbcode .="[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des attaques en BBCode
@@ -133,7 +133,7 @@ while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fet
 	$bbcode .="Le ".$recy_date." recyclage en ".$recy_coord.".\n";
 	$bbcode .="[color=".$bbcolor['m_r']."]".$recy_metal."[/color] de métal, [color=".$bbcolor['c_r']."]".$recy_cristal."[/color] de cristal ont été recyclés.\n\n";
 }
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]Généré par le module de gestion des attaques[/url]";
+$bbcode .="[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des recyclages en BBCode
@@ -180,7 +180,7 @@ $bbcode .="Metal recyclé : [color=".$bbcolor['m_r']."]".$recy_metal."[/color]\n
 $bbcode .="Cristal recyclé : [color=".$bbcolor['c_r']."]".$recy_cristal."[/color]\n\n";
 if ($renta > 0) $bbcode .="Rentabilité : [color=".$bbcolor['renta']."]".$renta."[/color]\n\n";
 else $bbcode .="Rentabilité : [color=".$bbcolor['perte']."]".$renta."[/color]\n\n";
-$bbcode .="[url=http://www.ogsteam.fr/forums/sujet-1358-mod-gestion-attaques]Généré par le module de gestion des attaques[/url]";
+$bbcode .="[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir les gains en BBCode
