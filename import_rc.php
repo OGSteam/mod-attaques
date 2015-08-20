@@ -31,7 +31,7 @@ function import_rc($rapport)
   // On vérifie que gameOgame est bien installé et actif
   $query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `title`='gameOgame' LIMIT 1";
   $result = $db->sql_query($query);
-  $data = mysql_fetch_assoc($result);
+  $data = $db->sql_fetch_assoc($result);
   $gameOgame_plugin_file = "mod/gameOgame/index.php";
   $gameOgame_exists = file_exists($gameOgame_plugin_file);
   if($gameOgame_exists==true AND $data[active]==1) 

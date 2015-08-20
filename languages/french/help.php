@@ -23,7 +23,7 @@ $help["liste_attaques"] = "Ici vous pouvez voir la liste de vos attaques en fonc
 $help["ajouter_recy"] = "Pour ajouter un nouveau recyclage copiez le rapport de recyclage dans le formulaire ci-dessous, puis cliquer sur envoyer.";
 $help["liste_recy"] = "Ici vous pouvez voir la liste de vos recyclages en fonction de l'affichage choisi.";
 $help["Administration"] = "Modifiez les paramètres du modules";
-$help["layer"] = "Permet d'affiché un fond semi-transparent au cas où l'image de fond de votre skin dimunuerais la lisibilité du module";
+$help["layer"] = "Permet d'afficher un fond semi-transparent au cas où l'image de fond de votre skin dimunuerais la lisibilité du module";
 $help["transparence"] = "Mettez ici le pourcentage de transparence souhaité.<br>0%= complètement transparent<br>100%= complètement opaque.";
 $help["bbcolor"] = "Vous pouvez modifier les couleurs utilisés dans les bbcodes de l'espace bbcode<br>Cliquez sur les roues de couleur pour faire apparaitre un sélecteur.";
 

@@ -159,7 +159,7 @@ $pub_date_to = intval($pub_date_to);
 
 //Si le choix de l'ordre n'est pas définis on met celui par defaut
 if(!isset($pub_order_by)) $pub_order_by ="attack_date";
-else $pub_order_by = mysql_real_escape_string($pub_order_by);
+else $pub_order_by = $db->sql_escape_string($pub_order_by);
 
 if(!isset($pub_sens)) $pub_sens = "DESC";
 elseif($pub_sens == 2) $pub_sens = "DESC";
