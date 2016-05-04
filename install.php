@@ -22,15 +22,15 @@ $mod_folder = "attaques";
 install_mod($mod_folder);
 
 //Si la table attaques_attaques existe, on la supprime
-$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_ATTAQUES . "";
+$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_ATTAQUES;
 $db->sql_query($query);
 
 //Si la table attaques_recyclage existe, on la supprime
-$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_RECYCLAGES . "";
+$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_RECYCLAGES;
 $db->sql_query($query);
 
 //Si la table gains_save existe, on la supprime
-$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_ARCHIVES . "";
+$query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_ARCHIVES;
 $db->sql_query($query);
 
 //Ensuite, on crée la table attaques_attaques
