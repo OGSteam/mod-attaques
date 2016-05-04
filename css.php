@@ -25,22 +25,22 @@ div.attack_box_background {
 }
 
 .metal {
-	color: #AFAFAF;	
+    color: #AFAFAF;	
 }
 .cristal {
-	color: #74D0F1;	
+    color: #74D0F1;	
 }
 .deuterium {
-	color: #34C924;	
+    color: #34C924;	
 }
 .perte {
-	color: #FF0921;	
+    color: #FF0921;	
 }
 .renta {
-	color: #ED7F10;	
+    color: #ED7F10;	
 }
 .number {
-	text-align: right;
+    text-align: right;
 }
 </style>
 <?php
