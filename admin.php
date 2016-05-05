@@ -49,7 +49,7 @@ if (isset($pub_submit)) {
         //echo $query;
         $db->sql_query($query);
     }
-    echo "<font size='2' color='00FF40'>configuration sauvegard&eacute;e</font><br />";
+    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
 }
 // Fin paramètres de configuration
 
@@ -68,7 +68,7 @@ if (isset($pub_submitbb)) {
     //$query = "INSERT INTO ".TABLE_MOD_CFG." VALUES ('Attaques','bbcodes','".$sqldata."')";
     $query = "UPDATE " . TABLE_MOD_CFG . " SET value = '" . $sqldata . "' WHERE `mod` = 'Attaques' and `config`='bbcodes'";
     $db->sql_query($query);
-    echo "<font size='2' color='00FF40'>Couleurs BBcode enregistr&eacute;es</font><br />";
+    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Couleurs BBcode enregistrées</span><br />";
 }
 // Fin paramètres couleurs BBcodes
 // Purge des anciennes archives
@@ -90,7 +90,7 @@ if (isset($pub_submitpurg)) {
     // On optimize la table
     $query = "OPTIMIZE TABLE " . TABLE_ATTAQUES_ARCHIVES;
     if (!$db->sql_query($query)) die("erreur SQL");
-    echo "<font size='2' color='00FF40'>purge effectu&eacute;e</font><br />";
+    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Purge effectuée</span><br />";
 }
 // Fin de la purge
 // Nettoyage des valeurs non attribués dans la DB
@@ -157,17 +157,17 @@ window.onresize = function()
 }
 </script>";
 // cadre autour des paramètres
-echo "<fieldset><legend><b><font color='#0080FF'>Administration&nbsp;";
+echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Administration ";
 echo help("Administration");
 echo "</font></b></legend>";
 // Formulaire des paramètres du module
-echo "<form name='form1' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
+echo "<form name='form1' style=\"margin:0px;padding:0px; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
-<td class='c' colspan='2'>Param&egrave;tres du module</td>
+<td class='c' colspan='2'>Paramètres du module</td>
 </tr>
 <tr>
-<th>Activer le layer&nbsp;" . help("layer") . "&nbsp;: </th>
+<th>Activer le layer " . help("layer") . " : </th>
 <th><input type='checkbox' name='layer' value='true' ";
 if ($config['layer'] == 1) {
     echo 'checked=checked';
@@ -175,7 +175,7 @@ if ($config['layer'] == 1) {
 echo "></th>
 </tr>
 <tr>
-<th> Valeur d'opacit&eacute;&nbsp;" . help("transparence") . "&nbsp;: </th>
+<th> Valeur d'opacité " . help("transparence") . "&nbsp;: </th>
 <th><input type='textbox' name='transp' value='" . $config['transp'] . "' size='4'>&nbsp;%</th>
 </tr>
 <tr>
@@ -205,7 +205,7 @@ echo "</table></form>";
 
 // Formulaire des BBcodes
 echo "<br />";
-echo "<form name='form2' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
+echo "<form name='form2' style='margin:0px;padding:0px;alignment: center' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
   <td class='c' colspan='6'>BBCodes&nbsp;" . help("bbcolor") . "&nbsp;</td>
@@ -250,10 +250,10 @@ echo "</table></form>";
 echo "<br />";
 
 // Formulaire "Base de Donnees"
-echo "<form name='form3' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
+echo "<form name='form3' style=\"margin:0;padding:0; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
-  <td class='c' colspan='5'>Base de données&nbsp;" . help("mysql") . "&nbsp;</td>
+  <td class='c' colspan='5'>Base de données " . help("mysql") . "&nbsp;</td>
 </tr>";
 echo "<tr>";
 // On récupère les dates des archives présentes dans la base de données par ordre croissant 
@@ -340,10 +340,10 @@ for ($i = 0; $i < count($recy); $i++) {
 if ($inval_id > 0) {
     //On serialize l'array pour le transmettre par $_POST dans le form
     $trans_id = serialize($id);
-    echo "<form name='form4' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
+    echo "<form name='form4' style=\"margin:0;padding:0; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
     echo "<table width='60%' border='0'><tr>";
-    echo "<th>Des donn&eacute;es n'appartenant &agrave; aucun joueur actif ont &eacute;t&eacute; trouv&eacute;
- dans la base de donn&eacute;es</th>";
+    echo "<th>Des données n'appartenant à aucun joueur actif ont été trouvées;
+ dans la base de données</th>";
     echo "</tr><tr>";
     echo "<th> Souhaitez vous les supprimer ?";
     echo "<input name='val_id' type='hidden' value='" . $trans_id . "'>";
@@ -353,7 +353,7 @@ if ($inval_id > 0) {
 }
 
 //Connexion Xtense2
-echo "<form name='form5' style='margin:0px;padding:0px;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'><center>";
+echo "<form name='form5' style=\"margin:0;padding:0; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
   <td class='c' colspan='5'>Xtense 2&nbsp;" . help("xtense") . "&nbsp;</td>
@@ -361,7 +361,7 @@ echo "<table width='60%' border='0'>
 echo "<tr>";
 //On vérifie que la table xtense_callbacks existe
 if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xtense_callbacks" . "'"))) {
-    echo "<th>la barre Xtense2 semble ne pas &ecirc;tre install&eacute;e</th>";
+    echo "<th>Le Module Xtense semble ne pas être installée</th>";
 } else {
     // Si oui, on récupère le n° d'id du mod
     $query = "SELECT `id` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
@@ -373,15 +373,14 @@ if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xte
     $result = $db->sql_query($query);
     // On doit avoir 2 entrées dans la table : une pour les RC, une pour les RR
     if ($db->sql_numrows($result) != 2) {
-        echo "<th>Le module 'Gestion des Attaques' n'est pas enregistr&eacute; aupr&egrave;s de Xtense2</th>";
+        echo "<th>Le module 'Gestion des Attaques' n'est pas enregistré auprès de Xtense</th>";
         echo "<tr>";
-        echo "<th>Souhaitez vous &eacute;tablir la connexion ?</th>";
+        echo "<th>Souhaitez vous établir la connexion ?</th>";
         echo "</tr>";
         echo "<tr><td class='c' align='center'><input name='submitxt2' type='submit' value='Connecter Xtense2'></td></tr>";
     } else {
-        echo "<th>Le module 'Gestion des Attaques' est correctement enregistr&eacute; aupr&egrave;s de Xtense2</th>";
+        echo "<th>Le module 'Gestion des Attaques' est correctement enregistré auprès de Xtense2</th>";
     }
 }
 echo "</tr></table></form>";
 echo "</center></fieldset>";
-?>

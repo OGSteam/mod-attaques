@@ -23,18 +23,6 @@ define("TABLE_ATTAQUES_ATTAQUES", $table_prefix . "attaques_attaques");
 define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
 
-/*if (isset($pub_subaction))
-  {
-  require_once (FOLDER_ATTCK."/barplot.php");
-  break;
-  }
-  
-if (isset($pub_graphic))
-  {
-  require_once (FOLDER_ATTCK."/lineplot.php");
-  break;
-  }
-*/
 
 //récupération des paramètres de config
 $query = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='config'";
@@ -96,5 +84,3 @@ require_once(FOLDER_ATTCK . "/footer.php");
 echo "<br/>";
 //Insertion du bas de page d'OGSpy
 require_once("views/page_tail.php");
-
-?>
