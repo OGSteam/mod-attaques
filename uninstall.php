@@ -23,6 +23,6 @@ $query = "DELETE FROM " . TABLE_MOD_CFG . " WHERE `mod`='Attaques'";
 $db->sql_query($query);
 
 $mod_uninstall_name = "attaques";
-$mod_uninstall_table = "TABLE_ATTAQUES_ATTAQUES" . ', ' . "TABLE_ATTAQUES_RECYCLAGES" . ', ' . "TABLE_ATTAQUES_ARCHIVES";
+$mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES;
 uninstall_mod($mod_uninstall_name, $mod_uninstall_table);
-?>
+
