@@ -215,17 +215,6 @@ $renta = $totalgains - $attack_pertes;
 
 echo "<table width='100%'><tr align='left'>";
 
-// Afficher l'image du graphique
-/*echo"<td width='410px' align='center'>";
-
-if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)) && (!isset($attack_pertes)))
-   {
-   echo "Pas de graphique disponible";
-   }else{
-   echo "<img src='index.php?action=graphic_pie&values=".$attack_metal."_x_".$attack_cristal."_x_".$attack_deut."&legend=Metal_x_Cristal_x_Deutérium&title=Proportion%20des%20gains%20des%20attaques%20affichées' alt='Pas de graphique disponible'>";
-   }
-echo"</td>";*/
-
 
 echo "<td width='25%'>" . "<table width='100%'><colgroup><col width='40%'/><col/></colgroup><tbody>" . "<tr>" . "<td style='font-size: 18px;color: white;'><b>M&eacute;tal</b></td>" . "<td class='metal number' style='font-size: 18px;'>" . number_format($attack_metal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Cristal</b></td>" . "<td class='cristal number' style='font-size: 18px;'>" . number_format($attack_cristal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium</b></td>" . "<td class='deuterium number' style='font-size: 18px;'>" . number_format($attack_deut, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Gains</b></td>" . "<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Pertes</b></td>" . "<td class='perte number' style='font-size: 18px;'>" . number_format($attack_pertes, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute;</b></td>" . "<td class='renta number' style='font-size: 18px;'>" . number_format($renta, 0, ',', ' ') . "</td>" . "</tr><tbody></table></td>";
 
@@ -238,7 +227,7 @@ if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut
     /** GRAPHIQUE **/
     echo "<div id='graphique' style='height: 350px; width: 800px; margin: 0pt auto; clear: both;'></div>";
     /** GRAPHIQUE **/
-    //echo  create_pie($attack_metal . "_x_" . $attack_cristal . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Gains des Attaques", "graphique");
+
     echo create_pie_numbers($attack_metal . "_x_" . $attack_cristal . "_x_" . $attack_deut . "_x_" . $attack_pertes, "Métal_x_Cristal_x_Deutérium_x_Pertes", "Gains des Attaques", "graphique");
 }
 echo "</td></tr>";

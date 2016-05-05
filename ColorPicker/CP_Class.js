@@ -159,16 +159,16 @@ fctLoad = function()
  objDiv.style.display = 'inline';
  document.body.appendChild(objDiv);
  objDiv.innerHTML = objSB.toString();
- objPreview = document.getElementById('objPreview');
- objSelected = document.getElementById('objSelected');
- objPreviewTxt = document.getElementById('objPreviewTxt');
- objSelectedTxt = document.getElementById('objSelectedTxt');
- objGlobal = document.getElementById('tblGlobal');
- objGray = document.getElementById('tblGray');
- objSafe = document.getElementById('tblSafe');
- objSys = document.getElementById('tblSys');
- objName = document.getElementById('tblName');
- objLegend = document.getElementById('objLegend');
+ var objPreview = document.getElementById('objPreview');
+ var objSelected = document.getElementById('objSelected');
+ var objPreviewTxt = document.getElementById('objPreviewTxt');
+ var objSelectedTxt = document.getElementById('objSelectedTxt');
+ var objGlobal = document.getElementById('tblGlobal');
+ var objGray = document.getElementById('tblGray');
+ var objSafe = document.getElementById('tblSafe');
+ var objSys = document.getElementById('tblSys');
+ var objName = document.getElementById('tblName');
+ var objLegend = document.getElementById('objLegend');
  fctSelect('Name', 'Named');
 };
 

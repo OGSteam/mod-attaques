@@ -13,10 +13,17 @@
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
 if (class_exists("Callback")) {
+    /**
+     * Class Attaques_Callback
+     */
     class Attaques_Callback extends Callback
     {
         public $version = '2.3.10';
 
+        /**
+         * @param $rapport
+         * @return int
+         */
         public function attack_rc ($rapport)
         {
             global $io;
@@ -24,6 +31,10 @@ if (class_exists("Callback")) {
                 return Io::ERROR;
         }
 
+        /**
+         * @param $rapport
+         * @return int
+         */
         public function attack_rr ($rapport)
         {
             global $io;
@@ -31,6 +42,9 @@ if (class_exists("Callback")) {
                 return Io::ERROR;
         }
 
+        /**
+         * @return array
+         */
         public function getCallbacks ()
         {
             return array(array('function' => 'attack_rc', 'type' => 'rc'), array('function' => 'attack_rr', 'type' => 'rc_cdr'));
@@ -43,6 +57,10 @@ if (class_exists("Callback")) {
 $xtense_version = "2.3.9";
 
 // Import des Rapports de combats
+/**
+ * @param $rapport
+ * @return bool
+ */
 function attack_rc ($rapport)
 {
     global $db, $table_prefix, $attack_config, $user_data;
@@ -126,6 +144,10 @@ function attack_rc ($rapport)
     return TRUE;
 }
 
+/**
+ * @param $rapport
+ * @return bool
+ */
 function attack_rr ($rapport)
 {
     global $db, $table_prefix, $attack_config, $user_data;
@@ -153,6 +175,10 @@ function attack_rr ($rapport)
     }
 }
 
+/**
+ * @param $rapport
+ * @return mixed|string
+ */
 function remove_htm ($rapport)
 {
     $rapport = stripslashes($rapport);
@@ -172,5 +198,3 @@ function read_config ()
         $attack_config = unserialize($data[0]);
     }
 }
-
-?>

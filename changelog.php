@@ -17,8 +17,8 @@ global $db;
 $query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
 if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
-echo "<fieldset><legend><b><font color='#0080FF'><u>Version 0.8j :</u></font></b></legend>";
-echo "<p align='left'><font size='2'><ul>";
+echo "<fieldset><legend><b><span style=\"color: #0080FF; \"><u>Version 0.8j :</u></span></b></legend>";
+echo "<p align='left'><span style=\"font-size: x-small; \"><ul>";
 echo "<li>Compatibilité Xtense > 2.0b7</li>";
 echo "</ul></font></p>";
 echo "</fieldset>";
@@ -251,4 +251,4 @@ echo "<br>";
 echo "Merci à calidian pour les tests qu'il a effectués.";
 
 echo "<br/>";
-?>
+

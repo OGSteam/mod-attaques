@@ -86,5 +86,3 @@ if ($db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xten
                 VALUES ( '" . $attack_id . "', 'attack_rr', 'rc_cdr')";
     $db->sql_query($query);
 }
-
-?>
