@@ -139,25 +139,24 @@ if ($config['histo'] == 1) {
     // Initialisation des variables et tableau
 
     $barre = array();
+	$maxy = 0;
     // Lecture de la base de données et stockage des valeurs dans le tableau
-    if ($pub_subaction != "recyclage") {
-        while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
-            $barre[$jour][0] = $metal;
-            $barre[$jour][1] = $cristal;
-            $barre[$jour][2] = $deut;
+	while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
+		$barre[$jour][0] = $metal;
+		$barre[$jour][1] = $cristal;
+		$barre[$jour][2] = $deut;
 
-            // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
-            if ($metal > $maxy) {
-                $maxy = $metal;
-            }
-            if ($cristal > $maxy) {
-                $maxy = $cristal;
-            }
-            if ($deut > $maxy) {
-                $maxy = $deut;
-            }
-        }
-    }
+		// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+		if ($metal > $maxy) {
+			$maxy = $metal;
+		}
+		if ($cristal > $maxy) {
+			$maxy = $cristal;
+		}
+		if ($deut > $maxy) {
+			$maxy = $deut;
+		}
+	}    
 
     if (isset($query2)) {
         $result2 = $db->sql_query($query2);
@@ -210,7 +209,7 @@ if ($config['histo'] == 1) {
         }
     }
 
-    $series = "{name: 'M&eacute;tal', data: [" . $metal . "] }, " . "{name: 'Cristal', data: [" . $cristal . "] }, " . "{name: 'Deut&eacute;rium', data: [" . $deuterium . "] }";
+    $series = "{name: 'Métal', data: [" . $metal . "] }, " . "{name: 'Cristal', data: [" . $cristal . "] }, " . "{name: 'Deutérium', data: [" . $deuterium . "] }";
 
     /** GRAPHIQUE **/
     echo "<div id='graphiquemois' style='height: 350px; width: 1200px; margin: 0pt auto; clear: both;'></div>";

@@ -142,9 +142,28 @@ if (isset($pub_attack_id)) {
 }
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
-if (!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+if (!isset($pub_date_from)) 
+	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
+else 
+{
+	// Si la date est au format jour/mois/annee
+	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
+	if($pub_date['error_count'] == 0)
+		$pub_date_from = mktime(0, 0, 0, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+	else
+		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+}
 
-if (!isset($pub_date_to)) $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); else $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
+if (!isset($pub_date_to)) 
+	$pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); 
+else {
+	// Si la date est au format jour/mois/annee
+	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_to);
+	if($pub_date['error_count'] == 0)
+		$pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+	else
+		$pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);	
+}
 
 $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
@@ -156,7 +175,22 @@ if (!isset($pub_sens)) $pub_sens = "DESC"; elseif ($pub_sens == 2) $pub_sens = "
 elseif ($pub_sens == 1) $pub_sens = "ASC";
 
 //Requete pour afficher la liste des attaques 
-$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY " . $pub_order_by . " " . $pub_sens . "";
+$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to;
+
+$order_by = " ORDER BY ";
+if($pub_order_by != 'attack_coord')
+	$order_by .= $pub_order_by . " " . $pub_sens;
+else {
+	// On va trier par les valeurs des coordonnées
+	// Galaxie
+	$order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', 1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
+	// Système
+	$order_by .= "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(attack_coord, ':', 2), ':', -1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
+	// Planète
+	$order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', -1)AS UNSIGNED INTEGER) " . $pub_sens;
+}
+$query .= $order_by;
+
 $result = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
@@ -170,8 +204,8 @@ $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(a
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y", $pub_date_to);
+$pub_date_from = strftime("%d %b %Y %H:%M", $pub_date_from);
+$pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
@@ -181,9 +215,9 @@ echo "</font></b></legend>";
 
 echo "Afficher mes attaques : ";
 echo "<form action='index.php?action=attaques&page=attaques' method='post' name='date'>";
-echo "du : <input type='text' name='date_from' id='date_from' size='11' maxlength='2' value='$pub_date_from' /> ";
+echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
 echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='11' maxlength='2' value='$pub_date_to' />";
+echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
 echo "<br>";
 ?>
 <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
@@ -294,25 +328,24 @@ if ($config['histo'] == 1) {
     // Initialisation des variables et tableau
 
     $barre = array();
+	$maxy = 0;
     // Lecture de la base de données et stockage des valeurs dans le tableau
-    if ($pub_subaction != "recyclage") {
-        while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
-            $barre[$jour][0] = $metal;
-            $barre[$jour][1] = $cristal;
-            $barre[$jour][2] = $deut;
+	while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
+		$barre[$jour][0] = $metal;
+		$barre[$jour][1] = $cristal;
+		$barre[$jour][2] = $deut;
 
-            // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
-            if ($metal > $maxy) {
-                $maxy = $metal;
-            }
-            if ($cristal > $maxy) {
-                $maxy = $cristal;
-            }
-            if ($deut > $maxy) {
-                $maxy = $deut;
-            }
-        }
-    }
+		// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+		if ($metal > $maxy) {
+			$maxy = $metal;
+		}
+		if ($cristal > $maxy) {
+			$maxy = $cristal;
+		}
+		if ($deut > $maxy) {
+			$maxy = $deut;
+		}
+	}    
 
     $i = 0;
     $categories = "";
