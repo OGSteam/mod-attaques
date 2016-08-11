@@ -29,7 +29,7 @@ if ($yesterday < 1) $yesterday = 1;
 
 
 //On verifie si il y a des attaques qui ne sont pas du mois actuel
-$query = "SELECT MONTH(FROM_UNIXTIME(attack_date)) AS month, YEAR(FROM_UNIXTIME(attack_date)) AS year, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut, SUM(attack_pertes) as pertes FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(attack_date)) <> $mois GROUP BY month";
+$query = "SELECT MONTH(FROM_UNIXTIME(attack_date)) AS month, YEAR(FROM_UNIXTIME(attack_date)) AS year, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut, SUM(attack_pertes) as pertes FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(attack_date)) <> $mois GROUP BY month, year";
 $result = $db->sql_query($query);
 
 $nb_result = $db->sql_numrows($result);
