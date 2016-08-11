@@ -8,12 +8,9 @@
  * @version : 0.8a
  */
 
-
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
+
 // Appel des Javascripts
 echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
 
@@ -141,6 +138,35 @@ if (isset($pub_attack_id)) {
     }
 }
 
+// On récupère la liste des utilisateurs dont on peut afficher les attaques
+$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u 
+			LEFT JOIN " . TABLE_MOD_USER_CFG . " mu 
+				ON mu.`user_id` = u.`user_id`
+		  WHERE u.`user_id` = " . $user_data['user_id']." OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+		  ORDER BY u.`user_name`";
+
+$result = $db->sql_query($query);
+$users = array();
+while($row = $db->sql_fetch_row($result))
+	$users[$row[0]] = $row[1];
+
+// Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
+if(isset($pub_user_id) && isset($users[$pub_user_id]))
+	$user_id = $pub_user_id;
+else
+	$user_id = $user_data["user_id"];
+
+$estUtilisateurCourant = $user_id == $user_data["user_id"];
+$masquer_coord = false;
+if(!$estUtilisateurCourant)	
+{
+	$query = "SELECT value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `config` = 'masquer_coord' and `user_id`=" . $user_id;
+	$result = $db->sql_query($query);
+	$result = $db->sql_fetch_row($result);
+	if($result == null || $result[0] == '1')
+		$masquer_coord = true;	
+}
+		  
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
 if (!isset($pub_date_from)) 
 	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
@@ -175,7 +201,7 @@ if (!isset($pub_sens)) $pub_sens = "DESC"; elseif ($pub_sens == 2) $pub_sens = "
 elseif ($pub_sens == 1) $pub_sens = "ASC";
 
 //Requete pour afficher la liste des attaques 
-$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to;
+$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to;
 
 $order_by = " ORDER BY ";
 if($pub_order_by != 'attack_coord')
@@ -197,7 +223,7 @@ $result = $db->sql_query($query);
 $nb_attack = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
 
 //echo $query;
 
@@ -209,11 +235,11 @@ $pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques ";
+echo "<fieldset><legend><b><font color='#0080FF'>Paramètres d'affichage des attaques ";
 echo help("changer_affichage");
 echo "</font></b></legend>";
 
-echo "Afficher mes attaques : ";
+echo "Afficher les attaques : ";
 echo "<form action='index.php?action=attaques&page=attaques' method='post' name='date'>";
 echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
 echo "au : ";
@@ -226,14 +252,27 @@ echo "<br>";
 <a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7
     derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+<br />
+<select name="user_id">
+	<?php foreach($users as $id => $username)
+	{
+		echo "<option value='$id'";
+		if($id == $user_id)
+			echo " SELECTED=SELECTED";
+		echo ">$username</option>";
+	}
+	?>
+</select>
 <?php
+
+
 echo "<br><br>";
 echo "<input type='submit' value='Afficher' name='B1'></form>";
 echo "</fieldset>";
 echo "<br><br>";
 
 //Création du field pour voir les gains des attaques
-echo "<fieldset><legend><b><font color='#0080FF'>Résultats des attaques du " . $pub_date_from . " au " . $pub_date_to . " ";
+echo "<fieldset><legend><b><font color='#0080FF'>Résultats des attaques du " . $pub_date_from . " au " . $pub_date_to . " de " . $users[$user_id];
 echo help("resultats");
 echo "</font></b></legend>";
 
@@ -277,7 +316,7 @@ echo help("liste_attaques");
 echo "</font></b></legend>";
 
 //Debut du lien pour le changement de l'ordre d'affichage
-$link = "index.php?action=attaques&date_from=" . $pub_date_from . "&date_to=" . $pub_date_to . "";
+$link = "index.php?action=attaques&date_from=" . $pub_date_from . "&date_to=" . $pub_date_to . " &user_id=" . $user_id;
 
 //Tableau donnant la liste des attaques
 echo "<table width='100%'>";
@@ -300,13 +339,22 @@ while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack
     $attack_deut = number_format($attack_deut, 0, ',', ' ');
     $attack_pertes = number_format($attack_pertes, 0, ',', ' ');
     $coord = explode(":", $attack_coord);
-    echo "<th align='center'><a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord . "</th>";
+    echo "<th align='center'>";
+	if(!$masquer_coord)
+		echo "<a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord;
+	echo "</th>";
     echo "<th align='center'>" . $attack_date . "</th>";
     echo "<th align='center'>" . $attack_metal . "</th>";
     echo "<th align='center'>" . $attack_cristal . "</th>";
     echo "<th align='center'>" . $attack_deut . "</th>";
     echo "<th align='center'>" . $attack_pertes . "</th>";
-    echo "<th align='center' valign='middle'><form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit'	value='Supprimer' name='B1' style='color: #FF0000'></form></th>";
+    echo "<th align='center' valign='middle'>";
+	
+	if($estUtilisateurCourant)
+	{
+		echo "<form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit'	value='Supprimer' name='B1' style='color: #FF0000'></form>";
+	}
+	echo "</th>";
     echo "</tr>";
     echo "<tr>";
 }
@@ -320,7 +368,7 @@ if ($config['histo'] == 1) {
     $mois = date("m");
     $annee = date("Y");
 
-    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
+    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
 
     // requète SQL pour récupérer le total par ressource par jour
     $result = $db->sql_query($query);

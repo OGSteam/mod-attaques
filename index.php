@@ -22,6 +22,8 @@ define('FOLDER_ATTCK', 'mod/' . $root);
 define("TABLE_ATTAQUES_ATTAQUES", $table_prefix . "attaques_attaques");
 define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
+if(!defined("TABLE_MOD_USER_CFG"))
+	define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
 
 
 //récupération des paramètres de config
@@ -67,15 +69,36 @@ menu($pub_page);
 // Affichage du layer transparent
 echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //On  affiche de la page demandée
-if ($pub_page == "attaques") include("attaques.php"); elseif ($pub_page == "recyclages") include("recyclages.php");
-elseif ($pub_page == "bilan") include("bilan.php");
-elseif ($pub_page == "bbcode") include("bbcode.php");
-elseif ($pub_page == "archive") include("archives.php");
-elseif ($pub_page == "statistiques") include("statistiques.php");
-elseif ($pub_page == "admin") include("admin.php");
-elseif ($pub_page == "changelog") include("changelog.php");
-//Si la page a afficher n'est pas définie, on affiche la première
-else include("attaques.php");
+switch($pub_page)
+{
+	case "bilan":
+		include("bilan.php");
+		break;
+	case "bbcode":
+		include("bbcode.php");
+		break;
+	case "archive":
+		include("archives.php");
+		break;
+	case "statistiques":
+		include("statistiques.php");
+		break;
+	case "recyclages":
+		include("recyclages.php");
+		break;		
+	case "admin":
+		include("admin.php");
+		break;
+	case "changelog":
+		include("changelog.php");
+		break;
+	case "config":
+		include("config.php");
+		break;
+	default:
+		include("attaques.php");
+		break;		
+}
 
 // Fin du layer transparent
 echo "</div></div>";

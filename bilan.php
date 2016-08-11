@@ -10,9 +10,6 @@
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 // Appel des Javascripts
 echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
@@ -31,34 +28,82 @@ if ($septjours < 1) $septjours = 1;
 if ($yesterday < 1) $yesterday = 1;
 
 
-//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jours,
-if (!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+// On récupère la liste des utilisateurs dont on peut afficher les attaques
+$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u 
+			LEFT JOIN " . TABLE_MOD_USER_CFG . " mu 
+				ON mu.`user_id` = u.`user_id`
+		  WHERE u.`user_id` = " . $user_data['user_id']." OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+		  ORDER BY u.`user_name`";
 
-if (!isset($pub_date_to)) $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); else $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
+$result = $db->sql_query($query);
+$users = array();
+while($row = $db->sql_fetch_row($result))
+	$users[$row[0]] = $row[1];
+
+// Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
+if(isset($pub_user_id) && isset($users[$pub_user_id]))
+	$user_id = $pub_user_id;
+else
+	$user_id = $user_data["user_id"];
+
+$estUtilisateurCourant = $user_id == $user_data["user_id"];
+$masquer_coord = false;
+if(!$estUtilisateurCourant)	
+{
+	$query = "SELECT value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `config` = 'masquer_coord' and `user_id`=" . $user_id;
+	$result = $db->sql_query($query);
+	$result = $db->sql_fetch_row($result);
+	if($result == null || $result[0] == '1')
+		$masquer_coord = true;	
+}
+
+//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
+if (!isset($pub_date_from)) 
+	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
+else 
+{
+	// Si la date est au format jour/mois/annee
+	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
+	if($pub_date['error_count'] == 0)
+		$pub_date_from = mktime(0, 0, 0, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+	else
+		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+}
+
+if (!isset($pub_date_to)) 
+	$pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); 
+else {
+	// Si la date est au format jour/mois/annee
+	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_to);
+	if($pub_date['error_count'] == 0)
+		$pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+	else
+		$pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);	
+}
 
 $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
 
 //Requete pour afficher la liste des attaques 
-$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
+$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
 $result = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
 $nb_attack = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
 $resultgains = $db->sql_query($query);
 
 //Cacul pour obtenir les gains des recyclages
-$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["user_id"] . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY recy_user_id";
+$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_id . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY recy_user_id";
 $resultgainsrecy = $db->sql_query($query);
 
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y", $pub_date_to);
+$pub_date_from = strftime("%d %b %Y %H:%M", $pub_date_from);
+$pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
@@ -68,9 +113,9 @@ echo "</font></b></legend>";
 
 echo "Afficher le bilan : ";
 echo "<form action='index.php?action=attaques&page=bilan' method='post' name='date'>";
-echo "du : <input type='text' name='date_from' id='date_from' size='11' maxlength='2' value='$pub_date_from' /> ";
+echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
 echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='11' maxlength='2' value='$pub_date_to' />";
+echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
 echo "<br>";
 ?>
     <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du
@@ -81,6 +126,17 @@ echo "<br>";
     <a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
         7 derniers jours</a> |
     <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+<br />
+<select name="user_id">
+	<?php foreach($users as $id => $username)
+	{
+		echo "<option value='$id'";
+		if($id == $user_id)
+			echo " SELECTED=SELECTED";
+		echo ">$username</option>";
+	}
+	?>
+</select>	
 <?php
 echo "<br><br>";
 echo "<input type='submit' value='Afficher' name='B1'></form>";

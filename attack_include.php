@@ -48,6 +48,10 @@ function menu ($pub_page)
     $pages['fichier'][++$i] = 'statistiques';
     $pages['texte'][$i] = '&nbsp;Statistiques&nbsp;';
     $pages['admin'][$i] = 0;
+	
+	$pages['fichier'][++$i] = 'config';
+	$pages['texte'][$i] = '&nbsp;Config&nbsp;';
+	$pages['admin'][$i] = 0;
 
     $pages['fichier'][++$i] = 'admin';
     $pages['texte'][$i] = 'Admin';

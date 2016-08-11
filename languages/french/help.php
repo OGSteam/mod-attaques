@@ -26,3 +26,5 @@ $help["Administration"] = "Modifiez les paramètres du modules";
 $help["layer"] = "Permet d'afficher un fond semi-transparent au cas où l'image de fond de votre skin dimunuerais la lisibilité du module";
 $help["transparence"] = "Mettez ici le pourcentage de transparence souhaité.<br>0%= complètement transparent<br>100%= complètement opaque.";
 $help["bbcolor"] = "Vous pouvez modifier les couleurs utilisés dans les bbcodes de l'espace bbcode<br>Cliquez sur les roues de couleur pour faire apparaitre un sélecteur.";
+$help["diffusion_rapports"] = "Autorise les autres utilisateurs à voir vos rapports";
+$help["masquer_coord"] = "Masque les coordonn&eacute;es des attaques pour les autres joueurs";
