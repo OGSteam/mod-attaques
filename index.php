@@ -93,7 +93,7 @@ switch($pub_page)
 		include("changelog.php");
 		break;
 	case "config":
-		include("config.php");
+		include("config_user.php");
 		break;
 	default:
 		include("attaques.php");
