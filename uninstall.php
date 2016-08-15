@@ -17,13 +17,13 @@ global $table_prefix;
 define("TABLE_ATTAQUES_ATTAQUES", $table_prefix . "attaques_attaques");
 define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
-define("TABLE_ATTAQUES_CONFIG", $table_prefix . "mod_config");
+define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
 
 //Suppression des paramètres de configuration et bbcodes
 $query = "DELETE FROM " . TABLE_MOD_CFG . " WHERE `mod`='Attaques'";
 $db->sql_query($query);
 
 $mod_uninstall_name = "attaques";
-$mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES. ', ' . TABLE_ATTAQUES_CONFIG;
+$mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES. ', ' . TABLE_MOD_USER_CFG;
 uninstall_mod($mod_uninstall_name, $mod_uninstall_table);
 
