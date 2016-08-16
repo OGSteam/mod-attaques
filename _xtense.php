@@ -115,7 +115,9 @@ function attack_rc ($rapport)
             if (in_array($coordinates, $coords_defenseurs)) $defenseur = 1;
         }
 
-        if ($attaquant != 1 && $attack_config['defenseur'] != 1) {
+		// le rapport ne concerne pas l'utilisateur, ou que l'on ne tiens pas compte des attaques subies
+		// On ne va pas plus loin
+        if ($attaquant != 1 && ($defenseur != 1 || $attack_config['defenseur'] != 1)) {
             return false;
         } else {
             if ($defenseur == 1 && $attack_config['defenseur'] == 1) {
