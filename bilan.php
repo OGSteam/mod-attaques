@@ -65,7 +65,7 @@ else
 	// Si la date est au format jour/mois/annee
 	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
 	if($pub_date['error_count'] == 0)
-		$pub_date_from = mktime(0, 0, 0, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+		$pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
 	else
 		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 }
