@@ -7,6 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8b
  */
+namespace Ogsteam\Ogspy;
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
@@ -80,10 +81,8 @@ $estUtilisateurCourant = $user_id == $user_data["user_id"];
 $masquer_coord = false;
 if(!$estUtilisateurCourant)	
 {
-	$query = "SELECT value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `config` = 'masquer_coord' and `user_id`=" . $user_id;
-	$result = $db->sql_query($query);
-	$result = $db->sql_fetch_row($result);
-	if($result == null || $result[0] == '1')
+    $result = \Ogsteam\Ogspy\mod_get_user_option($user_id, 'masquer_coord');
+    if($result == null || $result['masquer_coord'] == '1')
 		$masquer_coord = true;	
 }
 

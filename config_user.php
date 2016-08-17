@@ -8,40 +8,26 @@
  * @version : 0.8e
  */
 
+namespace Ogsteam\Ogspy;
+
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
 global $db, $table_prefix;
 
 // lecture des configs dans la db
-$query = "SELECT config, value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_data["user_id"];
-$result = $db->sql_query($query);
-$user_config = array();
-while($row = $db->sql_fetch_row($result))
-	$user_config[$row[0]] = $row[1];
+$user_config = \Ogsteam\Ogspy\mod_get_user_option($user_data["user_id"]);
 
 // Paramètres de configurations transmis par le form
-if (isset($pub_submit)) {		
-	$queries = array();
-	$where = " WHERE `mod`='Attaques' and `user_id`=" . $user_data["user_id"] . " ";
-    
+if (isset($pub_submit)) {
 		$diffusion = isset($pub_diffusion) && $pub_diffusion == true ? 1 : 0;
-		if(isset($user_config['diffusion_rapports']))
-			$queries[] = "UPDATE " . TABLE_MOD_USER_CFG . " SET value = '" . $diffusion . "'" . $where . " and `config`='diffusion_rapports'";
-		else
-			$queries[] = "INSERT INTO " . TABLE_MOD_USER_CFG . "(`mod`, `config`, `user_id`, `value`) VALUES ('Attaques', 'diffusion_rapports', ". $user_data["user_id"] . ", " . $diffusion . ")";
+        \Ogsteam\Ogspy\mod_set_user_option('diffusion_rapports', $user_data['user_id'], $diffusion);
 		$user_config['diffusion_rapports'] = $diffusion;
 		    
 		$masquer_coord = isset($pub_masquer_coord) && $pub_masquer_coord == true ? 1 : 0;
-		if(isset($user_config['masquer_coord']))
-			$queries[] = "UPDATE " . TABLE_MOD_USER_CFG . " SET value = '" . $masquer_coord . "'" . $where . " and `config`='masquer_coord'";
-		else
-			$queries[] = "INSERT INTO " . TABLE_MOD_USER_CFG . "(`mod`, `config`, `user_id`, `value`) VALUES ('Attaques', 'masquer_coord', ". $user_data["user_id"] . ", " . $masquer_coord . ")";				
+        \Ogsteam\Ogspy\mod_set_user_option('masquer_coord', $user_data['user_id'], $masquer_coord);
 		$user_config['masquer_coord'] = $masquer_coord;
-	
-		foreach($queries as $query)
-			$db->sql_query($query);
-    
+
     echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
 }
 // Fin paramètres de configuration

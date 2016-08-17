@@ -7,6 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
+namespace Ogsteam\Ogspy;
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
@@ -27,9 +28,7 @@ if(!defined("TABLE_MOD_USER_CFG"))
 
 
 //récupération des paramètres de config
-$query = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='config'";
-$result = $db->sql_query($query);
-$config = $db->sql_fetch_row($result);
+$config = \Ogsteam\Ogspy\mod_get_option('config');
 $config = unserialize($config[0]);
 
 // Appel des fonctions du module

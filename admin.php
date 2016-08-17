@@ -7,18 +7,14 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8e
  */
+namespace Ogsteam\Ogspy;
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 global $db, $table_prefix, $prefixe;
 // lecture des bbcodes dans la db
-$query = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='bbcodes'";
-$result = $db->sql_query($query);
-$bbcolor = $db->sql_fetch_row($result);
+$bbcolor = \Ogsteam\Ogspy\mod_get_option('bbcodes');
 $bbcolor = unserialize($bbcolor[0]);
 
 // Paramètres de configurations transmis par le form
@@ -44,10 +40,7 @@ if (isset($pub_submit)) {
             $config['histo'] = 0;
         }
         $sqldata = serialize($config);
-        //$query = "INSERT INTO ".TABLE_MOD_CFG." VALUES ('Attaques','config','".$sqldata."')";
-        $query = "UPDATE " . TABLE_MOD_CFG . " SET value = '" . $sqldata . "' WHERE `mod` = 'Attaques' and `config`='config'";
-        //echo $query;
-        $db->sql_query($query);
+        \Ogsteam\Ogspy\mod_set_option('config', $sqldata);
     }
     echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
 }
@@ -65,9 +58,7 @@ if (isset($pub_submitbb)) {
     $bbcolor['renta'] = substr($pub_renta, 0, 7);
     //echo "#".dechex(hexdec(substr($pub_title,0,7)))."\n\r"; test de validation de code hexa .. pb si débute par 00
     $sqldata = serialize($bbcolor);
-    //$query = "INSERT INTO ".TABLE_MOD_CFG." VALUES ('Attaques','bbcodes','".$sqldata."')";
-    $query = "UPDATE " . TABLE_MOD_CFG . " SET value = '" . $sqldata . "' WHERE `mod` = 'Attaques' and `config`='bbcodes'";
-    $db->sql_query($query);
+    \Ogsteam\Ogspy\mod_set_option('bbcodes', $sqldata);
     echo "<span  style=\"font-size: x-small; color: #00FF40; \">Couleurs BBcode enregistrées</span><br />";
 }
 // Fin paramètres couleurs BBcodes

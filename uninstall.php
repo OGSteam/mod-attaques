@@ -7,7 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
-
+namespace Ogsteam\Ogspy;
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
@@ -20,10 +20,11 @@ define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
 define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
 
 //Suppression des paramètres de configuration et bbcodes
-$query = "DELETE FROM " . TABLE_MOD_CFG . " WHERE `mod`='Attaques'";
-$db->sql_query($query);
+\Ogsteam\Ogspy\mod_del_all_option();
+// Suppression des paramètres utilisateur
+\Ogsteam\Ogspy\mod_del_all_user_option();
 
 $mod_uninstall_name = "attaques";
-$mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES. ', ' . TABLE_MOD_USER_CFG;
+$mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES;
 uninstall_mod($mod_uninstall_name, $mod_uninstall_table);
 

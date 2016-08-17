@@ -9,6 +9,7 @@
  *   created    : 17/02/2008
  *   modified    :
  **/
+namespace Ogsteam\Ogspy;
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
@@ -193,11 +194,11 @@ function remove_htm ($rapport)
 
 function read_config ()
 {
-    global $attack_config, $db;
-//récupération des paramètres de config
-    $query = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='config'";
-    $result = $db->sql_query($query);
-    while ($data = $db->sql_fetch_row($result)) {
-        $attack_config = unserialize($data[0]);
+    global $attack_config;
+
+    //récupération des paramètres de config
+    var $configs = \Ogsteam\Ogspy\mod_get_option('config');
+    foreach($configs as $config) {
+        $attack_config = unserialize($config);
     }
 }

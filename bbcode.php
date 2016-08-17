@@ -7,12 +7,10 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
+namespace Ogsteam\Ogspy;
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 // Appel des Javascripts
 echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
@@ -21,9 +19,7 @@ echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK
 global $db, $table_prefix;
 
 // lecture des bbcodes dans la db
-$query = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='bbcodes'";
-$result = $db->sql_query($query);
-$bbcolor = $db->sql_fetch_row($result);
+$bbcolor = \Ogsteam\Ogspy\mod_get_option('bbcodes');
 $bbcolor = unserialize($bbcolor[0]);
 
 //Gestion des dates

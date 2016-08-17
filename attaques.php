@@ -7,6 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
+namespace Ogsteam\Ogspy;
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
@@ -38,9 +39,7 @@ $nb_result = $db->sql_numrows($result);
 if ($nb_result != 0) {
     echo "<font color='#FF0000'>Vos attaques du ou des mois précédent(s) ont été supprimé(s). Seuls les gains restent accessibles dans la partie Espace Archives<br>La liste de vos attaques qui viennent d'être supprimées est consultable une dernière fois. Pensez à la sauvegarder !!!</font>";
 // On récupère les paramètres bbcolors
-    $query2 = "SELECT value FROM `" . TABLE_MOD_CFG . "` WHERE `mod`='Attaques' and `config`='bbcodes'";
-    $result2 = $db->sql_query($query2);
-    $bbcolor = $db->sql_fetch_row($result2);
+    $bbcolor = \Ogsteam\Ogspy\mod_get_option('bbcodes');
     $bbcolor = unserialize($bbcolor[0]);
 
     while (list($month, $year, $metal, $cristal, $deut, $pertes) = $db->sql_fetch_row($result)) {
@@ -160,10 +159,8 @@ $estUtilisateurCourant = $user_id == $user_data["user_id"];
 $masquer_coord = false;
 if(!$estUtilisateurCourant)	
 {
-	$query = "SELECT value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `config` = 'masquer_coord' and `user_id`=" . $user_id;
-	$result = $db->sql_query($query);
-	$result = $db->sql_fetch_row($result);
-	if($result == null || $result[0] == '1')
+	$result = \Ogsteam\Ogspy\mod_get_user_option($user_id, 'masquer_coord');
+	if($result == null || $result['masquer_coord'] == '1')
 		$masquer_coord = true;	
 }
 		  

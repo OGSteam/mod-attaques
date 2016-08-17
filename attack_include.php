@@ -7,6 +7,7 @@
  * @version : 0.8a
  * dernière modification : 28 Dec 2007
  */
+namespace Ogsteam\Ogspy;
 //------------------------------------------------------------------------------------------------------------------- 
 // Renvoi 1 si l'utilisateur est admin, coadmin ou manager
 function IsUserAdmin ()

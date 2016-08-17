@@ -7,6 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
+namespace Ogsteam\Ogspy;
 ?>
     <SCRIPT language="JavaScript">
         function selectionner() {
@@ -17,10 +18,6 @@
 
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
-
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
 
 //Définitions
 global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;

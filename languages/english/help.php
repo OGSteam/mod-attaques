@@ -10,10 +10,6 @@
 //L'appel direct est interdit
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-//On vérifie que le mod est activé
-$query = "SELECT `active` FROM `".TABLE_MOD."` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
-if (!$db->sql_numrows($db->sql_query($query))) die("Hacking attempt");
-
 global $key;
 $help["bbcode"] = "Pour insérer vos résultats sur un forum, selectionner le texte ci-dessous, copier le, puis coller le dans votre post.";
 $help["ajouter_attaque"] = "Pour ajouter une nouvelle attaque copiez le rapport de combat dans le formulaire ci-dessous, puis cliquez sur envoyer.";

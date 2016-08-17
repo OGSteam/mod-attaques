@@ -7,6 +7,7 @@
  * @link http://www.ogsteam.fr
  * @version : 0.8a
  */
+namespace Ogsteam\Ogspy;
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
@@ -45,17 +46,6 @@ if(isset($pub_user_id) && isset($users[$pub_user_id]))
 	$user_id = $pub_user_id;
 else
 	$user_id = $user_data["user_id"];
-
-$estUtilisateurCourant = $user_id == $user_data["user_id"];
-$masquer_coord = false;
-if(!$estUtilisateurCourant)	
-{
-	$query = "SELECT value FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `config` = 'masquer_coord' and `user_id`=" . $user_id;
-	$result = $db->sql_query($query);
-	$result = $db->sql_fetch_row($result);
-	if($result == null || $result[0] == '1')
-		$masquer_coord = true;	
-}
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
 if (!isset($pub_date_from)) 
