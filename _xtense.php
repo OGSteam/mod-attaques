@@ -88,18 +88,15 @@ function attack_rc ($rapport)
         $timestamp = $rapport['date'];
 
         //Récupération des coordonnées des attaquants
-        $att = 0;
         $coords_attaquants = array();
-        while ($rapport['n'][$att]['type'] == 'A') {
-            $coords_attaquants[$att] = $rapport['n'][$att]['coords'];
-            $att++;
-        }
-        //Récupération des coordonnées des défenseurs
-        $def = 0;
         $coords_defenseurs = array();
-        while ((isset($rapport['n'][$att + $def])) && ($rapport['n'][$att + $def]['type'] == 'D')) {
-            $coords_defenseurs[$def] = $rapport['n'][$att + $def]['coords'];
-            $def++;
+        for($i = 0; $i < count($rapport['n']); $i++)
+        {
+            if($rapport['n'][$i]['type'] == 'A')
+                $coords_attaquants[] = $rapport['n'][$i]['coords'];
+            else if($rapport['n'][$i]['type'] == 'D')
+                $coords_defenseurs[] = $rapport['n'][$i]['coords'];
+
         }
 
         //Coordonnées où a eu lieu l'attaque
@@ -110,11 +107,15 @@ function attack_rc ($rapport)
         $result = $db->sql_query($query);
         $attaquant = 0;
         $defenseur = 0;
-        while ((list($coordinates) = $db->sql_fetch_row($result)) && ($defenseur == 0)) {
-            if (in_array($coordinates, $coords_attaquants)) $attaquant = 1;
-            if (in_array($coordinates, $coords_defenseurs)) $defenseur = 1;
-        }
+        $coordinates = array();
+        while ($coordinate = $db->sql_fetch_row($result))
+            $coordinates[] = $coordinate[0];
 
+        if (count(array_intersect ($coords_attaquants, $coordinates)) > 0)
+            $attaquant = 1;
+        if (count(array_intersect ($coords_defenseurs, $coordinates)) > 0)
+            $defenseur = 1;
+        
 		// le rapport ne concerne pas l'utilisateur, ou que l'on ne tiens pas compte des attaques subies
 		// On ne va pas plus loin
         if ($attaquant != 1 && ($defenseur != 1 || $attack_config['defenseur'] != 1)) {
