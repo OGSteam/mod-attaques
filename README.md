@@ -1,6 +1,6 @@
 ## Module OGSpy Attaques
 
-Ce module permet de suivre la rentabilité des attaques et des recyclages et de les exporter.
+Ce module permet de suivre la rentabilité des attaques et des recyclages et de les exporter en BBCode.
 
 ### Pré Requis ###
 
