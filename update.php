@@ -34,11 +34,11 @@ $db->sql_query($query);
 if (version_compare( $version , '2.0.0.', '<')) {
 
     // on insère les valeurs de configuration par défaut car changement de format de données
-    $config = '{\"transp\":75,\"layer\":1,\"defenseur\":1,\"histo\":1}';
+    $config = '{"transp":75,"layer":1,"defenseur":1,"histo":1}';
     mod_set_option('config', $config);
 
 // on insère les valeurs bbcodes par défaut
-    $bbcodes = '{\"title\":\"#FFA500\",\"m_g\":\"#00FF40\",\"c_g\":\"#00FF40\",\"d_g\":\"#00FF40\",\"m_r\":\"#00FF40\",\"c_r\":\"#00FF40\",\"perte\":\"#FF0000\",\"renta\":\"#00FF40\"}';
+    $bbcodes = '{"title":"#FFA500","m_g":"#00FF40","c_g":"#00FF40","d_g":"#00FF40","m_r":"#00FF40","c_r":"#00FF40","perte":"#FF0000","renta":"#00FF40"}';
     mod_set_option('bbcodes', $bbcodes);
 }
 

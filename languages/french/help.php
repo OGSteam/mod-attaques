@@ -21,7 +21,7 @@ $lang["help_attaques_liste_recy"] = "Ici vous pouvez voir la liste de vos recycl
 $lang["help_attaques_Administration"] = "Modifiez les paramètres du modules";
 $lang["help_attaques_layer"] = "Permet d'afficher un fond semi-transparent au cas où l'image de fond de votre skin dimunuerais la lisibilité du module";
 $lang["help_attaques_transparence"] = "Mettez ici le pourcentage de transparence souhaité.<br>0%= complètement transparent<br>100%= complètement opaque.";
-$lang["help_attaques_bbcolor"] = "Vous pouvez modifier les couleurs utilisés dans les bbcodes de l'espace bbcode<br>Utilisez un colorPicker pour obtenir les codes couleur.";
+$lang["help_attaques_bbcolor"] = "Vous pouvez modifier les couleurs utilisés dans les bbcodes de l'espace bbcode.";
 $lang["help_attaques_diffusion_rapports"] = "Autorise les autres utilisateurs à voir vos rapports";
 $lang["help_attaques_masquer_coord"] = "Masque les coordonn&eacute;es des attaques pour les autres joueurs";
 $lang["help_attaques_xtense"] = "Lien avec le module Xtense pour la récupération des données";

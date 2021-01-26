@@ -12,14 +12,14 @@
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
 // Appel des Javascripts
-echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
+echo "<script src='" . FOLDER_ATTCK . "/attack.js'></script>";
 
 //Définitions
 global $db, $table_prefix;
 
 // lecture des bbcodes dans la db
 $bbcolor = mod_get_option('bbcodes');
-$bbcolor = json_decode($bbcolor[0]);
+$bbcolor = json_decode($bbcolor, true);
 
 //Gestion des dates
 $date = date("j");
@@ -105,7 +105,7 @@ while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack
     $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deuterium ont été rapportés.\n";
     $bbcode .= "Les pertes s'élèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
 }
-$bbcode .= "[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des attaques en BBCode
@@ -129,7 +129,7 @@ while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fet
     $bbcode .= "Le " . $recy_date . " recyclage en " . $recy_coord . ".\n";
     $bbcode .= "[color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color] de métal, [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color] de cristal ont été recyclés.\n\n";
 }
-$bbcode .= "[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des recyclages en BBCode
@@ -175,7 +175,7 @@ $bbcode .= "Nombre de recyclages durant cette periode : " . $nb_recy . "\n\n";
 $bbcode .= "Metal recyclé : [color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color]\n";
 $bbcode .= "Cristal recyclé : [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color]\n\n";
 if ($renta > 0) $bbcode .= "Rentabilité : [color=" . $bbcolor['renta'] . "]" . $renta . "[/color]\n\n"; else $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
-$bbcode .= "[url=http://www.ogsteam.fr/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir les gains en BBCode

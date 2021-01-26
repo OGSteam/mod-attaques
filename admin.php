@@ -14,7 +14,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 global $db, $table_prefix, $prefixe;
 // lecture des bbcodes dans la db
 $bbcolor = mod_get_option('bbcodes');
-$bbcolor = json_decode($bbcolor,true);
+$bbcolor = json_decode( $bbcolor , true);
 
 // Paramètres de configurations transmis par le form
 if (isset($pub_submit)) {
@@ -207,6 +207,10 @@ echo "<tr>
   <th width=35%>Rentabilit&eacute;</th>
   <th width='50px'align='center'><input type='textbox' name='renta' value='" . $bbcolor['renta'] . "' size='7'></th>
 </tr>";
+echo "<tr>
+    <td colspan='6' style='text-align:center'><a href='https://www.w3schools.com/colors/colors_picker.asp' alt='colorpicker' target='_blank'>Color Picker</a></td>
+    </tr>";
+
 echo "<tr>
   <td colspan='6' class='c' align='center'><input name='submitbb' type='submit' value='Envoyer'></td>
 </tr>
