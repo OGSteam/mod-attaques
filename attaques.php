@@ -4,7 +4,7 @@
  *
  * @package Attaques
  * @author Verité modifié par ericc
- * @link http://www.ogsteam.fr
+ * @link http://www.ogsteam.eu
  * @version : 0.8a
  */
 
@@ -87,7 +87,7 @@ if ($nb_result != 0) {
             $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor[perte] . "]" . $attack_pertes . "[/color].\n\n";
         }
 
-        $bbcode .= "[url=https://forum.ogsteam.fr/index.php?topic=100.0]G&eacute;n&eacute;r&eacute; par le module de gestion des attaques avec OGSpy[/url]";
+        $bbcode .= "[url=https://forum.ogsteam.eu/index.php?topic=100.0]G&eacute;n&eacute;r&eacute; par le module de gestion des attaques avec OGSpy[/url]";
 
         echo "<br><br>";
         echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Liste de vos attaques du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "</span></legend>";

@@ -4,7 +4,7 @@
  *
  * @package Attaques
  * @author Verité modifié par ericc
- * @link http://www.ogsteam.fr
+ * @link http://www.ogsteam.eu
  * @version : 0.8a
  */
 

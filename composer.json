@@ -1,6 +1,6 @@
 {
     "name" : "ogsteam/mod-attaques",
-    "version" : "2.0.0",
+    "version" : "2.0.4",
     "description" : "OGSpy module that helps you to manage Combat Reports",
     "type" : "ogspy-mod",
     "keywords" : [ "ogspy" ],
