@@ -34,15 +34,15 @@ $query = "DROP TABLE IF EXISTS " . TABLE_ATTAQUES_ARCHIVES;
 $db->sql_query($query);
 
 //Ensuite, on crée la table attaques_attaques
-$query = "CREATE TABLE " . TABLE_ATTAQUES_ATTAQUES . " (" . " attack_id INT NOT NULL AUTO_INCREMENT, " . " attack_user_id INT NOT NULL, " . " attack_coord VARCHAR(8) NOT NULL, " . " attack_date INT NOT NULL, " . " attack_metal INT NOT NULL, " . " attack_cristal INT NOT NULL, " . " attack_deut INT NOT NULL, " . " attack_pertes INT NOT NULL, " . " primary key ( attack_id )" . " )";
+$query = "CREATE TABLE " . TABLE_ATTAQUES_ATTAQUES . " (" . " attack_id INT NOT NULL AUTO_INCREMENT, " . " attack_user_id INT NOT NULL, " . " attack_coord VARCHAR(8) NOT NULL, " . " attack_date INT NOT NULL, " . " attack_metal BIGINT NOT NULL, " . " attack_cristal BIGINT NOT NULL, " . " attack_deut BIGINT NOT NULL, " . " attack_pertes BIGINT NOT NULL, " . " primary key ( attack_id )" . " )";
 $db->sql_query($query);
 
 //Puis la table attaques_recyclages
-$query = "CREATE TABLE " . TABLE_ATTAQUES_RECYCLAGES . " (" . " recy_id INT NOT NULL AUTO_INCREMENT, " . " recy_user_id INT NOT NULL, " . " recy_coord VARCHAR(8) NOT NULL, " . " recy_date INT NOT NULL, " . " recy_metal INT NOT NULL, " . " recy_cristal INT NOT NULL, " . " primary key ( recy_id )" . " )";
+$query = "CREATE TABLE " . TABLE_ATTAQUES_RECYCLAGES . " (" . " recy_id INT NOT NULL AUTO_INCREMENT, " . " recy_user_id INT NOT NULL, " . " recy_coord VARCHAR(8) NOT NULL, " . " recy_date INT NOT NULL, " . " recy_metal BIGINT NOT NULL, " . " recy_cristal BIGINT NOT NULL, " . " primary key ( recy_id )" . " )";
 $db->sql_query($query);
 
 //Enfin la table attaques_archives
-$query = "CREATE TABLE " . TABLE_ATTAQUES_ARCHIVES . " (" . " archives_id INT NOT NULL AUTO_INCREMENT, " . " archives_user_id INT NOT NULL, " . " archives_nb_attaques INT NOT NULL, " . " archives_date INT NOT NULL, " . " archives_metal INT NOT NULL, " . " archives_cristal INT NOT NULL, " . " archives_deut INT NOT NULL, " . " archives_pertes INT NOT NULL, " . " archives_recy_metal INT NOT NULL, " . " archives_recy_cristal INT NOT NULL, " . " primary key ( archives_id )" . " )";
+$query = "CREATE TABLE " . TABLE_ATTAQUES_ARCHIVES . " (" . " archives_id INT NOT NULL AUTO_INCREMENT, " . " archives_user_id INT NOT NULL, " . " archives_nb_attaques INT NOT NULL, " . " archives_date INT NOT NULL, " . " archives_metal BIGINT NOT NULL, " . " archives_cristal BIGINT NOT NULL, " . " archives_deut BIGINT NOT NULL, " . " archives_pertes BIGINT NOT NULL, " . " archives_recy_metal BIGINT NOT NULL, " . " archives_recy_cristal BIGINT NOT NULL, " . " primary key ( archives_id )" . " )";
 $db->sql_query($query);
 
 // on insère les valeurs de configuration par défaut
