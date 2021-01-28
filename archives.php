@@ -22,7 +22,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 //Définitions
 global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;
 
-$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data["user_id"] . "'";
+$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['user_id'] . "'";
 $result = $db->sql_query($query);
 $nbline = $db->sql_numrows($result);
 
@@ -145,4 +145,3 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     }
 }
 echo "<br/>";
-?>

@@ -39,18 +39,18 @@ if ($nb_result != 0) {
     echo "<span style=\"color: #FF0000; \">Vos attaques du ou des mois précédent(s) ont été supprimé(s). Seuls les gains restent accessibles dans la partie Espace Archives<br>La liste de vos attaques qui viennent d'être supprimées est consultable une dernière fois. Pensez à la sauvegarder !!!</span>";
 // On récupère les paramètres bbcolors
     $bbcolor = mod_get_option('bbcodes');
-    $bbcolor = json_decode($bbcolor[0]);
+    $bbcolor = json_decode($bbcolor, true);
 
     while (list($month, $year, $metal, $cristal, $deut, $pertes) = $db->sql_fetch_row($result)) {
         //On recupère la liste complète des attaques de la période afin de pouvoir les compter
-        $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND MONTH(FROM_UNIXTIME(attack_date))=" . $month . " AND YEAR(FROM_UNIXTIME(attack_date))=" . $year . "";
+        $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(attack_date))=" . $month . " AND YEAR(FROM_UNIXTIME(attack_date))=" . $year . "";
 
         $list = $db->sql_query($query);
 
         $nb_ancattack = $db->sql_numrows($list);
 
         //On recupere les gains des recyclages
-        $query = "SELECT SUM(recy_metal) as metal_recy, SUM(recy_cristal) as cristal_recy FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["user_id"] . " AND MONTH(FROM_UNIXTIME(recy_date))=" . $month . " AND YEAR(FROM_UNIXTIME(recy_date))=" . $year . " GROUP BY recy_user_id";
+        $query = "SELECT SUM(recy_metal) as metal_recy, SUM(recy_cristal) as cristal_recy FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(recy_date))=" . $month . " AND YEAR(FROM_UNIXTIME(recy_date))=" . $year . " GROUP BY recy_user_id";
         $resultrecy = $db->sql_query($query);
 
         //On definit le timestamp
@@ -62,32 +62,30 @@ if ($nb_result != 0) {
         if($cristal_recy == null ) $cristal_recy = 0;
 
         //On sauvegarde les résultats
-        $query = "INSERT INTO " . TABLE_ATTAQUES_ARCHIVES . " ( `archives_id` , `archives_user_id` , `archives_nb_attaques` , `archives_date` , `archives_metal` , `archives_cristal` , `archives_deut` , `archives_pertes`, `archives_recy_metal`, `archives_recy_cristal` )
-                VALUES (
-                    NULL , '$user_data[user_id]', '$nb_ancattack', '$timestamp', '$metal', '$cristal', '$deut' , '$pertes', '$metal_recy', '$cristal_recy'
-                )";
+        $query = "INSERT INTO " . TABLE_ATTAQUES_ARCHIVES . " (`archives_user_id` , `archives_nb_attaques` , `archives_date` , `archives_metal` , `archives_cristal` , `archives_deut` , `archives_pertes`, `archives_recy_metal`, `archives_recy_cristal` )
+                VALUES (" . $user_data['user_id'] .", $nb_ancattack, $timestamp, $metal, $cristal, $deut , $pertes, $metal_recy, $cristal_recy)";
         $db->sql_query($query);
 
         //On supprime les attaques qui viennent d'être sauvegardées
-        $query = "DELETE FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id='$user_data[user_id]' AND MONTH(FROM_UNIXTIME(attack_date))=" . $month . " AND YEAR(FROM_UNIXTIME(attack_date))=" . $year . "";
+        $query = "DELETE FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id= ". $user_data['user_id']. " AND MONTH(FROM_UNIXTIME(attack_date))=$month AND YEAR(FROM_UNIXTIME(attack_date))=$year";
         $db->sql_query($query);
 
         //On supprime les recyclages qui viennent d'être sauvegardés
-        $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id='$user_data[user_id]' AND MONTH(FROM_UNIXTIME(recy_date))=" . $month . " AND YEAR(FROM_UNIXTIME(recy_date))=" . $year . "";
+        $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] ." AND MONTH(FROM_UNIXTIME(recy_date))=$month AND YEAR(FROM_UNIXTIME(recy_date))=$year";
         $db->sql_query($query);
 
         //On prépare la liste des attaques en BBCode
-        $bbcode = "[color=" . $bbcolor[title] . "][b]Liste des attaques de " . $user_data[user_name] . "[/b] [/color]\n";
+        $bbcode = "[color=" . $bbcolor['title'] . "][b]Liste des attaques de " . $user_data['user_name'] . "[/b] [/color]\n";
         $bbcode .= "du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "\n\n";
 
         while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($list)) {
             $attack_date = strftime("%d %b %Y %Hh%M", $attack_date);
             $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
-            $bbcode .= "[color=" . $bbcolor[m_g] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor[c_g] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor[d_g] . "]" . $attack_deut . "[/color] de deut&eacute;rium ont &eacute;t&eacute; rapport&eacute;s.\n";
-            $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor[perte] . "]" . $attack_pertes . "[/color].\n\n";
+            $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deutérium ont été rapportés.\n";
+            $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
         }
 
-        $bbcode .= "[url=https://forum.ogsteam.eu/index.php?topic=100.0]G&eacute;n&eacute;r&eacute; par le module de gestion des attaques avec OGSpy[/url]";
+        $bbcode .= "[url=https://forum.ogsteam.eu/index.php?topic=100.0]Généré par le module de gestion des attaques avec OGSpy[/url]";
 
         echo "<br><br>";
         echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Liste de vos attaques du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "</span></legend>";
@@ -101,7 +99,7 @@ if ($nb_result != 0) {
     require_once("views/page_tail.php");
 
     //On ajoute l'action dans le log
-    $line = "La listes des attaques de " . $user_data[user_name] . " a &eacute;t&eacute; supprimée. Les gains ont été archivés dans le module de gestion des attaques";
+    $line = "La listes des attaques de " . $user_data['user_name'] . " a &eacute;t&eacute; supprimée. Les gains ont été archivés dans le module de gestion des attaques";
     $fichier = "log_" . date("ymd") . '.log';
     $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
     write_file(PATH_LOG_TODAY . $fichier, "a", $line);
@@ -132,7 +130,7 @@ if (isset($pub_attack_id)) {
         echo "<blink><span style=\"color: FF0000; \">Vous n'avez pas le droit d'effacer cette attaque !!!</span></blink>";
 
         //On ajoute l'action dans le log
-        $line = $user_data[user_name] . " a tenté de supprimer une attaque qui appartient à un autre utilisateurs dans le module de gestion des attaques";
+        $line = $user_data['user_name'] . " a tenté de supprimer une attaque qui appartient à un autre utilisateurs dans le module de gestion des attaques";
         $fichier = "log_" . date("ymd") . '.log';
         $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
         write_file(PATH_LOG_TODAY . $fichier, "a", $line);
@@ -155,9 +153,9 @@ while($row = $db->sql_fetch_row($result))
 if(isset($pub_user_id) && isset($users[$pub_user_id]))
 	$user_id = $pub_user_id;
 else
-	$user_id = $user_data["user_id"];
+	$user_id = $user_data['user_id'];
 
-$estUtilisateurCourant = $user_id == $user_data["user_id"];
+$estUtilisateurCourant = $user_id == $user_data['user_id'];
 $masquer_coord = false;
 if(!$estUtilisateurCourant)	
 {
