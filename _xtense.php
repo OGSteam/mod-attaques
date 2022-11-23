@@ -195,5 +195,5 @@ function read_config ()
     $request = "SELECT `value` FROM `" . TABLE_MOD_CFG . "` WHERE `mod` = 'Attaques' AND  `config` = 'config'";
     $queryResult = $db->sql_query($request);
     $configs = $db->sql_fetch_row($queryResult);
-    $attack_config = json_decode($configs, true);
+    $attack_config = json_decode($configs[0], true);
 }

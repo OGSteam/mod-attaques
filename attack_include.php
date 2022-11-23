@@ -61,9 +61,9 @@ function mod_get_user_option( $user_id,$param)
     $query = "SELECT `value` FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id ." and `config`='" . $param . "'";
     $result = $db->sql_query($query);
     $user_config = $db->sql_fetch_row($result);
-    $user_config = $user_config['value'];
+    $user_value = $user_config['value'];
 
-    return $user_config;
+    return $user_value;
 }
 
 /**

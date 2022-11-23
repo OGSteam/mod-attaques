@@ -79,8 +79,9 @@ else {
 }
 
 $estUtilisateurCourant = $user_id == $user_data["user_id"];
+
 $masquer_coord = false;
-if(!$estUtilisateurCourant)	
+if(!$estUtilisateurCourant)
 {
     $result = mod_get_user_option($user_id, 'masquer_coord');
     if($result == null || $result['masquer_coord'] == '1')
@@ -115,8 +116,8 @@ $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
 //Requete pour afficher la liste des recyclages
-$query = "SELECT recy_coord, recy_date, recy_metal, recy_cristal, recy_id FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_id . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY recy_date DESC,recy_id DESC";
-$result = $db->sql_query($query);
+$query = "SELECT `recy_coord`, `recy_date`, `recy_metal`, `recy_cristal`, `recy_id` FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE `recy_user_id`=" . $user_id . " AND `recy_date` BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY `recy_date` DESC,`recy_id` DESC";
+$data_recyclages = $db->sql_query($query);
 
 //On recupère le nombre de recyclages
 $nb_recy = $db->sql_numrows($result);
@@ -227,11 +228,13 @@ echo "<td class=" . 'c' . " align=" . 'center' . "><b><span style=\"color: #FF00
 echo "</tr>";
 echo "<tr>";
 
-while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($result)) {
+while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($data_recyclages)) {
+    echo "coords : " .$recy_coord;
+    echo "option : ". $masquer_coord;
     $recy_date = strftime("%d %b %Y à %Hh%M", $recy_date);
     $recy_metal = number_format($recy_metal, 0, ',', ' ');
     $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-    echo "<th align='center'>" .$masquer_coord ? '' :  $recy_coord . "</th>";
+    if ( $masquer_coord == '') echo ("<th align='center'>" . $recy_coord . "</th>");
     echo "<th align='center'>" . $recy_date . "</th>";
     echo "<th align='center'>" . $recy_metal . "</th>";
     echo "<th align='center'>" . $recy_cristal . "</th>";
