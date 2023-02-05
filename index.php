@@ -32,7 +32,7 @@ $config = mod_get_option('config');
 $config = json_decode($config, true);
 
 // Appel des fonctions du module
-include(FOLDER_ATTCK . "/attack_include.php");
+include_once(FOLDER_ATTCK . "/attack_include.php");
 /**
  *Récupère le fichier de langue pour la langue approprié
  */
@@ -70,31 +70,31 @@ echo "<div class='attack_box'><div class='attack_box_background'> </div> <div cl
 //On  affiche de la page demandée
 switch ($pub_page) {
     case "bilan":
-        include("bilan.php");
+        include_once("bilan.php");
         break;
     case "bbcode":
-        include("bbcode.php");
+        include_once("bbcode.php");
         break;
     case "archive":
-        include("archives.php");
+        include_once("archives.php");
         break;
     case "statistiques":
-        include("statistiques.php");
+        include_once("statistiques.php");
         break;
     case "recyclages":
-        include("recyclages.php");
+        include_once("recyclages.php");
         break;
     case "admin":
-        include("admin.php");
+        include_once("admin.php");
         break;
     case "changelog":
-        include("changelog.php");
+        include_once("changelog.php");
         break;
     case "config":
-        include("config_user.php");
+        include_once("config_user.php");
         break;
     default:
-        include("attaques.php");
+        include_once("attaques.php");
         break;
 }
 
