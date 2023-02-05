@@ -135,7 +135,7 @@ echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Administration ";
 echo help("attaques_Administration");
 echo "</font></b></legend>";
 // Formulaire des paramètres du module
-echo "<form name='form1' style=\"margin:0px;padding:0px; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<form name='form1' style=\"margin:0px;padding:0px; align-content: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
 <td class='c' colspan='2'>Paramètres du module</td>
@@ -179,7 +179,7 @@ echo "</table></form>";
 
 // Formulaire des BBcodes
 echo "<br />";
-echo "<form name='form2' style='margin:0px;padding:0px;alignment: center' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<form name='form2' style='margin:0px;padding:0px;align-content: center' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
   <td class='c' colspan='6'>BBCodes&nbsp;" . help("attaques_bbcolor") . "&nbsp;</td>
@@ -314,7 +314,7 @@ for ($i = 0; $i < count($recy); $i++) {
 if ($inval_id > 0) {
     //On serialize l'array pour le transmettre par $_POST dans le form
     $trans_id = json_encode($id);
-    echo "<form name='form4' style=\"margin:0;padding:0; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+    echo "<form name='form4' style=\"margin:0;padding:0; align-content: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
     echo "<table width='60%' border='0'><tr>";
     echo "<th>Des données n'appartenant à aucun joueur actif ont été trouvées;
  dans la base de données</th>";
@@ -327,7 +327,7 @@ if ($inval_id > 0) {
 }
 
 //Connexion Xtense2
-echo "<form name='form5' style=\"margin:0;padding:0; alignment: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<form name='form5' style=\"margin:0;padding:0; align-content: center;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
 echo "<table width='60%' border='0'>
 <tr>
   <td class='c' colspan='5'>Xtense&nbsp;" . help("attaques_xtense") . "&nbsp;</td>
