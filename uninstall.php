@@ -1,4 +1,5 @@
 <?php
+
 /**
  * uninstall.php
  *
@@ -27,4 +28,3 @@ mod_del_all_option();
 $mod_uninstall_name = "attaques";
 $mod_uninstall_table = TABLE_ATTAQUES_ATTAQUES . ', ' . TABLE_ATTAQUES_RECYCLAGES . ', ' . TABLE_ATTAQUES_ARCHIVES . ', ' . TABLE_MOD_USER_CFG;
 uninstall_mod($mod_uninstall_name, $mod_uninstall_table);
-

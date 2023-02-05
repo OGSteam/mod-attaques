@@ -1,4 +1,5 @@
 <?php
+
 /**
  * config.php Page de configuration utilisateur
  *
@@ -15,18 +16,18 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 global $db, $table_prefix;
 
 // lecture des configs dans la db
-$user_config['diffusion_rapports'] = mod_get_user_option($user_data["user_id"],"diffusion_rapports" );
+$user_config['diffusion_rapports'] = mod_get_user_option($user_data["user_id"], "diffusion_rapports");
 $user_config['masquer_coord']      = mod_get_user_option($user_data["user_id"], "masquer_coord");
 
 // Paramètres de configurations transmis par le form
 if (isset($pub_submit)) {
-		$diffusion = isset($pub_diffusion) && $pub_diffusion == true ? 1 : 0;
-        mod_set_user_option( $user_data['user_id'],'diffusion_rapports', $diffusion);
-		$user_config['diffusion_rapports'] = $diffusion;
-		    
-		$masquer_coord = isset($pub_masquer_coord) && $pub_masquer_coord == true ? 1 : 0;
-        mod_set_user_option( $user_data['user_id'], 'masquer_coord', $masquer_coord);
-		$user_config['masquer_coord'] = $masquer_coord;
+    $diffusion = isset($pub_diffusion) && $pub_diffusion == true ? 1 : 0;
+    mod_set_user_option($user_data['user_id'], 'diffusion_rapports', $diffusion);
+    $user_config['diffusion_rapports'] = $diffusion;
+
+    $masquer_coord = isset($pub_masquer_coord) && $pub_masquer_coord == true ? 1 : 0;
+    mod_set_user_option($user_data['user_id'], 'masquer_coord', $masquer_coord);
+    $user_config['masquer_coord'] = $masquer_coord;
 
     echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
 }

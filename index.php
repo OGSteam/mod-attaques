@@ -1,4 +1,5 @@
 <?php
+
 /**
  * index.php
  *
@@ -22,8 +23,8 @@ define('FOLDER_ATTCK', 'mod/' . $root);
 define("TABLE_ATTAQUES_ATTAQUES", $table_prefix . "attaques_attaques");
 define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
-if(!defined("TABLE_MOD_USER_CFG"))
-	define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
+if (!defined("TABLE_MOD_USER_CFG"))
+    define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
 
 
 //récupération des paramètres de config
@@ -67,40 +68,39 @@ menu($pub_page);
 // Affichage du layer transparent
 echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //On  affiche de la page demandée
-switch($pub_page)
-{
-	case "bilan":
-		include("bilan.php");
-		break;
-	case "bbcode":
-		include("bbcode.php");
-		break;
-	case "archive":
-		include("archives.php");
-		break;
-	case "statistiques":
-		include("statistiques.php");
-		break;
-	case "recyclages":
-		include("recyclages.php");
-		break;		
-	case "admin":
-		include("admin.php");
-		break;
-	case "changelog":
-		include("changelog.php");
-		break;
-	case "config":
-		include("config_user.php");
-		break;
-	default:
-		include("attaques.php");
-		break;		
+switch ($pub_page) {
+    case "bilan":
+        include("bilan.php");
+        break;
+    case "bbcode":
+        include("bbcode.php");
+        break;
+    case "archive":
+        include("archives.php");
+        break;
+    case "statistiques":
+        include("statistiques.php");
+        break;
+    case "recyclages":
+        include("recyclages.php");
+        break;
+    case "admin":
+        include("admin.php");
+        break;
+    case "changelog":
+        include("changelog.php");
+        break;
+    case "config":
+        include("config_user.php");
+        break;
+    default:
+        include("attaques.php");
+        break;
 }
 
 // Fin du layer transparent
 echo "</div></div>";
-// Version number at the bottom of the page 
+// Version number at the bottom of the page
 require_once(FOLDER_ATTCK . "/footer.php");
 echo "<br>";
 //Insertion du bas de page d'OGSpy

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * bilan.php
  *
@@ -29,52 +30,51 @@ if ($yesterday < 1) $yesterday = 1;
 
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u 
-			LEFT JOIN " . TABLE_MOD_USER_CFG . " mu 
-				ON mu.`user_id` = u.`user_id`
-		  WHERE u.`user_id` = " . $user_data['user_id']." OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-		  ORDER BY u.`user_name`";
+$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+            LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
+                ON mu.`user_id` = u.`user_id`
+          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY u.`user_name`";
 
 $result = $db->sql_query($query);
 $users = array();
-while($row = $db->sql_fetch_row($result))
-	$users[$row[0]] = $row[1];
+while ($row = $db->sql_fetch_row($result))
+    $users[$row[0]] = $row[1];
 
 // Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
-if(isset($pub_user_id) && isset($users[$pub_user_id]))
-	$user_id = $pub_user_id;
+if (isset($pub_user_id) && isset($users[$pub_user_id]))
+    $user_id = $pub_user_id;
 else
-	$user_id = $user_data["user_id"];
+    $user_id = $user_data["user_id"];
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
-if (!isset($pub_date_from)) 
-	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
-else 
-{
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
-	if($pub_date['error_count'] == 0)
-		$pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+if (!isset($pub_date_from))
+    $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
+else {
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_from);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 }
 
-if (!isset($pub_date_to)) 
-	$pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); 
+if (!isset($pub_date_to))
+    $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee);
 else {
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_to);
-	if($pub_date['error_count'] == 0)
-		$pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);	
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_to);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
 }
 
 $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
 
-//Requete pour afficher la liste des attaques 
+//Requete pour afficher la liste des attaques
 $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
 $result = $db->sql_query($query);
 
@@ -107,25 +107,23 @@ echo "au : ";
 echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
 echo "<br>";
 ?>
-    <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du
-        jour</a> |
-    <a href="#haut"
-       onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
-        veille</a> |
-    <a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
-        7 derniers jours</a> |
-    <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du
+    jour</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
+    veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
+    7 derniers jours</a> |
+<a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
 <br />
 <select name="user_id">
-	<?php foreach($users as $id => $username)
-	{
-		echo "<option value='$id'";
-		if($id == $user_id)
-			echo " SELECTED=SELECTED";
-		echo ">$username</option>";
-	}
-	?>
-</select>	
+    <?php foreach ($users as $id => $username) {
+        echo "<option value='$id'";
+        if ($id == $user_id)
+            echo " SELECTED=SELECTED";
+        echo ">$username</option>";
+    }
+    ?>
+</select>
 <?php
 echo "<br><br>";
 echo "<input type='submit' value='Afficher' name='B1'></form>";
@@ -184,24 +182,24 @@ if ($config['histo'] == 1) {
     // Initialisation des variables et tableau
 
     $barre = array();
-	$maxy = 0;
+    $maxy = 0;
     // Lecture de la base de données et stockage des valeurs dans le tableau
-	while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
-		$barre[$jour][0] = $metal;
-		$barre[$jour][1] = $cristal;
-		$barre[$jour][2] = $deut;
+    while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
+        $barre[$jour][0] = $metal;
+        $barre[$jour][1] = $cristal;
+        $barre[$jour][2] = $deut;
 
-		// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
-		if ($metal > $maxy) {
-			$maxy = $metal;
-		}
-		if ($cristal > $maxy) {
-			$maxy = $cristal;
-		}
-		if ($deut > $maxy) {
-			$maxy = $deut;
-		}
-	}    
+        // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+        if ($metal > $maxy) {
+            $maxy = $metal;
+        }
+        if ($cristal > $maxy) {
+            $maxy = $cristal;
+        }
+        if ($deut > $maxy) {
+            $maxy = $deut;
+        }
+    }
 
     if (isset($query2)) {
         $result2 = $db->sql_query($query2);
@@ -262,7 +260,7 @@ if ($config['histo'] == 1) {
 
     echo "<script type='text/javascript'>
                 function number_format(number, decimals, dec_point, thousands_sep) {
-                    var n = !isFinite(+number) ? 0 : +number, 
+                    var n = !isFinite(+number) ? 0 : +number,
                     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                     s = '',
@@ -279,9 +277,9 @@ if ($config['histo'] == 1) {
                         s[1] += new Array(prec - s[1].length + 1).join('0');
                     }    return s.join(dec);
                 }
-                
+
             var chart;
-            
+
                 chart = new Highcharts.Chart({
           chart: {
              renderTo: 'graphiquemois',
@@ -342,10 +340,10 @@ if ($config['histo'] == 1) {
              }
           },
                series: [" . $series . "]
-       });     
+       });
     </script>";
 
-//echo"</fieldset>";
+    //echo"</fieldset>";
 }
 echo "<br />";
 echo "<br />";

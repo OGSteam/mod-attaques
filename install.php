@@ -1,4 +1,5 @@
 <?php
+
 /**
  * install.php
  *
@@ -60,10 +61,10 @@ if ($db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xten
     $result = $db->sql_query($query);
     $attack_id = $db->sql_fetch_row($result);
     $attack_id = $attack_id[0];
-    // on fait du nettoyage au cas ou 
+    // on fait du nettoyage au cas ou
     $query = "DELETE FROM `" . $table_prefix . "xtense_callbacks" . "` WHERE `mod_id`=" . $attack_id;
     $db->sql_query($query);
-    // Insert les données pour récuperer les RC 
+    // Insert les données pour récuperer les RC
     $query = "INSERT INTO " . $table_prefix . "xtense_callbacks" . " ( `mod_id` , `function` , `type` )
                 VALUES ( '" . $attack_id . "', 'attack_rc', 'rc')";
     $db->sql_query($query);
@@ -74,17 +75,16 @@ if ($db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xten
 }
 
 // On vérifie que la table mod_user_config existe
-if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "mod_user_config'")))
-{
-	    // sinon on la crée 
+if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "mod_user_config'"))) {
+    // sinon on la crée
     $query = "CREATE TABLE `" . $table_prefix . "mod_user_config` (
-				`mod` VARCHAR(50) NOT NULL,
-				`config` VARCHAR(255) NOT NULL,
-				`user_id` INT(11) NOT NULL,
-				`value` VARCHAR(255) NOT NULL,
-			 PRIMARY KEY (`mod`, `config`, `user_id`),
-			 UNIQUE KEY `config` (`config`)
-			)
-			DEFAULT CHARSET = utf8";
+                `mod` VARCHAR(50) NOT NULL,
+                `config` VARCHAR(255) NOT NULL,
+                `user_id` INT(11) NOT NULL,
+                `value` VARCHAR(255) NOT NULL,
+             PRIMARY KEY (`mod`, `config`, `user_id`),
+             UNIQUE KEY `config` (`config`)
+            )
+            DEFAULT CHARSET = utf8";
     $db->sql_query($query);
 }

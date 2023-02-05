@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Fonctions du modules
  * @package Attaques
@@ -8,12 +9,13 @@
  * dernière modification : 28 Dec 2007
  */
 
-//------------------------------------------------------------------------------------------------------------------- 
+//-------------------------------------------------------------------------------------------------------------------
 // Renvoi 1 si l'utilisateur est admin, coadmin ou manager
-function IsUserAdmin ()
+function IsUserAdmin()
 {
     global $user_data;
-    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) return 1; else return 0;
+    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) return 1;
+    else return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -36,7 +38,7 @@ function mod_set_user_option($user_id, $param, $value)
         redirection("index.php?action=message&id_message=errordata&info");
     }
 
-    $query = "REPLACE INTO `" . TABLE_MOD_USER_CFG . "`(`mod`, `user_id`, `config`, `value`) VALUES('Attaques' ," . $user_id . ", '" . $param . "' , '" . $value ."')";
+    $query = "REPLACE INTO `" . TABLE_MOD_USER_CFG . "`(`mod`, `user_id`, `config`, `value`) VALUES('Attaques' ," . $user_id . ", '" . $param . "' , '" . $value . "')";
     $result = $db->sql_query($query);
     return $result;
 }
@@ -47,7 +49,7 @@ function mod_set_user_option($user_id, $param, $value)
  * @param string $param Name of the parameter
  * @return array returns true if the parameter is correctly saved. false in other cases.
  */
-function mod_get_user_option( $user_id,$param)
+function mod_get_user_option($user_id, $param)
 {
     global $db;
 
@@ -58,7 +60,7 @@ function mod_get_user_option( $user_id,$param)
         redirection("index.php?action=message&id_message=errordata&info");
     }
 
-    $query = "SELECT `value` FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id ." and `config`='" . $param . "'";
+    $query = "SELECT `value` FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id . " and `config`='" . $param . "'";
     $result = $db->sql_query($query);
     $user_config = $db->sql_fetch_row($result);
     $user_value = $user_config['value'];
@@ -72,7 +74,7 @@ function mod_get_user_option( $user_id,$param)
  * @param $user_id
  * @return void returns true if the parameter is correctly saved. false in other cases.
  */
-function mod_del_user_option($user_id , $param)
+function mod_del_user_option($user_id, $param)
 {
     global $db;
     if (!check_var($param, "Text")) {
@@ -82,15 +84,14 @@ function mod_del_user_option($user_id , $param)
         redirection("index.php?action=message&id_message=errordata&info");
     }
 
-    $query = "DELETE FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id ." and `config`=". $param;
+    $query = "DELETE FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id . " and `config`=" . $param;
     $result = $db->sql_query($query);
-
 }
 // Création du menu
 /**
  * @param $pub_page
  */
-function menu ($pub_page)
+function menu($pub_page)
 {
     global $pages;
     // Definition des pages du module
@@ -118,17 +119,17 @@ function menu ($pub_page)
     $pages['fichier'][++$i] = 'statistiques';
     $pages['texte'][$i] = '&nbsp;Statistiques&nbsp;';
     $pages['admin'][$i] = 0;
-	
-	$pages['fichier'][++$i] = 'config';
-	$pages['texte'][$i] = '&nbsp;Config&nbsp;';
-	$pages['admin'][$i] = 0;
+
+    $pages['fichier'][++$i] = 'config';
+    $pages['texte'][$i] = '&nbsp;Config&nbsp;';
+    $pages['admin'][$i] = 0;
 
     $pages['fichier'][++$i] = 'admin';
     $pages['texte'][$i] = 'Admin';
     $pages['admin'][$i] = 1;
 
     //Construction du menu
-    echo "	<table><tr align='center'>";
+    echo "  <table><tr align='center'>";
     for ($i = 0; $i < count($pages['fichier']); $i++) if (($pages['admin'][$i] && IsUserAdmin()) || (!$pages['admin'][$i])) if ($pub_page != $pages['fichier'][$i]) {
         echo "\t<td class='c' width='150' onclick=\"window.location = 'index.php?action=attaques&page=" . $pages['fichier'][$i] . "';\">";
         echo "<a style='cursor:pointer'><span style=\"color: lime; \">" . $pages['texte'][$i] . "</span></a></td>";

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * admin.php Page de configuration - Accessible uniquement par les admins
  *
@@ -14,7 +15,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 global $db, $table_prefix, $prefixe;
 // lecture des bbcodes dans la db
 $bbcolor = mod_get_option('bbcodes');
-$bbcolor = json_decode( $bbcolor , true);
+$bbcolor = json_decode($bbcolor, true);
 
 // Paramètres de configurations transmis par le form
 if (isset($pub_submit)) {
@@ -222,9 +223,9 @@ echo "<br />";
 echo "<table width='60%' border='0'>
 <tr>
   <td class='c' colspan='5'>Base de données " . help("attaques_mysql") . "&nbsp;</td>
-	</tr>";
+    </tr>";
 echo "<tr>";
-// On récupère les dates des archives présentes dans la base de données par ordre croissant 
+// On récupère les dates des archives présentes dans la base de données par ordre croissant
 $query = "SELECT DISTINCT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " order by `archives_date`";
 $result = $db->sql_query($query);
 //reinitialise l'array
@@ -232,27 +233,26 @@ $ann = array();
 while (list($date) = $db->sql_fetch_row($result)) {
     $ann[] = $date;
 }
-	if(isset($ann[0]))
-	{
-		echo "<th colspan='5'>Vous avez des archives depuis " . date("M Y", $ann[0]) . ". A partir de quand souhaitez vous purger ?</th></tr><tr>";
-		// On affiche la liste des dates présentes avec un checkbox
-		$count = 0;
-		for ($i = 0; $i < count($ann); $i++) {
-			echo "<th><input type='radio' name='purge' value='" . $ann[$i] . "' > " . date("M Y", $ann[$i]) . "</th>";
-			$count += 1;
-			// on limite à 5 cases par ligne pour la mise en forme
-			if (($count / 5) == (intval($count / 5))) {
-				echo "</tr><tr>";
-			}
-		}
-		// Pour la beauté du geste, si le nb de case ne tombe pas juste, on complète par des cases vides
-		if (($count / 5) != (intval($count / 5))) {
-			for ($i = 1; $i <= (((intval($count / 5) + 1) * 5) - $count); $i++) {
-				echo "<th>&nbsp;</th>";
-			}
-		}
-	} else
-		echo "<th colspan='5'>Vous n'avez pas d'archives à purger</th>";
+if (isset($ann[0])) {
+    echo "<th colspan='5'>Vous avez des archives depuis " . date("M Y", $ann[0]) . ". A partir de quand souhaitez vous purger ?</th></tr><tr>";
+    // On affiche la liste des dates présentes avec un checkbox
+    $count = 0;
+    for ($i = 0; $i < count($ann); $i++) {
+        echo "<th><input type='radio' name='purge' value='" . $ann[$i] . "' > " . date("M Y", $ann[$i]) . "</th>";
+        $count += 1;
+        // on limite à 5 cases par ligne pour la mise en forme
+        if (($count / 5) == (intval($count / 5))) {
+            echo "</tr><tr>";
+        }
+    }
+    // Pour la beauté du geste, si le nb de case ne tombe pas juste, on complète par des cases vides
+    if (($count / 5) != (intval($count / 5))) {
+        for ($i = 1; $i <= (((intval($count / 5) + 1) * 5) - $count); $i++) {
+            echo "<th>&nbsp;</th>";
+        }
+    }
+} else
+    echo "<th colspan='5'>Vous n'avez pas d'archives à purger</th>";
 echo "</tr>";
 
 echo "<tr><td colspan='5' class='c' align='center'><input name='submitpurg' type='submit' value='Envoyer'></td></tr>";

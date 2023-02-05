@@ -1,4 +1,5 @@
 <?php
+
 /**
  * attaques.php
  *
@@ -37,7 +38,7 @@ $nb_result = $db->sql_numrows($result);
 //Si le nombre d'attaques n'appartenant pas au mois actuel est different de 0, on entre alors dans la partie sauvegarde des résultats anterieurs
 if ($nb_result != 0) {
     echo "<span style=\"color: #FF0000; \">Vos attaques du ou des mois précédent(s) ont été supprimé(s). Seuls les gains restent accessibles dans la partie Espace Archives<br>La liste de vos attaques qui viennent d'être supprimées est consultable une dernière fois. Pensez à la sauvegarder !!!</span>";
-// On récupère les paramètres bbcolors
+    // On récupère les paramètres bbcolors
     $bbcolor = mod_get_option('bbcodes');
     $bbcolor = json_decode($bbcolor, true);
 
@@ -58,20 +59,20 @@ if ($nb_result != 0) {
 
         list($metal_recy, $cristal_recy) = $db->sql_fetch_row($resultrecy);
         // Sql Fetch Row can set values to null if no result
-        if($metal_recy == null ) $metal_recy = 0;
-        if($cristal_recy == null ) $cristal_recy = 0;
+        if ($metal_recy == null) $metal_recy = 0;
+        if ($cristal_recy == null) $cristal_recy = 0;
 
         //On sauvegarde les résultats
         $query = "INSERT INTO " . TABLE_ATTAQUES_ARCHIVES . " (`archives_user_id` , `archives_nb_attaques` , `archives_date` , `archives_metal` , `archives_cristal` , `archives_deut` , `archives_pertes`, `archives_recy_metal`, `archives_recy_cristal` )
-                VALUES (" . $user_data['user_id'] .", $nb_ancattack, $timestamp, $metal, $cristal, $deut , $pertes, $metal_recy, $cristal_recy)";
+                VALUES (" . $user_data['user_id'] . ", $nb_ancattack, $timestamp, $metal, $cristal, $deut , $pertes, $metal_recy, $cristal_recy)";
         $db->sql_query($query);
 
         //On supprime les attaques qui viennent d'être sauvegardées
-        $query = "DELETE FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id= ". $user_data['user_id']. " AND MONTH(FROM_UNIXTIME(attack_date))=$month AND YEAR(FROM_UNIXTIME(attack_date))=$year";
+        $query = "DELETE FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id= " . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(attack_date))=$month AND YEAR(FROM_UNIXTIME(attack_date))=$year";
         $db->sql_query($query);
 
         //On supprime les recyclages qui viennent d'être sauvegardés
-        $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] ." AND MONTH(FROM_UNIXTIME(recy_date))=$month AND YEAR(FROM_UNIXTIME(recy_date))=$year";
+        $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " AND MONTH(FROM_UNIXTIME(recy_date))=$month AND YEAR(FROM_UNIXTIME(recy_date))=$year";
         $db->sql_query($query);
 
         //On prépare la liste des attaques en BBCode
@@ -138,79 +139,79 @@ if (isset($pub_attack_id)) {
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u 
-			LEFT JOIN " . TABLE_MOD_USER_CFG . " mu 
-				ON mu.`user_id` = u.`user_id`
-		  WHERE u.`user_id` = " . $user_data['user_id']." OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-		  ORDER BY u.`user_name`";
+$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+            LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
+                ON mu.`user_id` = u.`user_id`
+          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY u.`user_name`";
 
 $result = $db->sql_query($query);
 $users = array();
-while($row = $db->sql_fetch_row($result))
-	$users[$row[0]] = $row[1];
+while ($row = $db->sql_fetch_row($result))
+    $users[$row[0]] = $row[1];
 
 // Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
-if(isset($pub_user_id) && isset($users[$pub_user_id]))
-	$user_id = $pub_user_id;
+if (isset($pub_user_id) && isset($users[$pub_user_id]))
+    $user_id = $pub_user_id;
 else
-	$user_id = $user_data['user_id'];
+    $user_id = $user_data['user_id'];
 
 $estUtilisateurCourant = $user_id == $user_data['user_id'];
 $masquer_coord = false;
-if(!$estUtilisateurCourant)	
-{
-	$result = mod_get_user_option($user_id, 'masquer_coord');
-	if($result == null || $result['masquer_coord'] == '1')
-		$masquer_coord = true;	
-}
-		  
-//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
-if (!isset($pub_date_from)) 
-	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
-else 
-{
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
-	if($pub_date['error_count'] == 0)
-		$pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+if (!$estUtilisateurCourant) {
+    $result = mod_get_user_option($user_id, 'masquer_coord');
+    if ($result == null || $result['masquer_coord'] == '1')
+        $masquer_coord = true;
 }
 
-if (!isset($pub_date_to)) 
-	$pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); 
+//Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
+if (!isset($pub_date_from))
+    $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
 else {
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_to);
-	if($pub_date['error_count'] == 0)
-		$pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);	
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_from);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+}
+
+if (!isset($pub_date_to))
+    $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee);
+else {
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_to);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
 }
 
 $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
 //Si le choix de l'ordre n'est pas définis on met celui par defaut
-if (!isset($pub_order_by)) $pub_order_by = "attack_date"; else $pub_order_by = $db->sql_escape_string($pub_order_by);
+if (!isset($pub_order_by)) $pub_order_by = "attack_date";
+else $pub_order_by = $db->sql_escape_string($pub_order_by);
 
-if (!isset($pub_sens)) $pub_sens = "DESC"; elseif ($pub_sens == 2) $pub_sens = "DESC";
+if (!isset($pub_sens)) $pub_sens = "DESC";
+elseif ($pub_sens == 2) $pub_sens = "DESC";
 elseif ($pub_sens == 1) $pub_sens = "ASC";
 
-//Requete pour afficher la liste des attaques 
+//Requete pour afficher la liste des attaques
 $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to;
 
 $order_by = " ORDER BY ";
-if($pub_order_by != 'attack_coord')
-	$order_by .= $pub_order_by . " " . $pub_sens;
+if ($pub_order_by != 'attack_coord')
+    $order_by .= $pub_order_by . " " . $pub_sens;
 else {
-	// On va trier par les valeurs des coordonnées
-	// Galaxie
-	$order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', 1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
-	// Système
-	$order_by .= "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(attack_coord, ':', 2), ':', -1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
-	// Planète
-	$order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', -1)AS UNSIGNED INTEGER) " . $pub_sens;
+    // On va trier par les valeurs des coordonnées
+    // Galaxie
+    $order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', 1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
+    // Système
+    $order_by .= "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(attack_coord, ':', 2), ':', -1)AS UNSIGNED INTEGER) " . $pub_sens . ",";
+    // Planète
+    $order_by .= "CAST(SUBSTRING_INDEX(attack_coord, ':', -1)AS UNSIGNED INTEGER) " . $pub_sens;
 }
 $query .= $order_by;
 
@@ -251,14 +252,13 @@ echo "<br>";
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
 <br />
 <select name="user_id">
-	<?php foreach($users as $id => $username)
-	{
-		echo "<option value='$id'";
-		if($id == $user_id)
-			echo " SELECTED=SELECTED";
-		echo ">$username</option>";
-	}
-	?>
+    <?php foreach ($users as $id => $username) {
+        echo "<option value='$id'";
+        if ($id == $user_id)
+            echo " SELECTED=SELECTED";
+        echo ">$username</option>";
+    }
+    ?>
 </select>
 <?php
 
@@ -337,21 +337,20 @@ while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack
     $attack_pertes = number_format($attack_pertes, 0, ',', ' ');
     $coord = explode(":", $attack_coord);
     echo "<th align='center'>";
-	if(!$masquer_coord)
-		echo "<a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord;
-	echo "</th>";
+    if (!$masquer_coord)
+        echo "<a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord;
+    echo "</th>";
     echo "<th align='center'>" . $attack_date . "</th>";
     echo "<th align='center'>" . $attack_metal . "</th>";
     echo "<th align='center'>" . $attack_cristal . "</th>";
     echo "<th align='center'>" . $attack_deut . "</th>";
     echo "<th align='center'>" . $attack_pertes . "</th>";
     echo "<th align='center' valign='middle'>";
-	
-	if($estUtilisateurCourant)
-	{
-		echo "<form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit'	value='Supprimer' name='B1' style='color: #FF0000'></form>";
-	}
-	echo "</th>";
+
+    if ($estUtilisateurCourant) {
+        echo "<form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit'  value='Supprimer' name='B1' style='color: #FF0000'></form>";
+    }
+    echo "</th>";
     echo "</tr>";
     echo "<tr>";
 }
@@ -373,24 +372,24 @@ if ($config['histo'] == 1) {
     // Initialisation des variables et tableau
 
     $barre = array();
-	$maxy = 0;
+    $maxy = 0;
     // Lecture de la base de données et stockage des valeurs dans le tableau
-	while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
-		$barre[$jour][0] = $metal;
-		$barre[$jour][1] = $cristal;
-		$barre[$jour][2] = $deut;
+    while (list($jour, $metal, $cristal, $deut) = $db->sql_fetch_row($result)) {
+        $barre[$jour][0] = $metal;
+        $barre[$jour][1] = $cristal;
+        $barre[$jour][2] = $deut;
 
-		// on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
-		if ($metal > $maxy) {
-			$maxy = $metal;
-		}
-		if ($cristal > $maxy) {
-			$maxy = $cristal;
-		}
-		if ($deut > $maxy) {
-			$maxy = $deut;
-		}
-	}    
+        // on recherche la valeur la plus grande pour définir la valeur maxi de l'axe Y
+        if ($metal > $maxy) {
+            $maxy = $metal;
+        }
+        if ($cristal > $maxy) {
+            $maxy = $cristal;
+        }
+        if ($deut > $maxy) {
+            $maxy = $deut;
+        }
+    }
 
     $i = 0;
     $categories = "";
@@ -429,7 +428,7 @@ if ($config['histo'] == 1) {
 
     echo "<script type='text/javascript'>
                 function number_format(number, decimals, dec_point, thousands_sep) {
-                    var n = !isFinite(+number) ? 0 : +number, 
+                    var n = !isFinite(+number) ? 0 : +number,
                     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                     s = '',
@@ -446,9 +445,9 @@ if ($config['histo'] == 1) {
                         s[1] += new Array(prec - s[1].length + 1).join('0');
                     }    return s.join(dec);
                 }
-                
+
             var chart;
-            
+
             chart = new Highcharts.Chart({
                                   chart: {
                                      renderTo: 'graphiquemois',
@@ -509,7 +508,7 @@ if ($config['histo'] == 1) {
                                      }
                                   },
                                        series: [" . $series . "]
-       });   
+       });
     </script>";
 }
 echo "<br>";

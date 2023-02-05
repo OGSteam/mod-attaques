@@ -1,4 +1,5 @@
 <?php
+
 /**
  * bbcode.php
  *
@@ -32,14 +33,16 @@ if ($septjours < 1) $septjours = 1;
 if ($yesterday < 1) $yesterday = 1;
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jours,
-if (!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+if (!isset($pub_date_from)) $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
+else $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 
-if (!isset($pub_date_to)) $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); else $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
+if (!isset($pub_date_to)) $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee);
+else $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
 
 $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
-//Requete pour afficher la liste des attaques 
+//Requete pour afficher la liste des attaques
 $query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
 $attaques = $db->sql_query($query);
 
@@ -77,14 +80,13 @@ echo "au : ";
 echo "<input type='text' name='date_to' id='date_to' size='11' maxlength='2' value='$pub_date_to' />";
 echo "<br>";
 ?>
-    <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>');  valid();">du
-        jour</a> |
-    <a href="#haut"
-       onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
-        veille</a> |
-    <a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
-        7 derniers jours</a> |
-    <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>');  valid();">du
+    jour</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
+    veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
+    7 derniers jours</a> |
+<a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
 <?php
 echo "<br><br>";
 echo "<input type='submit' value='Afficher' name='B1'></form>";
@@ -174,7 +176,8 @@ $bbcode .= "Total des pertes attaquant : [color=" . $bbcolor['perte'] . "]" . $a
 $bbcode .= "Nombre de recyclages durant cette periode : " . $nb_recy . "\n\n";
 $bbcode .= "Metal recyclé : [color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color]\n";
 $bbcode .= "Cristal recyclé : [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color]\n\n";
-if ($renta > 0) $bbcode .= "Rentabilité : [color=" . $bbcolor['renta'] . "]" . $renta . "[/color]\n\n"; else $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
+if ($renta > 0) $bbcode .= "Rentabilité : [color=" . $bbcolor['renta'] . "]" . $renta . "[/color]\n\n";
+else $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
 $bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 

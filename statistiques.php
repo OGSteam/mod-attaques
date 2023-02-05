@@ -1,4 +1,5 @@
 <?php
+
 /**
  * archives.php
  *
@@ -89,7 +90,7 @@ echo create_pie_numbers(($attack_metal + $recy_metal) . "_x_" . ($attack_cristal
 /*
 echo "<script type='text/javascript'>
             function number_format(number, decimals, dec_point, thousands_sep) {
-                var n = !isFinite(+number) ? 0 : +number, 
+                var n = !isFinite(+number) ? 0 : +number,
                 prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                 sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                 s = '',
@@ -106,9 +107,9 @@ echo "<script type='text/javascript'>
                     s[1] += new Array(prec - s[1].length + 1).join('0');
                 }    return s.join(dec);
             }
-            
+
         var chart;
-        
+
             chart = new Highcharts.Chart({
               chart: {
                  renderTo: 'graphique',
@@ -170,7 +171,7 @@ echo "<script type='text/javascript'>
                         };
                     }
                     if($attack_deut!=0){
-                        echo "['<b>Deut&eacute;rium</b>', ".number_format($attack_deut, 0, ',', '')."]";		            	
+                        echo "['<b>Deut&eacute;rium</b>', ".number_format($attack_deut, 0, ',', '')."]";
                         if($attack_deut!=0 || $attack_pertes!=0 || $recy_metal!=0 || $recy_cristal!=0){
                         echo ",";
                         };
@@ -189,7 +190,7 @@ echo "<script type='text/javascript'>
                     }
                     if($attack_pertes!=0){
                     echo "{
-                       name: '<b>Pertes</b>',    
+                       name: '<b>Pertes</b>',
                        y: ".number_format($attack_pertes, 0, ',', '').",
                        sliced: true,
                        selected: true
@@ -239,7 +240,6 @@ while (list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attac
         $deuterium .= "," . $attack_deut;
         $pertes .= "," . $attack_pertes;
     }
-
 }
 
 $series = "{name: 'Métal', data: [" . $metal . "] }, " . "{name: 'Cristal', data: [" . $cristal . "] }, " . "{name: 'Deutérium', data: [" . $deuterium . "] }, " . "{name: 'Pertes', data: [" . $pertes . "] }";
@@ -256,7 +256,7 @@ echo "<div id='graphiquemois' style='height: 350px; width: 410px; margin: 0pt au
 
 echo "<script type='text/javascript'>
             function number_format(number, decimals, dec_point, thousands_sep) {
-                var n = !isFinite(+number) ? 0 : +number, 
+                var n = !isFinite(+number) ? 0 : +number,
                 prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                 sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                 s = '',
@@ -273,9 +273,9 @@ echo "<script type='text/javascript'>
                     s[1] += new Array(prec - s[1].length + 1).join('0');
                 }    return s.join(dec);
             }
-            
+
         var chart;
-        
+
             chart = new Highcharts.Chart({
           chart: {
              renderTo: 'graphiquemois',
@@ -348,7 +348,7 @@ echo "</fieldset>";
 //Cacul pour obtenir les gains
 //$query = "SELECT attack_user_id, SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes), WEEKOFYEAR(FROM_UNIXTIME(attack_date)) FROM ".TABLE_ATTAQUES_ATTAQUES." WHERE attack_date >= ".$debutdumois." AND attack_date <= ".$findumois." GROUP BY attack_user_id";
 
-$query = "SELECT user_stat_name, user_id, " . "SUM(attacks.attack_metal), " . "(SELECT SUM(recy_metal) FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_metal, " . "SUM(attacks.attack_cristal), " . "(SELECT SUM(recy_cristal) FROM ".TABLE_ATTAQUES_RECYCLAGES." WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_cristal, " . "SUM(attacks.attack_deut), SUM(attacks.attack_pertes) " . "FROM ".TABLE_USER." users " . "INNER JOIN ".TABLE_ATTAQUES_ATTAQUES." attacks ON attacks.attack_user_id = users.user_id " . "WHERE attacks.attack_date BETWEEN 1367359200 AND 1370037599 " . "GROUP BY users.user_id " . "ORDER BY user_stat_name ASC";
+$query = "SELECT user_stat_name, user_id, " . "SUM(attacks.attack_metal), " . "(SELECT SUM(recy_metal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_metal, " . "SUM(attacks.attack_cristal), " . "(SELECT SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id = users.user_id AND recy_date BETWEEN 1367359200 AND 1370037599) AS recy_cristal, " . "SUM(attacks.attack_deut), SUM(attacks.attack_pertes) " . "FROM " . TABLE_USER . " users " . "INNER JOIN " . TABLE_ATTAQUES_ATTAQUES . " attacks ON attacks.attack_user_id = users.user_id " . "WHERE attacks.attack_date BETWEEN 1367359200 AND 1370037599 " . "GROUP BY users.user_id " . "ORDER BY user_stat_name ASC";
 
 $resultgains = $db->sql_query($query);
 
@@ -359,11 +359,11 @@ $seriesglobal="";
 while(list($user, $attack_user_id, $attack_metal, $recy_metal, $attack_cristal, $recy_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains) ){
     $i++;
     $renta = (($attack_metal + $recy_metal + $attack_cristal + $recy_cristal + $attack_deut) - $attack_pertes);
-    
+
     if($renta > 0 && !(strpos($seriesglobal,$user) !== FALSE)) {
         if($i > 1){
             $seriesglobal .= ",";
-        }		
+        }
         $serie = "{name: '" . $user . "', data: ["  . $attack_metal . "," . $recy_metal . "," . $attack_cristal . "," .$recy_cristal . "," . $attack_deut . "," . $attack_pertes . "," . $renta . "]}";
         $seriesglobal .= $serie;
     }
@@ -405,7 +405,7 @@ echo create_pie_numbers($valeurs, $noms, "Historique du mois", "graphiquemoisglo
 /*
 echo "<script type='text/javascript'>
             function number_format(number, decimals, dec_point, thousands_sep) {
-                var n = !isFinite(+number) ? 0 : +number, 
+                var n = !isFinite(+number) ? 0 : +number,
                 prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                 sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                 s = '',
@@ -422,9 +422,9 @@ echo "<script type='text/javascript'>
                     s[1] += new Array(prec - s[1].length + 1).join('0');
                 }    return s.join(dec);
             }
-            
+
         var chart;
-        
+
             chart = new Highcharts.Chart({
                 chart: {
                     type: 'column',

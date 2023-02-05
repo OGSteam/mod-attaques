@@ -1,4 +1,5 @@
 <?php
+
 /**
  * update.php
  *
@@ -20,7 +21,7 @@ define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
 
 //On récupère la version actuelle du mod
-$query = "SELECT id, version FROM ".TABLE_MOD." WHERE action='attaques'";
+$query = "SELECT id, version FROM " . TABLE_MOD . " WHERE action='attaques'";
 $result = $db->sql_query($query);
 list($mod_id, $version) = $db->sql_fetch_row($result);
 
@@ -36,7 +37,7 @@ $query = "CREATE TABLE IF NOT EXISTS `" . $table_prefix . "mod_user_config` (
 
 $db->sql_query($query);
 
-if (version_compare( $version , '2.1.0.', '<')) {
+if (version_compare($version, '2.1.0.', '<')) {
 
     // on insère les valeurs de configuration par défaut car changement de format de données
     $config = '{"transp":75,"layer":1,"defenseur":1,"histo":1}';

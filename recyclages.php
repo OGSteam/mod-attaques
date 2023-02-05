@@ -1,4 +1,5 @@
 <?php
+
 /**
  * recyclages.php
  *
@@ -59,57 +60,54 @@ if (isset($pub_recy_id)) {
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u 
-			LEFT JOIN " . TABLE_MOD_USER_CFG . " mu 
-				ON mu.`user_id` = u.`user_id`
-		  WHERE u.`user_id` = " . $user_data['user_id']." OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-		  ORDER BY u.`user_name`";
+$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+            LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
+                ON mu.`user_id` = u.`user_id`
+          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY u.`user_name`";
 
 $result = $db->sql_query($query);
 $users = array();
-while($row = $db->sql_fetch_row($result))
-	$users[$row[0]] = $row[1];
+while ($row = $db->sql_fetch_row($result))
+    $users[$row[0]] = $row[1];
 
 // Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
-if(isset($pub_user_id) && isset($users[$pub_user_id])) {
-	$user_id = $pub_user_id;
-}
-else {
-	$user_id = $user_data["user_id"];
+if (isset($pub_user_id) && isset($users[$pub_user_id])) {
+    $user_id = $pub_user_id;
+} else {
+    $user_id = $user_data["user_id"];
 }
 
 $estUtilisateurCourant = $user_id == $user_data["user_id"];
 
 $masquer_coord = false;
-if(!$estUtilisateurCourant)
-{
+if (!$estUtilisateurCourant) {
     $result = mod_get_user_option($user_id, 'masquer_coord');
-    if($result == null || $result['masquer_coord'] == '1')
-		$masquer_coord = true;	
+    if ($result == null || $result['masquer_coord'] == '1')
+        $masquer_coord = true;
 }
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
-if (!isset($pub_date_from)) 
-	$pub_date_from = mktime(0, 0, 0, $mois, $date, $annee); 
-else 
-{
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_from);
-	if($pub_date['error_count'] == 0)
-		$pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+if (!isset($pub_date_from))
+    $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
+else {
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_from);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
 }
 
-if (!isset($pub_date_to)) 
-	$pub_date_to = mktime(23, 59, 59, $mois, $date, $annee); 
+if (!isset($pub_date_to))
+    $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee);
 else {
-	// Si la date est au format jour/mois/annee
-	$pub_date = date_parse_from_format ('j M Y H:i', $pub_date_to);
-	if($pub_date['error_count'] == 0)
-		$pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
-	else
-		$pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);	
+    // Si la date est au format jour/mois/annee
+    $pub_date = date_parse_from_format('j M Y H:i', $pub_date_to);
+    if ($pub_date['error_count'] == 0)
+        $pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    else
+        $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
 }
 
 $pub_date_from = intval($pub_date_from);
@@ -150,14 +148,13 @@ echo "<br>";
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
 <br />
 <select name="user_id">
-	<?php foreach($users as $id => $username)
-	{
-		echo "<option value='$id'";
-		if($id == $user_id)
-			echo " SELECTED=SELECTED";
-		echo ">$username</option>";
-	}
-	?>
+    <?php foreach ($users as $id => $username) {
+        echo "<option value='$id'";
+        if ($id == $user_id)
+            echo " SELECTED=SELECTED";
+        echo ">$username</option>";
+    }
+    ?>
 </select>
 <?php
 echo "<br><br>";
@@ -229,21 +226,20 @@ echo "</tr>";
 echo "<tr>";
 
 while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($data_recyclages)) {
-    echo "coords : " .$recy_coord;
-    echo "option : ". $masquer_coord;
+    echo "coords : " . $recy_coord;
+    echo "option : " . $masquer_coord;
     $recy_date = strftime("%d %b %Y à %Hh%M", $recy_date);
     $recy_metal = number_format($recy_metal, 0, ',', ' ');
     $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-    if ( $masquer_coord == '') echo ("<th align='center'>" . $recy_coord . "</th>");
+    if ($masquer_coord == '') echo ("<th align='center'>" . $recy_coord . "</th>");
     echo "<th align='center'>" . $recy_date . "</th>";
     echo "<th align='center'>" . $recy_metal . "</th>";
     echo "<th align='center'>" . $recy_cristal . "</th>";
     echo "<th align='center' valign='middle'>";
-	if($estUtilisateurCourant)
-	{
-	echo "<form action='index.php?action=attaques&page=recyclages' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='recy_id' value='$recy_id'><input type='submit'	value='Supprimer' name='B1' style='color: #FF0000'></form>";
-	}
-	echo "</th>";
+    if ($estUtilisateurCourant) {
+        echo "<form action='index.php?action=attaques&page=recyclages' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='recy_id' value='$recy_id'><input type='submit'    value='Supprimer' name='B1' style='color: #FF0000'></form>";
+    }
+    echo "</th>";
     echo "</tr>";
     echo "<tr>";
 }
@@ -315,7 +311,7 @@ if ($config['histo'] == 1) {
 
     echo "<script type='text/javascript'>
                 function number_format(number, decimals, dec_point, thousands_sep) {
-                    var n = !isFinite(+number) ? 0 : +number, 
+                    var n = !isFinite(+number) ? 0 : +number,
                     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
                     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
                     s = '',
@@ -332,9 +328,9 @@ if ($config['histo'] == 1) {
                         s[1] += new Array(prec - s[1].length + 1).join('0');
                     }    return s.join(dec);
                 }
-                
+
             var chart;
-            
+
                 chart = new Highcharts.Chart({
           chart: {
              renderTo: 'graphiquemois',
@@ -398,7 +394,7 @@ if ($config['histo'] == 1) {
        });
     </script>";
 
-//echo"</fieldset>";
+    //echo"</fieldset>";
 }
 echo "<br>";
 echo "<br>";

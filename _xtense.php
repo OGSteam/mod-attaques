@@ -1,4 +1,5 @@
 <?php
+
 /**
  *   _xtense.php - fichier d'interface avec Xtense2
  *
@@ -130,7 +131,7 @@ function attack_rc($rapport)
         //log_('debug', "Erreur : RC non pris en compte");
         return false;
     } else {
-        if ($defenseur === 1 && $attack_config ['defenseur'] === 1) {
+        if ($defenseur === 1 && $attack_config['defenseur'] === 1) {
             //Récupération des pertes défenseurs
             $pertes = $rc->statistic->lostUnitsDefender;
             //On soustrait les ressources volées
@@ -187,9 +188,9 @@ function attack_rr($rapport)
     }
 }
 
-function read_config ()
+function read_config()
 {
-    global $attack_config,$db;
+    global $attack_config, $db;
 
     //récupération des paramètres de config
     $request = "SELECT `value` FROM `" . TABLE_MOD_CFG . "` WHERE `mod` = 'Attaques' AND  `config` = 'config'";
