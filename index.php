@@ -58,7 +58,7 @@ if (!empty($server_config['language'])) {
 require_once("views/page_header.php");
 // Insertion du css pour layer transparent si valider dans la configuration
 if ($config['layer'] == 1) {
-    include(FOLDER_ATTCK . "/css.php");
+    include_once(FOLDER_ATTCK . "/css.php");
 }
 //Menu
 // Si la page a afficher n'est pas définie, on affiche la première
