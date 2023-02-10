@@ -125,8 +125,8 @@ $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECY
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y %H:%M", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
+$pub_date_from = date("d M Y H:i", $pub_date_from);
+$pub_date_to = date("d M Y H:i", $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage des recyclages ";
@@ -228,7 +228,7 @@ echo "<tr>";
 while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($data_recyclages)) {
     echo "coords : " . $recy_coord;
     echo "option : " . $masquer_coord;
-    $recy_date = strftime("%d %b %Y à %Hh%M", $recy_date);
+    $recy_date = date("d M Y H:i", $recy_date);
     $recy_metal = number_format($recy_metal, 0, ',', ' ');
     $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
     if ($masquer_coord == '') echo ("<th align='center'>" . $recy_coord . "</th>");

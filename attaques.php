@@ -80,7 +80,7 @@ if ($nb_result != 0) {
         $bbcode .= "du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "\n\n";
 
         while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($list)) {
-            $attack_date = strftime("%d %b %Y %Hh%M", $attack_date);
+            $attack_date = date("d M Y H:i", $attack_date);
             $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
             $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deutérium ont été rapportés.\n";
             $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
@@ -228,8 +228,8 @@ $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(a
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y %H:%M", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
+$pub_date_from = date("d M Y H:i", $pub_date_from);
+$pub_date_to = date("d M Y H:i", $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
@@ -330,7 +330,7 @@ echo "</tr>";
 echo "<tr>";
 
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack_id) = $db->sql_fetch_row($result)) {
-    $attack_date = strftime("%d %b %Y %Hh%M", $attack_date);
+    $attack_date = date("d M Y H:i", $attack_date);
     $attack_metal = number_format($attack_metal, 0, ',', ' ');
     $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
     $attack_deut = number_format($attack_deut, 0, ',', ' ');

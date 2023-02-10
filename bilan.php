@@ -91,8 +91,8 @@ $resultgainsrecy = $db->sql_query($query);
 
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y %H:%M", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y %H:%M", $pub_date_to);
+$pub_date_from = date("d M Y H:i", $pub_date_from);
+$pub_date_to = date("d M Y H:i", $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois

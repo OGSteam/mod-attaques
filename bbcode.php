@@ -65,8 +65,8 @@ $nb_attack = $db->sql_numrows($attaques);
 $nb_recy = $db->sql_numrows($recyclages);
 
 //On récupère la date au bon format
-$pub_date_from = strftime("%d %b %Y", $pub_date_from);
-$pub_date_to = strftime("%d %b %Y", $pub_date_to);
+$pub_date_from = date("d M Y", $pub_date_from);
+$pub_date_to = date("d M Y", $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo "<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques et des recyclages en BBCode ";
@@ -98,7 +98,7 @@ $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($attaques)) {
-    $attack_date = strftime("%d %b %Y à %Hh%M", $attack_date);
+    $attack_date = date("d M Y H:i", $attack_date);
     $attack_metal = number_format($attack_metal, 0, ',', ' ');
     $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
     $attack_deut = number_format($attack_deut, 0, ',', ' ');
@@ -125,7 +125,7 @@ $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
 while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fetch_row($recyclages)) {
-    $recy_date = strftime("%d %b %Y à %Hh%M", $recy_date);
+    $recy_date = date("d M Y H:i", $recy_date);
     $recy_metal = number_format($recy_metal, 0, ',', ' ');
     $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
     $bbcode .= "Le " . $recy_date . " recyclage en " . $recy_coord . ".\n";
