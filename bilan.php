@@ -91,8 +91,8 @@ $resultgainsrecy = $db->sql_query($query);
 
 
 //On récupère la date au bon format
-$pub_date_from = date("d M Y H:i", $pub_date_from);
-$pub_date_to = date("d M Y H:i", $pub_date_to);
+$pub_date_from = date('d M Y', $pub_date_from);
+$pub_date_to = date('d M Y', $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
@@ -139,6 +139,14 @@ list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fe
 
 //Résultat requete
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgainsrecy);
+
+// Valeurs par Défaut si retour = null
+$attack_metal = $attack_metal ?? 0;
+$attack_cristal = $attack_cristal ?? 0;
+$attack_deut = $attack_deut ?? 0;
+$attack_pertes = $attack_pertes ?? 0;
+$recy_metal = $attack_cristal ?? 0;
+$recy_cristal = $attack_cristal ?? 0;
 
 //Calcul des gains totaux
 $totalgains = $attack_metal + $attack_cristal + $attack_deut;

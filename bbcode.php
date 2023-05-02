@@ -65,8 +65,8 @@ $nb_attack = $db->sql_numrows($attaques);
 $nb_recy = $db->sql_numrows($recyclages);
 
 //On récupère la date au bon format
-$pub_date_from = date("d M Y", $pub_date_from);
-$pub_date_to = date("d M Y", $pub_date_to);
+$pub_date_from = date('d M Y', $pub_date_from);
+$pub_date_to = date('d M Y', $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo "<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques et des recyclages en BBCode ";
@@ -97,15 +97,19 @@ $bbcode = "[color=" . $bbcolor['title'] . "] [b]Liste des attaques de " . $user_
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
-while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($attaques)) {
-    $attack_date = date("d M Y H:i", $attack_date);
-    $attack_metal = number_format($attack_metal, 0, ',', ' ');
-    $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
-    $attack_deut = number_format($attack_deut, 0, ',', ' ');
-    $attack_pertes = number_format($attack_pertes, 0, ',', ' ');
-    $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
-    $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deuterium ont été rapportés.\n";
-    $bbcode .= "Les pertes s'élèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
+if ($nb_attack > 0) {
+    while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($attaques)) {
+        $attack_date = date('d M Y H:i', $attack_date);
+        $attack_metal = number_format($attack_metal, 0, ',', ' ');
+        $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
+        $attack_deut = number_format($attack_deut, 0, ',', ' ');
+        $attack_pertes = number_format($attack_pertes, 0, ',', ' ');
+        $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
+        $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deuterium ont été rapportés.\n";
+        $bbcode .= "Les pertes s'élèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
+    }
+} else {
+    $bbcode = "Aucune Attaque enregistrée sur la période\n";
 }
 $bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
@@ -124,12 +128,16 @@ $bbcode = "[color=" . $bbcolor['title'] . "][b]Liste des recyclages de " . $user
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
-while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fetch_row($recyclages)) {
-    $recy_date = date("d M Y H:i", $recy_date);
-    $recy_metal = number_format($recy_metal, 0, ',', ' ');
-    $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
-    $bbcode .= "Le " . $recy_date . " recyclage en " . $recy_coord . ".\n";
-    $bbcode .= "[color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color] de métal, [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color] de cristal ont été recyclés.\n\n";
+if ($nb_recy > 0) {
+    while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal,) = $db->sql_fetch_row($recyclages)) {
+        $recy_date = date('d M Y H:i', $recy_date);
+        $recy_metal = number_format($recy_metal, 0, ',', ' ');
+        $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
+        $bbcode .= "Le " . $recy_date . " recyclage en " . $recy_coord . ".\n";
+        $bbcode .= "[color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color] de métal, [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color] de cristal ont été recyclés.\n\n";
+    }
+} else {
+    $bbcode = "Aucun Recyclage enregistré sur la période\n";
 }
 $bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
@@ -147,6 +155,14 @@ echo "</fieldset>";
 //Résultat requetes
 list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgains_recy);
+
+// Valeurs par Défaut si retour = null
+$attack_metal = $attack_metal ?? 0;
+$attack_cristal = $attack_cristal ?? 0;
+$attack_deut = $attack_deut ?? 0;
+$attack_pertes = $attack_pertes ?? 0;
+$recy_metal = $attack_cristal ?? 0;
+$recy_cristal = $attack_cristal ?? 0;
 
 //Calcul des gains totaux
 $totalgains = $attack_metal + $attack_cristal + $attack_deut + $recy_metal + $recy_cristal;
@@ -176,8 +192,12 @@ $bbcode .= "Total des pertes attaquant : [color=" . $bbcolor['perte'] . "]" . $a
 $bbcode .= "Nombre de recyclages durant cette periode : " . $nb_recy . "\n\n";
 $bbcode .= "Metal recyclé : [color=" . $bbcolor['m_r'] . "]" . $recy_metal . "[/color]\n";
 $bbcode .= "Cristal recyclé : [color=" . $bbcolor['c_r'] . "]" . $recy_cristal . "[/color]\n\n";
-if ($renta > 0) $bbcode .= "Rentabilité : [color=" . $bbcolor['renta'] . "]" . $renta . "[/color]\n\n";
-else $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
+if ($renta > 0) {
+    $bbcode .= "Rentabilité : [color=" . $bbcolor['renta'] . "]" . $renta . "[/color]\n\n";
+}else {
+    $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
+}
+
 $bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 

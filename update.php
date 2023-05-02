@@ -25,17 +25,6 @@ $query = "SELECT id, version FROM " . TABLE_MOD . " WHERE action='attaques'";
 $result = $db->sql_query($query);
 list($mod_id, $version) = $db->sql_fetch_row($result);
 
-$query = "CREATE TABLE IF NOT EXISTS `" . $table_prefix . "mod_user_config` (
-            `mod` VARCHAR(50) NOT NULL,
-            `config` VARCHAR(255) NOT NULL,
-            `user_id` INT(11) NOT NULL,
-            `value` VARCHAR(255) NOT NULL,
-         PRIMARY KEY (`mod`, `config`, `user_id`),
-         UNIQUE KEY `config` (`config`)
-        )
-        DEFAULT CHARSET = utf8";
-
-$db->sql_query($query);
 
 if (version_compare($version, '2.1.0.', '<')) {
 

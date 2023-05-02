@@ -32,7 +32,7 @@ $config = mod_get_option('config');
 $config = json_decode($config, true);
 
 // Appel des fonctions du module
-include_once(FOLDER_ATTCK . "/attack_include.php");
+include(FOLDER_ATTCK . "/attack_include.php");
 /**
  *Récupère le fichier de langue pour la langue approprié
  */
@@ -58,7 +58,7 @@ if (!empty($server_config['language'])) {
 require_once("views/page_header.php");
 // Insertion du css pour layer transparent si valider dans la configuration
 if ($config['layer'] == 1) {
-    include_once(FOLDER_ATTCK . "/css.php");
+    include(FOLDER_ATTCK . "/css.php");
 }
 //Menu
 // Si la page a afficher n'est pas définie, on affiche la première
@@ -70,31 +70,31 @@ echo "<div class='attack_box'><div class='attack_box_background'> </div> <div cl
 //On  affiche de la page demandée
 switch ($pub_page) {
     case "bilan":
-        include_once("bilan.php");
+        include("bilan.php");
         break;
     case "bbcode":
-        include_once("bbcode.php");
+        include("bbcode.php");
         break;
     case "archive":
-        include_once("archives.php");
+        include("archives.php");
         break;
     case "statistiques":
-        include_once("statistiques.php");
+        include("statistiques.php");
         break;
     case "recyclages":
-        include_once("recyclages.php");
+        include("recyclages.php");
         break;
     case "admin":
-        include_once("admin.php");
+        include("admin.php");
         break;
     case "changelog":
-        include_once("changelog.php");
+        include("changelog.php");
         break;
     case "config":
-        include_once("config_user.php");
+        include("config_user.php");
         break;
     default:
-        include_once("attaques.php");
+        include("attaques.php");
         break;
 }
 
