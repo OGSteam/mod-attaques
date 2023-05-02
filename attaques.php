@@ -25,8 +25,8 @@ $annee = date("Y");
 $septjours = $date - 7;
 $yesterday = $date - 1;
 
-if ($septjours < 1) $septjours = 1;
-if ($yesterday < 1) $yesterday = 1;
+$septjours = $septjours ?? 1;
+$yesterday = $yesterday ?? 1;
 
 
 //On verifie si il y a des attaques qui ne sont pas du mois actuel
@@ -59,8 +59,8 @@ if ($nb_result != 0) {
 
         list($metal_recy, $cristal_recy) = $db->sql_fetch_row($resultrecy);
         // Sql Fetch Row can set values to null if no result
-        if ($metal_recy == null) $metal_recy = 0;
-        if ($cristal_recy == null) $cristal_recy = 0;
+        $metal_recy = $metal_recy ?? 0;
+        $cristal_recy = $cristal_recy ?? 0;
 
         //On sauvegarde les résultats
         $query = "INSERT INTO " . TABLE_ATTAQUES_ARCHIVES . " (`archives_user_id` , `archives_nb_attaques` , `archives_date` , `archives_metal` , `archives_cristal` , `archives_deut` , `archives_pertes`, `archives_recy_metal`, `archives_recy_cristal` )
@@ -80,7 +80,7 @@ if ($nb_result != 0) {
         $bbcode .= "du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "\n\n";
 
         while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($list)) {
-            $attack_date = date("d M Y H:i", $attack_date);
+            $attack_date = date('d M Y H:i:s', $attack_date);
             $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
             $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deutérium ont été rapportés.\n";
             $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
@@ -102,7 +102,7 @@ if ($nb_result != 0) {
     //On ajoute l'action dans le log
     $line = "La listes des attaques de " . $user_data['user_name'] . " a &eacute;t&eacute; supprimée. Les gains ont été archivés dans le module de gestion des attaques";
     $fichier = "log_" . date("ymd") . '.log';
-    $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
+    $line = "/*" . date("d m Y H:i:s") . '*/ ' . $line;
     write_file(PATH_LOG_TODAY . $fichier, "a", $line);
 
     exit;
@@ -147,8 +147,9 @@ $query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
 
 $result = $db->sql_query($query);
 $users = array();
-while ($row = $db->sql_fetch_row($result))
+while ($row = $db->sql_fetch_row($result)) {
     $users[$row[0]] = $row[1];
+}
 
 // Si un utilisateur a été sélectionné, on vérifie que l'on peut afficher les rapports de celui-ci
 if (isset($pub_user_id) && isset($users[$pub_user_id]))
@@ -228,8 +229,8 @@ $query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(a
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
-$pub_date_from = date("d M Y H:i", $pub_date_from);
-$pub_date_to = date("d M Y H:i", $pub_date_to);
+$pub_date_from = date('d M Y', $pub_date_from);
+$pub_date_to = date('d M Y', $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
@@ -276,6 +277,11 @@ echo "</font></b></legend>";
 //Résultat requete
 list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);
 
+// Valeurs par défaut
+$attack_metal = $attack_metal ?? 0;
+$attack_cristal = $attack_cristal ?? 0;
+$attack_deut = $attack_deut ?? 0;
+$attack_pertes = $attack_pertes ?? 0;
 
 //Calcul des gains totaux
 $totalgains = $attack_metal + $attack_cristal + $attack_deut;
@@ -330,7 +336,7 @@ echo "</tr>";
 echo "<tr>";
 
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack_id) = $db->sql_fetch_row($result)) {
-    $attack_date = date("d M Y H:i", $attack_date);
+    $attack_date = strftime("%d %b %Y %Hh%M", $attack_date);
     $attack_metal = number_format($attack_metal, 0, ',', ' ');
     $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
     $attack_deut = number_format($attack_deut, 0, ',', ' ');

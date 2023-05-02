@@ -1,40 +1,38 @@
 {
-    "name": "ogsteam/mod-attaques",
-    "version": "2.1.3",
-    "description": "OGSpy module that helps you to manage Combat Reports",
-    "type": "ogspy-mod",
-    "keywords": [
-        "ogspy"
-    ],
-    "license": "GPL-2.0-only",
-    "authors": [
+    "name" : "ogsteam/mod-attaques",
+    "version" : "2.0.4",
+    "description" : "OGSpy module that helps you to manage Combat Reports",
+    "type" : "ogspy-mod",
+    "keywords" : [ "ogspy" ],
+    "license" : "GPL-2.0-only",
+    "authors" : [
         {
-            "name": "DarkNoon",
-            "email": "darknoon@darkcity.fr",
+            "name" : "DarkNoon",
+            "email" : "darknoon@darkcity.fr",
             "homepage": "https://github.com/darknoon29",
-            "role": "Lead Developer"
+            "role" : "Lead Developer"
         }
     ],
-    "require": {
-        "php": ">=7.2.0",
-        "ogsteam/ogspy": ">=3.3.6"
+    "require" : {
+        "php" : ">=7.0.0",
+        "ogsteam/ogspy" : ">=3.3.6"
     },
-    "extra": {
-        "install_script": "install.php",
-        "update_script": "update.php",
-        "uninstall_script": "uninstall.php",
-        "mod_title": "Gestion des attaques",
-        "menu_title": "Attaques",
-        "action_name": "attaques",
-        "folder_name": "attaques",
-        "action_file": "index.php",
-        "active": true,
-        "admin": false
+    "extra" : {
+            "install_script": "install.php",
+            "update_script": "update.php",
+            "uninstall_script": "uninstall.php",
+            "mod_title": "Gestion des attaques",
+            "menu_title" : "Attaques",
+            "action_name" : "attaques",
+            "folder_name" : "attaques",
+            "action_file" : "index.php",
+            "active" : true,
+            "admin" : false
     },
-    "homepage": "https://github.com/ogsteam/mod-attaques",
+    "homepage" : "https://github.com/ogsteam/mod-attaques",
     "support": {
         "issues": "https://github.com/ogsteam/mod-attaques/issues",
         "source": "https://github.com/ogsteam/mod-attaques/tree/master",
-        "chat": "https://discord.gg/Azcb67b"
+         "chat" : "https://discord.gg/Azcb67b"
     }
 }

@@ -23,9 +23,6 @@ define('FOLDER_ATTCK', 'mod/' . $root);
 define("TABLE_ATTAQUES_ATTAQUES", $table_prefix . "attaques_attaques");
 define("TABLE_ATTAQUES_RECYCLAGES", $table_prefix . "attaques_recyclages");
 define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
-if (!defined("TABLE_MOD_USER_CFG"))
-    define("TABLE_MOD_USER_CFG", $table_prefix . "mod_user_config");
-
 
 //récupération des paramètres de config
 $config = mod_get_option('config');
@@ -94,7 +91,7 @@ switch ($pub_page) {
         include_once("config_user.php");
         break;
     default:
-        include_once("attaques.php");
+    include_once("attaques.php");
         break;
 }
 

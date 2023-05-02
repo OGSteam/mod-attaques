@@ -51,6 +51,3 @@
         text-align: right;
     }
 </style>
-<?php
-
-?>

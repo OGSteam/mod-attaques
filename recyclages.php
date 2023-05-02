@@ -25,8 +25,8 @@ $annee = date("Y");
 $septjours = $date - 7;
 $yesterday = $date - 1;
 
-if ($septjours < 1) $septjours = 1;
-if ($yesterday < 1) $yesterday = 1;
+$septjours = $septjours ?? 1;
+$yesterday = $yesterday ?? 1;
 
 
 //Fonction de suppression d'un rapport d'attaque
@@ -125,8 +125,8 @@ $query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECY
 $resultgains = $db->sql_query($query);
 
 //On récupère la date au bon format
-$pub_date_from = date("d M Y H:i", $pub_date_from);
-$pub_date_to = date("d M Y H:i", $pub_date_to);
+$pub_date_from = date('d M Y', $pub_date_from);
+$pub_date_to = date('d M Y', $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
 echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage des recyclages ";
@@ -169,6 +169,10 @@ echo "</span></b></legend>";
 
 //Résultat requete
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgains);
+
+// Valeur Par défaut
+$recy_metal = $attack_cristal ?? 0;
+$recy_cristal = $attack_cristal ?? 0;
 
 //Calcul des gains totaux
 $totalgains = $recy_metal + $recy_cristal;
@@ -228,7 +232,7 @@ echo "<tr>";
 while (list($recy_coord, $recy_date, $recy_metal, $recy_cristal, $recy_id) = $db->sql_fetch_row($data_recyclages)) {
     echo "coords : " . $recy_coord;
     echo "option : " . $masquer_coord;
-    $recy_date = date("d M Y H:i", $recy_date);
+    $recy_date = date('d M Y H:i', $recy_date);
     $recy_metal = number_format($recy_metal, 0, ',', ' ');
     $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
     if ($masquer_coord == '') echo ("<th align='center'>" . $recy_coord . "</th>");
@@ -247,7 +251,7 @@ echo "</tr>";
 echo "</table>";
 echo "</fieldset>";
 
-if ($config['histo'] == 1) {
+if ($config['histo']) {
     /**** DEBUT HISTO ******/
     $mois = date("m");
     $annee = date("Y");
