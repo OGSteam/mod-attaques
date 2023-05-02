@@ -14,8 +14,10 @@
 function IsUserAdmin()
 {
     global $user_data;
-    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) return 1;
-    else return 0;
+    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) {
+        return 1;
+    }
+    return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -39,8 +41,7 @@ function mod_set_user_option($user_id, $param, $value)
     }
 
     $query = "REPLACE INTO `" . TABLE_MOD_USER_CFG . "`(`mod`, `user_id`, `config`, `value`) VALUES('Attaques' ," . $user_id . ", '" . $param . "' , '" . $value . "')";
-    $result = $db->sql_query($query);
-    return $result;
+    return $db->sql_query($query);
 }
 
 /**
@@ -65,10 +66,8 @@ function mod_get_user_option($user_id, $param)
 
     if ($db->sql_numrows() > 0) {
         $userConfig = $db->sql_fetch_row($result);
-        $userValue = $userConfig['value'];
-        return $userValue;
+        return $userConfig['value'];
     }
-
     return false;
 }
 
@@ -89,7 +88,7 @@ function mod_del_user_option($user_id, $param)
     }
 
     $query = "DELETE FROM `" . TABLE_MOD_USER_CFG . "` WHERE `mod`='Attaques' and `user_id`=" . $user_id . " and `config`=" . $param;
-    $result = $db->sql_query($query);
+    $db->sql_query($query);
 }
 // Création du menu
 /**
