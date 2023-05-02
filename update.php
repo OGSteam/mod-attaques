@@ -26,18 +26,21 @@ $result = $db->sql_query($query);
 list($mod_id, $version) = $db->sql_fetch_row($result);
 
 
-if (version_compare($version, '2.1.0.', '<')) {
-
-    // on insère les valeurs de configuration par défaut car changement de format de données
+if (empty(mod_get_option('config'))) {
     $config = '{"transp":75,"layer":1,"defenseur":1,"histo":1}';
     mod_set_option('config', $config);
 
-    // on insère les valeurs bbcodes par défaut
+}
+
+if (empty(mod_get_option('bbcodes'))) {
     $bbcodes = '{"title":"#FFA500","m_g":"#00FF40","c_g":"#00FF40","d_g":"#00FF40","m_r":"#00FF40","c_r":"#00FF40","perte":"#FF0000","renta":"#00FF40"}';
     mod_set_option('bbcodes', $bbcodes);
+}
+
+
+if (version_compare($version, '2.1.0.', '<')) {
 
     $requests = array();
-
     $requests[] = "ALTER TABLE " . TABLE_ATTAQUES_ATTAQUES . " MODIFY `attack_metal` BIGINT, MODIFY `attack_cristal` BIGINT, MODIFY `attack_deut` BIGINT,  MODIFY `attack_pertes` BIGINT";
     $requests[] = "ALTER TABLE " . TABLE_ATTAQUES_RECYCLAGES . " MODIFY `recy_metal` BIGINT, MODIFY `recy_cristal` BIGINT";
     $requests[] = "ALTER TABLE " . TABLE_ATTAQUES_ARCHIVES . " MODIFY `archives_metal` BIGINT, MODIFY `archives_cristal` BIGINT, MODIFY `archives_deut` BIGINT,  MODIFY `archives_pertes` BIGINT, MODIFY `archives_recy_metal` BIGINT, MODIFY `archives_recy_cristal` BIGINT";
