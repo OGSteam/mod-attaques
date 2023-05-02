@@ -336,7 +336,7 @@ echo "</tr>";
 echo "<tr>";
 
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack_id) = $db->sql_fetch_row($result)) {
-    $attack_date = strftime("%d %b %Y %Hh%M", $attack_date);
+    $attack_date = date('d M Y H:i:s', $attack_date);
     $attack_metal = number_format($attack_metal, 0, ',', ' ');
     $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
     $attack_deut = number_format($attack_deut, 0, ',', ' ');
