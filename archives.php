@@ -69,7 +69,7 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     $nb_result = $db->sql_numrows($result);
 
     if ($nb_result == 0) {
-        $date_from = strftime("%b %Y", $date_from);
+        $date_from = date('M Y', $date_from);
 
         echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Archives des attaques du mois de " . $date_from . "</span></b></legend>";
         echo "<span style=\"color: #FF0000; \">Vous n'avez pas de resultat pour cette date</span>";
@@ -77,7 +77,7 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     } else {
         list($archives_nb_attaques, $archives_date, $archives_metal, $archives_cristal, $archives_deut, $archives_pertes, $archives_recy_metal, $archives_recy_cristal, $archives_id) = $db->sql_fetch_row($resultgains);
 
-        $date_from = strftime("%b %Y", $date_from);
+        $date_from = date('M Y', $date_from);
 
         //On fait les calculs du total des gains, et la rentabilité, et du total des recyclages
         $total_gains = $archives_metal + $archives_cristal + $archives_deut;
