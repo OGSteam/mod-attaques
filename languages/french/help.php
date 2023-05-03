@@ -3,7 +3,7 @@
 * help.php - Réutilisation de la fonction help() du fichier /includes/help.php . on ne fait que (re)définir des entrées dans le array
  * @package Attaques
  * @author Verité
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  */
 

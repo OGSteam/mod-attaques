@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité modifié par ericc
- * @link http://www.OGSteam.eu
+ * @link https://www.OGSteam.eu
  * @version : 0.8a
  */
 
@@ -111,7 +111,7 @@ if ($nb_attack > 0) {
 } else {
     $bbcode = "Aucune Attaque enregistrée sur la période\n";
 }
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des attaques en BBCode
@@ -139,7 +139,7 @@ if ($nb_recy > 0) {
 } else {
     $bbcode = "Aucun Recyclage enregistré sur la période\n";
 }
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des recyclages en BBCode
@@ -198,7 +198,7 @@ if ($renta > 0) {
     $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
 }
 
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir les gains en BBCode

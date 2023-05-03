@@ -4,7 +4,7 @@
  * Fonctions du modules
  * @package Attaques
  * @author Vérité - réécrit par ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  * dernière modification : 28 Dec 2007
  */

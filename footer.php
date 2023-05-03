@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité / ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version 0.8e
  * Affichage de la version du module dans le pied de page
  */

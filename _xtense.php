@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8e
  *   created    : 17/02/2008
  *   modified    :
