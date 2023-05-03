@@ -26,15 +26,15 @@ $result = $db->sql_query($query);
 list($mod_id, $version) = $db->sql_fetch_row($result);
 
 
-if (empty(mod_get_option('config'))) {
+if (empty(mod_get_option('config', 'attaques'))) {
     $config = '{"transp":75,"layer":1,"defenseur":1,"histo":1}';
-    mod_set_option('config', $config);
+    mod_set_option('config', $config, 'attaques');
 
 }
 
-if (empty(mod_get_option('bbcodes'))) {
+if (empty(mod_get_option('bbcodes', 'attaques'))) {
     $bbcodes = '{"title":"#FFA500","m_g":"#00FF40","c_g":"#00FF40","d_g":"#00FF40","m_r":"#00FF40","c_r":"#00FF40","perte":"#FF0000","renta":"#00FF40"}';
-    mod_set_option('bbcodes', $bbcodes);
+    mod_set_option('bbcodes', $bbcodes, 'attaques');
 }
 
 
