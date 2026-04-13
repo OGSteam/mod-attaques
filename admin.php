@@ -279,7 +279,7 @@ while (list($data) = $db->sql_fetch_row($result)) {
 }
 $inval_id = 0;
 //récupère la liste des users actifs
-$query = "SELECT `user_id`,`user_active` from " . TABLE_USER . " ORDER BY `user_id`";
+$query = "SELECT `id`,`active` from " . TABLE_USER . " ORDER BY `id`";
 $result = $db->sql_query($query);
 $count = 0;
 $id = array();
