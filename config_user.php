@@ -16,8 +16,8 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 global $db, $table_prefix;
 
 // lecture des configs dans la db
-$user_config['diffusion_rapports'] = mod_get_user_option($user_data["user_id"], "diffusion_rapports");
-$user_config['masquer_coord']      = mod_get_user_option($user_data["user_id"], "masquer_coord");
+$user_config['diffusion_rapports'] = mod_get_user_option($user_data["id"], "diffusion_rapports");
+$user_config['masquer_coord']      = mod_get_user_option($user_data["id"], "masquer_coord");
 
 // Paramètres de configurations transmis par le form
 if (isset($pub_submit)) {

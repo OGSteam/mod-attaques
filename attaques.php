@@ -139,11 +139,11 @@ if (isset($pub_attack_id)) {
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+$query = "SELECT DISTINCT u.`id`, u.`name` FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
-                ON mu.`user_id` = u.`user_id`
-          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-          ORDER BY u.`user_name`";
+                ON mu.`user_id` = u.`id`
+          WHERE u.`id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY u.`name`";
 
 $result = $db->sql_query($query);
 $users = array();

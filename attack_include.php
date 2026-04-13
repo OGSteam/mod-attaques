@@ -14,7 +14,7 @@
 function IsUserAdmin()
 {
     global $user_data;
-    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) {
+    if ($user_data["admin"] == 1 || $user_data["coadmin"] == 1 || $user_data["management_user"] == 1) {
         return 1;
     }
     return 0;

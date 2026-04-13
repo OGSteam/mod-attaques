@@ -68,12 +68,12 @@ SELECT* FROM news WHERE date > SUBDATE(SYSDATE(), INTERVAL 1 MONTH) // du mois
 
 
 //Cacul pour obtenir les gains de la semaine
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date >= " . $debutdumois . " AND attack_date <= " . $findumois . " AND WEEKOFYEAR(FROM_UNIXTIME(attack_date)) = " . $semainedelannee;
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["id"] . " AND attack_date >= " . $debutdumois . " AND attack_date <= " . $findumois . " AND WEEKOFYEAR(FROM_UNIXTIME(attack_date)) = " . $semainedelannee;
 $resultgains = $db->sql_query($query);
 list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);
 
 //Cacul pour obtenir les gains des recyclages de la semaine
-$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["user_id"] . " AND recy_date >= " . $debutdumois . " AND recy_date <= " . $findumois . " AND WEEKOFYEAR(FROM_UNIXTIME(recy_date)) = " . $semainedelannee;
+$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["id"] . " AND recy_date >= " . $debutdumois . " AND recy_date <= " . $findumois . " AND WEEKOFYEAR(FROM_UNIXTIME(recy_date)) = " . $semainedelannee;
 $resultgainsrecy = $db->sql_query($query);
 list($recy_metal, $recy_cristal) = $db->sql_fetch_row($resultgainsrecy);
 
@@ -206,14 +206,14 @@ echo "</fieldset>";
 echo "<br />";
 
 //Cacul pour obtenir les gains
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes), WEEKOFYEAR(FROM_UNIXTIME(attack_date)) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["user_id"] . " AND attack_date >= " . $debutdumois . " AND attack_date <= " . $findumois . " GROUP BY WEEKOFYEAR(FROM_UNIXTIME(attack_date))";
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes), WEEKOFYEAR(FROM_UNIXTIME(attack_date)) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data["id"] . " AND attack_date >= " . $debutdumois . " AND attack_date <= " . $findumois . " GROUP BY WEEKOFYEAR(FROM_UNIXTIME(attack_date))";
 $resultgains = $db->sql_query($query);
 //list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack_week) = $db->sql_fetch_row($resultgains);
 
 //echo "Attaques : ".$query."<br/>";
 
 //Cacul pour obtenir les gains des recyclages
-$query = "SELECT SUM(recy_metal), SUM(recy_cristal), WEEKOFYEAR(FROM_UNIXTIME(recy_date)) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["user_id"] . " AND recy_date >= " . $debutdumois . " AND recy_date <= " . $findumois . " GROUP BY WEEKOFYEAR(FROM_UNIXTIME(recy_date))";
+$query = "SELECT SUM(recy_metal), SUM(recy_cristal), WEEKOFYEAR(FROM_UNIXTIME(recy_date)) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data["id"] . " AND recy_date >= " . $debutdumois . " AND recy_date <= " . $findumois . " GROUP BY WEEKOFYEAR(FROM_UNIXTIME(recy_date))";
 $resultgainsrecy = $db->sql_query($query);
 list($recy_metal, $recy_cristal, $recy_week) = $db->sql_fetch_row($resultgainsrecy);
 
