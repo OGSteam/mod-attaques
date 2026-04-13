@@ -38,13 +38,13 @@ if (isset($pub_recy_id)) {
     $result = $db->sql_query($query);
     list($user) = $db->sql_fetch_row($result);
 
-    if ($user == $user_data['user_id']) {
+    if ($user == $user_data['id']) {
         $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE `recy_id` = '$pub_recy_id'";
         $db->sql_query($query);
         echo "<span style=\"color: #FF0000; \">Le recyclage a bien été supprimé.</span>";
 
         //On ajoute l'action dans le log
-        $line = $user_data['user_name'] . " supprime l'un de ses recyclage dans le module de gestion des attaques";
+        $line = $user_data['name'] . " supprime l'un de ses recyclage dans le module de gestion des attaques";
         $fichier = "log_" . date("ymd") . '.log';
         $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
         write_file(PATH_LOG_TODAY . $fichier, "a", $line);
@@ -63,7 +63,7 @@ if (isset($pub_recy_id)) {
 $query = "SELECT DISTINCT u.`id`, u.`name` FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
                 ON mu.`user_id` = u.`id`
-          WHERE u.`id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          WHERE u.`id` = " . $user_data['id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
           ORDER BY u.`name`";
 
 $result = $db->sql_query($query);
@@ -256,7 +256,7 @@ if ($config['histo']) {
     $mois = date("m");
     $annee = date("Y");
 
-    $query = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
+    $query = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
 
     // requète SQL pour récupérer le total par ressource par jour
     $result = $db->sql_query($query);
@@ -403,3 +403,4 @@ if ($config['histo']) {
 echo "<br>";
 echo "<br>";
 ?>
+

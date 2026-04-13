@@ -23,7 +23,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 //Définitions
 global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;
 
-$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['user_id'] . "'";
+$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['id'] . "'";
 $result = $db->sql_query($query);
 $nbline = $db->sql_numrows($result);
 
@@ -104,7 +104,7 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
         $total_recy = number_format ($total_recy, 0, ',', ' ');*/
 
         //On prépare les resultats au format bbcode
-        $bbcode = "[b]Résultats des attaques de " . $user_data['user_name'] . "[/b]\n";
+        $bbcode = "[b]Résultats des attaques de " . $user_data['name'] . "[/b]\n";
         $bbcode .= "du mois de " . $date_from . "\n\n";
         $bbcode .= "Nombre d'attaques durant le mois : " . number_format($archives_nb_attaques, 0, ',', ' ') . "\n\n";
         $bbcode .= "Métal gagné : " . number_format($archives_metal, 0, ',', ' ') . "\n";
@@ -147,3 +147,4 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     }
 }
 echo "<br/>";
+

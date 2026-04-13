@@ -70,7 +70,7 @@ function attack_rc($rapport)
 
     //On regarde dans les coordonnées de l'espace personnel du joueur qui insère les données via le plugin si il fait partie des attaquants et/ou des défenseurs
 
-    $query = "SELECT `coordinates` FROM " . TABLE_USER_BUILDING . " WHERE `user_id` ='" . $user_data['user_id'] . "'";
+    $query = "SELECT `coordinates` FROM " . TABLE_USER_BUILDING . " WHERE `user_id` ='" . $user_data['id'] . "'";
     //log_('debug', $query);
     $result = $db->sql_query($query);
     $coordinates = array();
@@ -141,7 +141,7 @@ function attack_rc($rapport)
         }
 
         //On vérifie que cette attaque n'a pas déja été enregistrée
-        $query = "SELECT `attack_id` FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE `attack_user_id` ='" . $user_data['user_id'] . "' AND `attack_date`='$timestamp' AND `attack_coord`='$coord_attaque' ";
+        $query = "SELECT `attack_id` FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE `attack_user_id` ='" . $user_data['id'] . "' AND `attack_date`='$timestamp' AND `attack_coord`='$coord_attaque' ";
         $result = $db->sql_query($query);
         $nb = $db->sql_numrows($result);
 
@@ -149,7 +149,7 @@ function attack_rc($rapport)
             //On insere ces données dans la base de données
             $query = "INSERT INTO " . TABLE_ATTAQUES_ATTAQUES . " ( `attack_id` , `attack_user_id` , `attack_coord` , `attack_date` , `attack_metal` , `attack_cristal` , `attack_deut` , `attack_pertes` )
                     VALUES (
-                        NULL , '" . $user_data['user_id'] . "', '" . $coord_attaque . "', '" . $timestamp . "', '" . $winmetal . "', '" . $wincristal . "', '" . $windeut . "', '" . $pertes . "')";
+                        NULL , '" . $user_data['id'] . "', '" . $coord_attaque . "', '" . $timestamp . "', '" . $winmetal . "', '" . $wincristal . "', '" . $windeut . "', '" . $pertes . "')";
             $db->sql_query($query);
         }
     }
@@ -173,7 +173,7 @@ function attack_rr($rapport)
         $timestamp = $rapport['time'];
         $coordonne = $rapport['coords'][0] . ":" . $rapport['coords'][1] . ":" . $rapport['coords'][2];
         //On vérifie que ce recyclage n'a pas déja été enregistrée
-        $query = "SELECT `recy_id` FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE `recy_user_id` ='" . $user_data['user_id'] . "' AND `recy_date` ='$timestamp' AND `recy_coord` ='$coordonne' ";
+        $query = "SELECT `recy_id` FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE `recy_user_id` ='" . $user_data['id'] . "' AND `recy_date` ='$timestamp' AND `recy_coord` ='$coordonne' ";
         $result = $db->sql_query($query);
         $nb = $db->sql_numrows($result);
         // Si on ne trouve rien
@@ -181,7 +181,7 @@ function attack_rr($rapport)
             //On insere ces données dans la base de données
             $query = "INSERT INTO " . TABLE_ATTAQUES_RECYCLAGES . " ( `recy_id` , `recy_user_id` , `recy_coord` , `recy_date` , `recy_metal` , `recy_cristal` )
                 VALUES (
-                    NULL , '" . $user_data['user_id'] . "', '" . $coordonne . "', '" . $timestamp . "', '" . $rapport['M_reco'] . "', '" . $rapport['C_reco'] . "')";
+                    NULL , '" . $user_data['id'] . "', '" . $coordonne . "', '" . $timestamp . "', '" . $rapport['M_reco'] . "', '" . $rapport['C_reco'] . "')";
             $db->sql_query($query);
         }
         return true;
@@ -198,3 +198,4 @@ function read_config()
     $configs = $db->sql_fetch_row($queryResult);
     $attack_config = json_decode($configs[0], true);
 }
+

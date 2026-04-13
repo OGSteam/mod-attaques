@@ -33,7 +33,7 @@ if ($yesterday < 1) $yesterday = 1;
 $query = "SELECT DISTINCT u.`id`, u.`name` FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
                 ON mu.`user_id` = u.`id`
-          WHERE u.`id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          WHERE u.`id` = " . $user_data['id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
           ORDER BY u.`name`";
 
 $result = $db->sql_query($query);
@@ -181,8 +181,8 @@ if ($config['histo'] == 1) {
     $mois = date("m");
     $annee = date("Y");
 
-    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
-    $query2 = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
+    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
+    $query2 = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
 
     // requète SQL pour récupérer le total par ressource par jour
     $result = $db->sql_query($query);
@@ -356,3 +356,4 @@ if ($config['histo'] == 1) {
 echo "<br />";
 echo "<br />";
 ?>
+
