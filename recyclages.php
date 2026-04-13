@@ -52,7 +52,7 @@ if (isset($pub_recy_id)) {
         echo "<span style=\"color: #FF0000; \">Vous n'avez pas le droit d'effacer ce recyclage !!!</span>";
 
         //On ajoute l'action dans le log
-        $line = $user_data[user_name] . " a tenté de supprimer un recyclage qui appartient à un autre utilisateurs dans le module de gestion des attaques";
+        $line = $user_data['name'] . " a tenté de supprimer un recyclage qui appartient à un autre utilisateurs dans le module de gestion des attaques";
         $fichier = "log_" . date("ymd") . '.log';
         $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
         write_file(PATH_LOG_TODAY . $fichier, "a", $line);
@@ -60,11 +60,11 @@ if (isset($pub_recy_id)) {
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+$query = "SELECT DISTINCT u.`id`, u.`name` FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
-                ON mu.`user_id` = u.`user_id`
-          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-          ORDER BY u.`user_name`";
+                ON mu.`user_id` = u.`id`
+          WHERE u.`id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY u.`name`";
 
 $result = $db->sql_query($query);
 $users = array();
@@ -75,10 +75,10 @@ while ($row = $db->sql_fetch_row($result))
 if (isset($pub_user_id) && isset($users[$pub_user_id])) {
     $user_id = $pub_user_id;
 } else {
-    $user_id = $user_data["user_id"];
+    $user_id = $user_data["id"];
 }
 
-$estUtilisateurCourant = $user_id == $user_data["user_id"];
+$estUtilisateurCourant = $user_id == $user_data["id"];
 
 $masquer_coord = false;
 if (!$estUtilisateurCourant) {
