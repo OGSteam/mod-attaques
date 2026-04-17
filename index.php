@@ -26,7 +26,12 @@ define("TABLE_ATTAQUES_ARCHIVES", $table_prefix . "attaques_archives");
 
 //récupération des paramètres de config
 $config = mod_get_option('config');
-$config = json_decode($config, true);
+if (is_string($config)) {
+    $config = json_decode($config, true);
+}
+if (!is_array($config)) {
+    $config = ['transp' => 75, 'layer' => 1, 'defenseur' => 1, 'histo' => 1];
+}
 
 // Appel des fonctions du module
 include_once(FOLDER_ATTCK . "/attack_include.php");
