@@ -16,12 +16,14 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 echo "<script type='text/javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
 
 //Définitions
-global $db, $table_prefix, $prefixe;
+global $db, $log, $table_prefix, $prefixe;
 
-//Gestion des dates
-$date = date("j");
-$mois = date("m");
-$annee = date("Y");
+//Gestion des dates - en heure locale (config['timezone'])
+$local_tz = new DateTimeZone(!empty($config['timezone']) ? $config['timezone'] : 'UTC');
+$now_local = new DateTime('now', $local_tz);
+$date = (int)$now_local->format('j');
+$mois = (int)$now_local->format('m');
+$annee = (int)$now_local->format('Y');
 $septjours = $date - 7;
 $yesterday = $date - 1;
 
@@ -80,7 +82,7 @@ if ($nb_result != 0) {
         $bbcode .= "du 01/" . $month . "/" . $year . " au 31/" . $month . "/" . $year . "\n\n";
 
         while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($list)) {
-            $attack_date = date('d M Y H:i:s', $attack_date);
+            $attack_date = (new DateTime('@' . $attack_date))->setTimezone($local_tz)->format('d M Y H:i:s');
             $bbcode .= "Le " . $attack_date . " victoire en " . $attack_coord . ".\n";
             $bbcode .= "[color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color] de métal, [color=" . $bbcolor['c_g'] . "]" . $attack_cristal . "[/color] de cristal et [color=" . $bbcolor['d_g'] . "]" . $attack_deut . "[/color] de deutérium ont été rapportés.\n";
             $bbcode .= "Les pertes s'&eacute;lèvent à [color=" . $bbcolor['perte'] . "]" . $attack_pertes . "[/color].\n\n";
@@ -100,10 +102,7 @@ if ($nb_result != 0) {
     require_once("views/page_tail.php");
 
     //On ajoute l'action dans le log
-    $line = "La listes des attaques de " . $user_data['name'] . " a &eacute;t&eacute; supprimée. Les gains ont été archivés dans le module de gestion des attaques";
-    $fichier = "log_" . date("ymd") . '.log';
-    $line = "/*" . date("d m Y H:i:s") . '*/ ' . $line;
-    write_file(PATH_LOG_TODAY . $fichier, "a", $line);
+    $log->info("La liste des attaques de {$user_data['name']} a été supprimée. Les gains ont été archivés dans le module de gestion des attaques.");
 
     exit;
 }
@@ -123,27 +122,23 @@ if (isset($pub_attack_id)) {
         echo "<blink><span style=\"color: FF0000; \">L'attaque a bien été supprimée.</span></blink>";
 
         //On ajoute l'action dans le log
-        $line = $user_data['name'] . " supprime l'une de ses attaque dans le module de gestion des attaques";
-        $fichier = "log_" . date("ymd") . '.log';
-        $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
-        write_file(PATH_LOG_TODAY . $fichier, "a", $line);
+        $log->info("{$user_data['name']} a supprimé une attaque dans le module de gestion des attaques.", ['attack_id' => $pub_attack_id]);
     } else {
         echo "<blink><span style=\"color: FF0000; \">Vous n'avez pas le droit d'effacer cette attaque !!!</span></blink>";
 
         //On ajoute l'action dans le log
-        $line = $user_data['name'] . " a tenté de supprimer une attaque qui appartient à un autre utilisateurs dans le module de gestion des attaques";
-        $fichier = "log_" . date("ymd") . '.log';
-        $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
-        write_file(PATH_LOG_TODAY . $fichier, "a", $line);
+        $log->warning("{$user_data['name']} a tenté de supprimer une attaque qui appartient à un autre utilisateur.", ['attack_id' => $pub_attack_id]);
     }
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`id`, u.`name` FROM " . TABLE_USER . " u
+$query = "SELECT DISTINCT u.`id`, COALESCE(p.`name`, u.`name`) as display_name FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
                 ON mu.`user_id` = u.`id`
+            LEFT JOIN " . TABLE_GAME_PLAYER . " p
+                ON p.`id` = u.`player_id`
           WHERE u.`id` = " . $user_data['id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-          ORDER BY u.`name`";
+          ORDER BY display_name";
 
 $result = $db->sql_query($query);
 $users = array();
@@ -166,26 +161,27 @@ if (!$estUtilisateurCourant) {
 }
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
+// Les dates saisies/affichées sont en heure locale, converties en timestamp UTC pour la DB.
 if (!isset($pub_date_from))
-    $pub_date_from = mktime(0, 0, 0, $mois, $date, $annee);
+    $pub_date_from = (new DateTime(sprintf('%04d-%02d-%02d 00:00:00', $annee, $mois, $date), $local_tz))->getTimestamp();
 else {
-    // Si la date est au format jour/mois/annee
+    // Si la date est au format 'j M Y H:i'
     $pub_date = date_parse_from_format('j M Y H:i', $pub_date_from);
-    if ($pub_date['error_count'] == 0)
-        $pub_date_from = mktime($pub_date['hour'], $pub_date['minute'], 00, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    if ($pub_date['error_count'] == 0 && $pub_date['year'] !== false && $pub_date['month'] !== false)
+        $pub_date_from = (new DateTime(sprintf('%04d-%02d-%02d %02d:%02d:00', $pub_date['year'], $pub_date['month'], $pub_date['day'], $pub_date['hour'], $pub_date['minute']), $local_tz))->getTimestamp();
     else
-        $pub_date_from = mktime(0, 0, 0, $mois, $pub_date_from, $annee);
+        $pub_date_from = (new DateTime(sprintf('%04d-%02d-%02d 00:00:00', $annee, $mois, (int)$pub_date_from), $local_tz))->getTimestamp();
 }
 
 if (!isset($pub_date_to))
-    $pub_date_to = mktime(23, 59, 59, $mois, $date, $annee);
+    $pub_date_to = (new DateTime(sprintf('%04d-%02d-%02d 23:59:59', $annee, $mois, $date), $local_tz))->getTimestamp();
 else {
-    // Si la date est au format jour/mois/annee
+    // Si la date est au format 'j M Y H:i'
     $pub_date = date_parse_from_format('j M Y H:i', $pub_date_to);
-    if ($pub_date['error_count'] == 0)
-        $pub_date_to = mktime($pub_date['hour'], $pub_date['minute'], 59, $pub_date['month'], $pub_date['day'], $pub_date['year']);
+    if ($pub_date['error_count'] == 0 && $pub_date['year'] !== false && $pub_date['month'] !== false)
+        $pub_date_to = (new DateTime(sprintf('%04d-%02d-%02d %02d:%02d:59', $pub_date['year'], $pub_date['month'], $pub_date['day'], $pub_date['hour'], $pub_date['minute']), $local_tz))->getTimestamp();
     else
-        $pub_date_to = mktime(23, 59, 59, $mois, $pub_date_to, $annee);
+        $pub_date_to = (new DateTime(sprintf('%04d-%02d-%02d 23:59:59', $annee, $mois, (int)$pub_date_to), $local_tz))->getTimestamp();
 }
 
 $pub_date_from = intval($pub_date_from);
@@ -200,7 +196,7 @@ elseif ($pub_sens == 2) $pub_sens = "DESC";
 elseif ($pub_sens == 1) $pub_sens = "ASC";
 
 //Requete pour afficher la liste des attaques
-$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to;
+$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date >= " . $pub_date_from . " AND attack_date <= " . $pub_date_to; 
 
 $order_by = " ORDER BY ";
 if ($pub_order_by != 'attack_coord')
@@ -222,66 +218,59 @@ $result = $db->sql_query($query);
 $nb_attack = $db->sql_numrows($result);
 
 //Cacul pour obtenir les gains
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_id . " AND attack_date >= " . $pub_date_from . " AND attack_date <= " . $pub_date_to . " GROUP BY attack_user_id";
 
 //echo $query;
 
 $resultgains = $db->sql_query($query);
 
-//On récupère la date au bon format
-$pub_date_from = date('d M Y', $pub_date_from);
-$pub_date_to = date('d M Y', $pub_date_to);
+//On récupère la date au bon format (heure locale)
+$pub_date_from = (new DateTime('@' . $pub_date_from))->setTimezone($local_tz)->format('d M Y');
+$pub_date_to = (new DateTime('@' . $pub_date_to))->setTimezone($local_tz)->format('d M Y');
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Paramètres d'affichage des attaques ";
-echo help("attaques_changer_affichage");
-echo "</font></b></legend>";
-
-echo "Afficher les attaques : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Paramètres d'affichage des attaques " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=attaques' method='post' name='date'>";
+echo "<div class='attaques-filter-row'>";
 echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
-echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
-echo "<br>";
+echo "au : <input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
+echo "</div>";
 ?>
+<div class="attaques-filter-row">
 <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de
-    la veille</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7
-    derniers jours</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7 derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
-<br />
+</div>
+<div class="attaques-filter-row">
 <select name="user_id">
-    <?php foreach ($users as $id => $username) {
+    <?php foreach ($users as $id => $player_name) {
         echo "<option value='$id'";
         if ($id == $user_id)
             echo " SELECTED=SELECTED";
-        echo ">$username</option>";
+        echo ">$player_name</option>";
     }
     ?>
 </select>
+</div>
 <?php
-
-
-echo "<br><br>";
-echo "<input type='submit' value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 //Création du field pour voir les gains des attaques
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Résultats des attaques du " . $pub_date_from . " au " . $pub_date_to . " de " . $users[$user_id];
-echo help("attaques_resultats");
-echo "</font></b></legend>";
+echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Résultats des attaques du " . $pub_date_from . " au " . $pub_date_to . " de " . htmlspecialchars($users[$user_id]) . " " . help("attaques_resultats") . "</span></b></legend>";
+echo "<p>";
 
 //Résultat requete
-list($attack_metal, $attack_cristal, $attack_deut, $attack_pertes) = $db->sql_fetch_row($resultgains);
-
-// Valeurs par défaut
-$attack_metal = $attack_metal ?? 0;
-$attack_cristal = $attack_cristal ?? 0;
-$attack_deut = $attack_deut ?? 0;
-$attack_pertes = $attack_pertes ?? 0;
+$row_gains = $db->sql_fetch_row($resultgains);
+$attack_metal  = isset($row_gains[0]) ? (int)$row_gains[0] : 0;
+$attack_cristal = isset($row_gains[1]) ? (int)$row_gains[1] : 0;
+$attack_deut   = isset($row_gains[2]) ? (int)$row_gains[2] : 0;
+$attack_pertes  = isset($row_gains[3]) ? (int)$row_gains[3] : 0;
 
 //Calcul des gains totaux
 $totalgains = $attack_metal + $attack_cristal + $attack_deut;
@@ -291,13 +280,12 @@ $renta = $totalgains - $attack_pertes;
 
 echo "<table width='100%'><tr align='left'>";
 
-
-echo "<td width='25%'>" . "<table width='100%'><colgroup><col width='40%'/><col/></colgroup><tbody>" . "<tr>" . "<td style='font-size: 18px;color: white;'><b>M&eacute;tal</b></td>" . "<td class='metal number' style='font-size: 18px;'>" . number_format($attack_metal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Cristal</b></td>" . "<td class='cristal number' style='font-size: 18px;'>" . number_format($attack_cristal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium</b></td>" . "<td class='deuterium number' style='font-size: 18px;'>" . number_format($attack_deut, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Gains</b></td>" . "<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Pertes</b></td>" . "<td class='perte number' style='font-size: 18px;'>" . number_format($attack_pertes, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute;</b></td>" . "<td class='renta number' style='font-size: 18px;'>" . number_format($renta, 0, ',', ' ') . "</td>" . "</tr><tbody></table></td>";
+echo "<td width='25%'>" . "<table width='100%'><colgroup><col width='55%'/><col/></colgroup><tbody>" . "<tr>" . "<td style='font-size: 18px;color: white;'><b>M&eacute;tal</b></td>" . "<td class='metal number' style='font-size: 18px;'>" . number_format($attack_metal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Cristal</b></td>" . "<td class='cristal number' style='font-size: 18px;'>" . number_format($attack_cristal, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Deut&eacute;rium</b></td>" . "<td class='deuterium number' style='font-size: 18px;'>" . number_format($attack_deut, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Gains</b></td>" . "<td class='number' style='font-size: 18px;color: white;'>" . number_format($totalgains, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Pertes</b></td>" . "<td class='perte number' style='font-size: 18px;'>" . number_format($attack_pertes, 0, ',', ' ') . "</td>" . "</tr><tr>" . "<td style='font-size: 18px;color: white;'><b>Rentabilit&eacute;</b></td>" . "<td class='renta number' style='font-size: 18px;'>" . number_format($renta, 0, ',', ' ') . "</td>" . "</tr></tbody></table></td>";
 
 // Afficher l'image du graphique
 echo "<td width='75%' align='center'>";
 
-if ((!isset($attack_metal)) && (!isset($attack_cristal)) && (!isset($attack_deut)) && (!isset($attack_pertes))) {
+if ($attack_metal == 0 && $attack_cristal == 0 && $attack_deut == 0 && $attack_pertes == 0) {
     echo "Pas de graphique disponible";
 } else {
     /** GRAPHIQUE **/
@@ -310,13 +298,10 @@ echo "</td></tr>";
 
 
 echo "</table>";
-echo "</p></fieldset><br><br>";
+echo "</p></fieldset>";
 
 //Création du field pour voir la liste des attaques
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Liste des attaques du " . $pub_date_from . " au " . $pub_date_to . " ";
-echo " : " . $nb_attack . " attaque(s) ";
-echo help("attaques_liste_attaques");
-echo "</span></b></legend>";
+echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Liste des attaques du " . $pub_date_from . " au " . $pub_date_to . " &mdash; " . $nb_attack . " attaque(s) " . help("attaques_liste_attaques") . "</span></b></legend>";
 
 //Debut du lien pour le changement de l'ordre d'affichage
 $link = "index.php?action=attaques&date_from=" . $pub_date_from . "&date_to=" . $pub_date_to . " &user_id=" . $user_id;
@@ -324,43 +309,40 @@ $link = "index.php?action=attaques&date_from=" . $pub_date_from . "&date_to=" . 
 //Tableau donnant la liste des attaques
 echo "<table width='100%'>";
 echo "<tr>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_coord&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Coordonnées</b> <a href='" . $link . "&order_by=attack_coord&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_date&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Date de l'Attaque</b> <a href='" . $link . "&order_by=attack_date&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_metal&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Métal Gagné</b> <a href='" . $link . "&order_by=attack_metal&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_cristal&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Cristal Gagné</b> <a href='" . $link . "&order_by=attack_cristal&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_deut&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Deut&eacute;rium Gagné</b> <a href='" . $link . "&order_by=attack_deut&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><a href='" . $link . "&order_by=attack_pertes&sens=1'><img src='" . $prefixe . "images/asc.png'></a> <b>Pertes Attaquant</b> <a href='" . $link . "&order_by=attack_pertes&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
-echo "<td class=" . 'c' . " align=" . 'center' . "><b><span style=\"color: #FF0000; \">Supprimer</span></b></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_coord&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Coordonnées <a href='" . $link . "&order_by=attack_coord&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_date&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Date de l'Attaque <a href='" . $link . "&order_by=attack_date&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_metal&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Métal Gagné <a href='" . $link . "&order_by=attack_metal&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_cristal&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Cristal Gagné <a href='" . $link . "&order_by=attack_cristal&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_deut&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Deut&eacute;rium Gagné <a href='" . $link . "&order_by=attack_deut&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'><a href='" . $link . "&order_by=attack_pertes&sens=1'><img src='" . $prefixe . "images/asc.png'></a> Pertes Attaquant <a href='" . $link . "&order_by=attack_pertes&sens=2'><img src='" . $prefixe . "images/desc.png'></a></td>";
+echo "<td class='c' align='center'>Supprimer</td>";
 
 echo "</tr>";
-echo "<tr>";
 
 while (list($attack_coord, $attack_date, $attack_metal, $attack_cristal, $attack_deut, $attack_pertes, $attack_id) = $db->sql_fetch_row($result)) {
-    $attack_date = date('d M Y H:i:s', $attack_date);
+    $attack_date = (new DateTime('@' . $attack_date))->setTimezone($local_tz)->format('d M Y H:i:s');
     $attack_metal = number_format($attack_metal, 0, ',', ' ');
     $attack_cristal = number_format($attack_cristal, 0, ',', ' ');
     $attack_deut = number_format($attack_deut, 0, ',', ' ');
     $attack_pertes = number_format($attack_pertes, 0, ',', ' ');
     $coord = explode(":", $attack_coord);
+    echo "<tr>";
     echo "<th align='center'>";
     if (!$masquer_coord)
-        echo "<a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord;
+        echo "<a href='index.php?action=galaxy&galaxy=" . $coord[0] . "&system=" . $coord[1] . "'>" . $attack_coord . "</a>";
     echo "</th>";
     echo "<th align='center'>" . $attack_date . "</th>";
     echo "<th align='center'>" . $attack_metal . "</th>";
     echo "<th align='center'>" . $attack_cristal . "</th>";
     echo "<th align='center'>" . $attack_deut . "</th>";
     echo "<th align='center'>" . $attack_pertes . "</th>";
-    echo "<th align='center' valign='middle'>";
-
+    echo "<th align='center'>";
     if ($estUtilisateurCourant) {
-        echo "<form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit'  value='Supprimer' name='B1' style='color: #FF0000'></form>";
+        echo "<form action='index.php?action=attaques&page=attaques' method='post'><input type='hidden' name='date_from' value='$pub_date_from'><input type='hidden' name='date_to' value='$pub_date_to'><input type='hidden' name='attack_id' value='$attack_id'><input type='submit' value='Supprimer' name='B1' style='color: #FF0000'></form>";
     }
     echo "</th>";
     echo "</tr>";
-    echo "<tr>";
 }
-echo "</tr>";
 echo "</table>";
 echo "</fieldset>";
 

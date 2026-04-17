@@ -21,37 +21,34 @@
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
 //Définitions
-global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;
+global $db, $log, $table_prefix, $prefixe, $pub_mois, $pub_annee, $resultgains;
 
 $query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['id'] . "'";
 $result = $db->sql_query($query);
 $nbline = $db->sql_numrows($result);
 
 //Fieldset pour seletionner les dates de visualisation des gains
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage des attaques ";
-echo help("attaques_changer_affichage");
-echo "</span></b></legend>";
-
-echo "Afficher mes résultats anterieurs : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage des attaques " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=archive' method='post'>";
+echo "<div class='attaques-filter-row'>";
 echo "mois : <input type='text' name='mois' size='2' maxlength='2' value='$pub_mois' /> ";
-echo "année : ";
-echo "<input type='text' name='annee' size='4' maxlength='4' value='$pub_annee' />";
-echo "<br /><br />";
-echo "<table border=0><tr>";
+echo "année : <input type='text' name='annee' size='4' maxlength='4' value='$pub_annee' />";
+echo "</div>";
+echo "<div class='attaques-filter-row'>";
 $count = 0;
 while (list($date) = $db->sql_fetch_row($result)) {
-    echo "<td class='c'><a href='index.php?action=attaques&page=archive&mois=" . date("m", $date) . "&annee=" . date("Y", $date) . "'>" . date("M Y", $date) . "</a></td>";
+    echo "<a href='index.php?action=attaques&page=archive&mois=" . date("m", $date) . "&annee=" . date("Y", $date) . "'>" . date("M Y", $date) . "</a> ";
     $count += 1;
     if (($count / 10) == (intval($count / 10))) {
-        echo "</tr><tr>";
+        echo "<br>";
     }
 }
-echo "</tr></table>";
-echo "<br />";
-echo "<input type='submit'  value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "</div>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 //Si le message de sauvegarde des resultats est défini, on l'affiche
 if (isset($pub_message)) echo "<span style=\"color: #FF0000; \">La liste de vos attaques étant anterieure à ce mois, elle a été supprimée. Les résultats de vos attaques ont été sauvegardés, ils seront désormais accessibles sur cette page</span>";

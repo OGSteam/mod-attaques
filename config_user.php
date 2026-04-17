@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * config.php Page de configuration utilisateur
@@ -13,7 +13,7 @@
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-global $db, $table_prefix;
+global $db, $log, $table_prefix;
 
 // lecture des configs dans la db
 $user_config['diffusion_rapports'] = mod_get_user_option($user_data["id"], "diffusion_rapports");
@@ -29,45 +29,37 @@ if (isset($pub_submit)) {
     mod_set_user_option($user_data['id'], 'masquer_coord', $masquer_coord);
     $user_config['masquer_coord'] = $masquer_coord;
 
-    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
+    echo "<span style='color: #00FF40;'>Configuration sauvegard&eacute;e</span><br />";
 }
 // Fin paramètres de configuration
 
 
 // cadre autour des paramètres
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Configuration ";
-echo help("attaques_user_config");
-echo "</font></b></legend>";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Configuration " . help("attaques_user_config") . "</h3>";
+echo "<div class='og-content'>";
 // Formulaire des paramètres du module
-echo "<form name='form1' style=\"display: block;margin-left: auto;margin-right: auto;\" action='index.php?action=attaques&page=config' enctype='multipart/form-data' method='post'>";
-echo "<table width='60%' border='0'>
-<tr>
-<td class='c' colspan='2'>Paramètres de visibilité</td>
-</tr>
-<tr>
-<th>Diffuser les rapports " . help("attaques_diffusion_rapports") . " : </th>
-<th><input type='checkbox' name='diffusion' value='true' ";
+echo "<form name='form1' action='index.php?action=attaques&page=config' enctype='multipart/form-data' method='post'>";
+echo "<div class='attaques-filter-row'><b>Paramètres de visibilité</b></div>";
+echo "<div class='attaques-filter-row'>";
+echo "<label>Diffuser les rapports " . help("attaques_diffusion_rapports") . " : ";
+echo "<input type='checkbox' name='diffusion' value='true' ";
 if (isset($user_config['diffusion_rapports']) && $user_config['diffusion_rapports'] == 1) {
     echo 'checked=checked';
 }
-echo "></th>
-</tr>
-<tr>
-<th> Masquer les coordonnees " . help("attaques_masquer_coord") . "&nbsp;: </th>
-<th><input type='checkbox' name='masquer_coord' value='true' ";
+echo "></label>";
+echo "</div>";
+echo "<div class='attaques-filter-row'>";
+echo "<label>Masquer les coordonnées " . help("attaques_masquer_coord") . " : ";
+echo "<input type='checkbox' name='masquer_coord' value='true' ";
 if (isset($user_config['masquer_coord']) && $user_config['masquer_coord'] == 1) {
     echo 'checked=checked';
 }
-echo "></th>
-</tr>
-<tr>
-<td class='c' colspan='2'>&nbsp;</td>
-</tr>
-<tr>
-<tr>
-<td colspan='2' class='c' align='center'><input name='submit' type='submit' value='Envoyer'></td>
-</tr>
-";
-echo "</table></form>";
-echo "</center></fieldset>";
+echo "></label>";
+echo "</div>";
+echo "<div class='attaques-filter-row'>";
+echo "<input name='submit' type='submit' value='Enregistrer' class='og-button'>";
+echo "</div>";
+echo "</form>";
+echo "</div></div>";
 

@@ -57,13 +57,12 @@ require_once("views/page_header.php");
 if ($config['layer'] == 1) {
     include_once(FOLDER_ATTCK . "/css.php");
 }
+// Affichage du layer transparent
+echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //Menu
 // Si la page a afficher n'est pas définie, on affiche la première
 if (!isset($pub_page)) $pub_page = "attaques";
 menu($pub_page);
-
-// Affichage du layer transparent
-echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //On  affiche de la page demandée
 switch ($pub_page) {
     case "bilan":

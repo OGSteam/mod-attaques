@@ -69,29 +69,25 @@ $pub_date_from = date('d M Y', $pub_date_from);
 $pub_date_to = date('d M Y', $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques et des recyclages en BBCode ";
-echo help("attaques_changer_affichage");
-echo "</font></b></legend>";
-
-echo "Afficher mes attaques et mes recyclages en BBCode : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage des attaques et des recyclages en BBCode " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=bbcode' method='post' name='date'>";
-echo "du : <input type='text' name='date_from' id='date_from' size='11' maxlength='2' value='$pub_date_from' /> ";
-echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='11' maxlength='2' value='$pub_date_to' />";
-echo "<br>";
+echo "<div class='attaques-filter-row'>";
+echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
+echo "au : <input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
+echo "</div>";
 ?>
-<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>');  valid();">du
-    jour</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
-    veille</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
-    7 derniers jours</a> |
+<div class="attaques-filter-row">
+<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7 derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+</div>
 <?php
-echo "<br><br>";
-echo "<input type='submit' value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 $bbcode = "[color=" . $bbcolor['title'] . "] [b]Liste des attaques de " . $user_data['name'] . "[/b] [/color]\n";
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
