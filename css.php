@@ -4,6 +4,7 @@
         border: 1px solid #000000;
         position: relative;
         width: 100%;
+        z-index: 1;
     }
 
     div.attack_box_contents {
@@ -49,5 +50,9 @@
 
     .number {
         text-align: right;
+    }
+
+    .attaques-filter-row {
+        margin-bottom: 10px;
     }
 </style>

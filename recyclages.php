@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité/ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8b
  */
 
@@ -16,7 +16,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 echo "<script type='text/javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
 
 //Définitions
-global $db, $table_prefix;
+global $db, $log, $table_prefix, $prefixe;
 
 //Gestion des dates
 $date = date("j");
@@ -38,33 +38,29 @@ if (isset($pub_recy_id)) {
     $result = $db->sql_query($query);
     list($user) = $db->sql_fetch_row($result);
 
-    if ($user == $user_data['user_id']) {
+    if ($user == $user_data['id']) {
         $query = "DELETE FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE `recy_id` = '$pub_recy_id'";
         $db->sql_query($query);
         echo "<span style=\"color: #FF0000; \">Le recyclage a bien été supprimé.</span>";
 
         //On ajoute l'action dans le log
-        $line = $user_data['user_name'] . " supprime l'un de ses recyclage dans le module de gestion des attaques";
-        $fichier = "log_" . date("ymd") . '.log';
-        $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
-        write_file(PATH_LOG_TODAY . $fichier, "a", $line);
+        $log->info("{$user_data['name']} a supprimé un recyclage dans le module de gestion des attaques.", ['recy_id' => $pub_recy_id]);
     } else {
         echo "<span style=\"color: #FF0000; \">Vous n'avez pas le droit d'effacer ce recyclage !!!</span>";
 
         //On ajoute l'action dans le log
-        $line = $user_data[user_name] . " a tenté de supprimer un recyclage qui appartient à un autre utilisateurs dans le module de gestion des attaques";
-        $fichier = "log_" . date("ymd") . '.log';
-        $line = "/*" . date("d/m/Y H:i:s") . '*/ ' . $line;
-        write_file(PATH_LOG_TODAY . $fichier, "a", $line);
+        $log->warning("{$user_data['name']} a tenté de supprimer un recyclage qui appartient à un autre utilisateur.", ['recy_id' => $pub_recy_id]);
     }
 }
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+$query = "SELECT DISTINCT u.`id`, COALESCE(p.`name`, u.`name`) as display_name FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
-                ON mu.`user_id` = u.`user_id`
-          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-          ORDER BY u.`user_name`";
+                ON mu.`user_id` = u.`id`
+            LEFT JOIN " . TABLE_GAME_PLAYER . " p
+                ON p.`id` = u.`player_id`
+          WHERE u.`id` = " . $user_data['id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY display_name";
 
 $result = $db->sql_query($query);
 $users = array();
@@ -75,10 +71,10 @@ while ($row = $db->sql_fetch_row($result))
 if (isset($pub_user_id) && isset($users[$pub_user_id])) {
     $user_id = $pub_user_id;
 } else {
-    $user_id = $user_data["user_id"];
+    $user_id = $user_data["id"];
 }
 
-$estUtilisateurCourant = $user_id == $user_data["user_id"];
+$estUtilisateurCourant = $user_id == $user_data["id"];
 
 $masquer_coord = false;
 if (!$estUtilisateurCourant) {
@@ -129,38 +125,36 @@ $pub_date_from = date('d M Y', $pub_date_from);
 $pub_date_to = date('d M Y', $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage des recyclages ";
-echo help("attaques_changer_affichage");
-echo "</span></b></legend>";
-
-echo "Afficher mes recyclages : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage des recyclages " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=recyclages' method='post' name='date'>";
+echo "<div class='attaques-filter-row'>";
 echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
-echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
-echo "<br>";
+echo "au : <input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
+echo "</div>";
 ?>
+<div class="attaques-filter-row">
 <a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de
-    la veille</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7
-    derniers jours</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7 derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
-<br />
+</div>
+<div class="attaques-filter-row">
 <select name="user_id">
-    <?php foreach ($users as $id => $username) {
+    <?php foreach ($users as $id => $player_name) {
         echo "<option value='$id'";
         if ($id == $user_id)
             echo " SELECTED=SELECTED";
-        echo ">$username</option>";
+        echo ">$player_name</option>";
     }
     ?>
 </select>
+</div>
 <?php
-echo "<br><br>";
-echo "<input type='submit' value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 //Création du field pour voir les gains des attaques
 echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Résultats des recyclages du " . $pub_date_from . " au " . $pub_date_to . " ";
@@ -256,7 +250,7 @@ if ($config['histo']) {
     $mois = date("m");
     $annee = date("Y");
 
-    $query = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
+    $query = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
 
     // requète SQL pour récupérer le total par ressource par jour
     $result = $db->sql_query($query);
@@ -403,3 +397,4 @@ if ($config['histo']) {
 echo "<br>";
 echo "<br>";
 ?>
+

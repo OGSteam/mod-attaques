@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité modifié par ericc
- * @link http://www.OGSteam.eu
+ * @link https://www.OGSteam.eu
  * @version : 0.8a
  */
 
@@ -43,19 +43,19 @@ $pub_date_from = intval($pub_date_from);
 $pub_date_to = intval($pub_date_to);
 
 //Requete pour afficher la liste des attaques
-$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
+$query = "SELECT attack_coord, attack_date, attack_metal, attack_cristal, attack_deut, attack_pertes, attack_id FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['id'] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY attack_date DESC,attack_id DESC";
 $attaques = $db->sql_query($query);
 
 //Requete pour afficher la liste des recyclages
-$query = "SELECT recy_coord, recy_date, recy_metal, recy_cristal, recy_id FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY recy_date DESC,recy_id DESC";
+$query = "SELECT recy_coord, recy_date, recy_metal, recy_cristal, recy_id FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . "  ORDER BY recy_date DESC,recy_id DESC";
 $recyclages = $db->sql_query($query);
 
 //Requete pour obtenir les gains des attaques
-$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
+$query = "SELECT SUM(attack_metal), SUM(attack_cristal), SUM(attack_deut), SUM(attack_pertes) FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['id'] . " AND attack_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY attack_user_id";
 $resultgains = $db->sql_query($query);
 
 //Requete pour obtenir les gains des recyclages
-$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY recy_user_id";
+$query = "SELECT SUM(recy_metal), SUM(recy_cristal) FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " AND recy_date BETWEEN " . $pub_date_from . " and " . $pub_date_to . " GROUP BY recy_user_id";
 $resultgains_recy = $db->sql_query($query);
 
 //On recupère le nombre d'attaques
@@ -69,31 +69,27 @@ $pub_date_from = date('d M Y', $pub_date_from);
 $pub_date_to = date('d M Y', $pub_date_to);
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><font color='#0080FF'>Date d'affichage des attaques et des recyclages en BBCode ";
-echo help("attaques_changer_affichage");
-echo "</font></b></legend>";
-
-echo "Afficher mes attaques et mes recyclages en BBCode : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage des attaques et des recyclages en BBCode " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=bbcode' method='post' name='date'>";
-echo "du : <input type='text' name='date_from' id='date_from' size='11' maxlength='2' value='$pub_date_from' /> ";
-echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='11' maxlength='2' value='$pub_date_to' />";
-echo "<br>";
+echo "<div class='attaques-filter-row'>";
+echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
+echo "au : <input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
+echo "</div>";
 ?>
-<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>');  valid();">du
-    jour</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
-    veille</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
-    7 derniers jours</a> |
+<div class="attaques-filter-row">
+<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7 derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
+</div>
 <?php
-echo "<br><br>";
-echo "<input type='submit' value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
-$bbcode = "[color=" . $bbcolor['title'] . "] [b]Liste des attaques de " . $user_data['user_name'] . "[/b] [/color]\n";
+$bbcode = "[color=" . $bbcolor['title'] . "] [b]Liste des attaques de " . $user_data['name'] . "[/b] [/color]\n";
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
@@ -111,7 +107,7 @@ if ($nb_attack > 0) {
 } else {
     $bbcode = "Aucune Attaque enregistrée sur la période\n";
 }
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des attaques en BBCode
@@ -124,7 +120,7 @@ echo "<br>";
 echo "<br>";
 echo "</fieldset>";
 
-$bbcode = "[color=" . $bbcolor['title'] . "][b]Liste des recyclages de " . $user_data['user_name'] . "[/b] [/color]\n";
+$bbcode = "[color=" . $bbcolor['title'] . "][b]Liste des recyclages de " . $user_data['name'] . "[/b] [/color]\n";
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 
 //Résultat requete
@@ -139,7 +135,7 @@ if ($nb_recy > 0) {
 } else {
     $bbcode = "Aucun Recyclage enregistré sur la période\n";
 }
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir la liste des recyclages en BBCode
@@ -181,7 +177,7 @@ $recy_cristal = number_format($recy_cristal, 0, ',', ' ');
 $renta = number_format($renta, 0, ',', ' ');
 
 //On prépare les resultats au format bbcode
-$bbcode = "[color=" . $bbcolor['title'] . "][b]Résultats des attaques et recyclages de " . $user_data['user_name'] . "[/b] [/color]\n";
+$bbcode = "[color=" . $bbcolor['title'] . "][b]Résultats des attaques et recyclages de " . $user_data['name'] . "[/b] [/color]\n";
 $bbcode .= "du " . $pub_date_from . " au " . $pub_date_to . "\n\n";
 $bbcode .= "Nombre d'attaques durant cette periode : " . $nb_attack . "\n\n";
 $bbcode .= "Métal gagné : [color=" . $bbcolor['m_g'] . "]" . $attack_metal . "[/color]\n";
@@ -198,7 +194,7 @@ if ($renta > 0) {
     $bbcode .= "Rentabilité : [color=" . $bbcolor['perte'] . "]" . $renta . "[/color]\n\n";
 }
 
-$bbcode .= "[url=http://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
+$bbcode .= "[url=https://www.ogsteam.eu/]Généré par OGSpy et le module de gestion des attaques[/url]";
 
 
 //Création du field pour voir les gains en BBCode
@@ -212,3 +208,4 @@ echo "<br>";
 echo "</fieldset>";
 echo "<br/>";
 ?>
+

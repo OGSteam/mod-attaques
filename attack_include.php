@@ -4,7 +4,7 @@
  * Fonctions du modules
  * @package Attaques
  * @author Vérité - réécrit par ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  * dernière modification : 28 Dec 2007
  */
@@ -14,7 +14,7 @@
 function IsUserAdmin()
 {
     global $user_data;
-    if ($user_data["user_admin"] == 1 || $user_data["user_coadmin"] == 1 || $user_data["management_user"] == 1) {
+    if ($user_data["admin"] == 1 || $user_data["coadmin"] == 1 || $user_data["management_user"] == 1) {
         return 1;
     }
     return 0;
@@ -132,11 +132,14 @@ function menu($pub_page)
     $pages['admin'][$i] = 1;
 
     //Construction du menu
-    echo "  <table><tr align='center'>";
-    for ($i = 0; $i < count($pages['fichier']); $i++) if (($pages['admin'][$i] && IsUserAdmin()) || (!$pages['admin'][$i])) if ($pub_page != $pages['fichier'][$i]) {
-        echo "\t<td class='c' width='150' onclick=\"window.location = 'index.php?action=attaques&page=" . $pages['fichier'][$i] . "';\">";
-        echo "<a style='cursor:pointer'><span style=\"color: lime; \">" . $pages['texte'][$i] . "</span></a></td>";
-    } else
-        echo "\t<th width='150'><a>" . $pages['texte'][$i] . "</a></th>";
-    echo "\t\t</tr>\n\t\t</table>";
+    echo "<div class='nav-page-menu'>";
+    for ($i = 0; $i < count($pages['fichier']); $i++) {
+        if (($pages['admin'][$i] && IsUserAdmin()) || (!$pages['admin'][$i])) {
+            $active = ($pub_page == $pages['fichier'][$i]) ? ' active' : '';
+            echo "<div class='nav-page-menu-item" . $active . "'>";
+            echo "<a class='nav-page-menu-link' href='index.php?action=attaques&page=" . $pages['fichier'][$i] . "'>" . trim($pages['texte'][$i]) . "</a>";
+            echo "</div>";
+        }
+    }
+    echo "</div>";
 }

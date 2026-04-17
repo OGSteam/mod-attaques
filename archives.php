@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité modifié par ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  */
 
@@ -21,37 +21,34 @@
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
 //Définitions
-global $db, $table_prefix, $pub_mois, $pub_annee, $resultgains;
+global $db, $log, $table_prefix, $prefixe, $pub_mois, $pub_annee, $resultgains;
 
-$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['user_id'] . "'";
+$query = "SELECT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE `archives_user_id`='" . $user_data['id'] . "'";
 $result = $db->sql_query($query);
 $nbline = $db->sql_numrows($result);
 
 //Fieldset pour seletionner les dates de visualisation des gains
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage des attaques ";
-echo help("attaques_changer_affichage");
-echo "</span></b></legend>";
-
-echo "Afficher mes résultats anterieurs : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage des attaques " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=archive' method='post'>";
+echo "<div class='attaques-filter-row'>";
 echo "mois : <input type='text' name='mois' size='2' maxlength='2' value='$pub_mois' /> ";
-echo "année : ";
-echo "<input type='text' name='annee' size='4' maxlength='4' value='$pub_annee' />";
-echo "<br /><br />";
-echo "<table border=0><tr>";
+echo "année : <input type='text' name='annee' size='4' maxlength='4' value='$pub_annee' />";
+echo "</div>";
+echo "<div class='attaques-filter-row'>";
 $count = 0;
 while (list($date) = $db->sql_fetch_row($result)) {
-    echo "<td class='c'><a href='index.php?action=attaques&page=archive&mois=" . date("m", $date) . "&annee=" . date("Y", $date) . "'>" . date("M Y", $date) . "</a></td>";
+    echo "<a href='index.php?action=attaques&page=archive&mois=" . date("m", $date) . "&annee=" . date("Y", $date) . "'>" . date("M Y", $date) . "</a> ";
     $count += 1;
     if (($count / 10) == (intval($count / 10))) {
-        echo "</tr><tr>";
+        echo "<br>";
     }
 }
-echo "</tr></table>";
-echo "<br />";
-echo "<input type='submit'  value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "</div>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 //Si le message de sauvegarde des resultats est défini, on l'affiche
 if (isset($pub_message)) echo "<span style=\"color: #FF0000; \">La liste de vos attaques étant anterieure à ce mois, elle a été supprimée. Les résultats de vos attaques ont été sauvegardés, ils seront désormais accessibles sur cette page</span>";
@@ -63,7 +60,7 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     $date_from = mktime(0, 0, 0, $pub_mois, 01, $pub_annee);
 
     //Requete pour afficher la liste des gains anterieurs
-    $sql = "SELECT archives_nb_attaques, archives_date, archives_metal, archives_cristal, archives_deut, archives_pertes, archives_recy_metal, archives_recy_cristal, archives_id FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE archives_user_id=" . $user_data["user_id"] . " AND archives_date=" . $date_from . "";
+    $sql = "SELECT archives_nb_attaques, archives_date, archives_metal, archives_cristal, archives_deut, archives_pertes, archives_recy_metal, archives_recy_cristal, archives_id FROM " . TABLE_ATTAQUES_ARCHIVES . " WHERE archives_user_id=" . $user_data["id"] . " AND archives_date=" . $date_from . "";
     $result = $db->sql_query($sql);
 
     $nb_result = $db->sql_numrows($result);
@@ -104,7 +101,7 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
         $total_recy = number_format ($total_recy, 0, ',', ' ');*/
 
         //On prépare les resultats au format bbcode
-        $bbcode = "[b]Résultats des attaques de " . $user_data['user_name'] . "[/b]\n";
+        $bbcode = "[b]Résultats des attaques de " . $user_data['name'] . "[/b]\n";
         $bbcode .= "du mois de " . $date_from . "\n\n";
         $bbcode .= "Nombre d'attaques durant le mois : " . number_format($archives_nb_attaques, 0, ',', ' ') . "\n\n";
         $bbcode .= "Métal gagné : " . number_format($archives_metal, 0, ',', ' ') . "\n";
@@ -147,3 +144,4 @@ if ((isset($pub_mois)) && (isset($pub_annee))) {
     }
 }
 echo "<br/>";
+

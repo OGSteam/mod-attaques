@@ -5,14 +5,14 @@
  *
  * @package Attaques
  * @author  ericc
- * @link http://www.OGSteam.eu
+ * @link https://www.OGSteam.eu
  * @version : 0.8e
  */
 
 // L'appel direct est interdit....
 if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 
-global $db, $table_prefix, $prefixe;
+global $db, $log, $table_prefix, $prefixe;
 // lecture des bbcodes dans la db
 $bbcolor = mod_get_option('bbcodes');
 $bbcolor = json_decode($bbcolor, true);
@@ -39,10 +39,15 @@ if (isset($pub_submit)) {
         } else {
             $config['histo'] = 0;
         }
+        if (isset($pub_timezone) && @timezone_open(trim($pub_timezone)) !== false) {
+            $config['timezone'] = trim($pub_timezone);
+        } else {
+            $config['timezone'] = $config['timezone'] ?? 'UTC';
+        }
         $sqldata = json_encode($config);
         mod_set_option('config', $sqldata);
     }
-    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Configuration sauvegardée</span><br />";
+    echo "<span style='color: #00FF40;'>Configuration sauvegardée</span><br />";
 }
 // Fin paramètres de configuration
 
@@ -59,7 +64,7 @@ if (isset($pub_submitbb)) {
     //echo "#".dechex(hexdec(substr($pub_title,0,7)))."\n\r"; test de validation de code hexa .. pb si débute par 00
     $sqldata = json_encode($bbcolor);
     mod_set_option('bbcodes', $sqldata);
-    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Couleurs BBcode enregistrées</span><br />";
+    echo "<span style='color: #00FF40;'>Couleurs BBcode enregistr&eacute;es</span><br />";
 }
 // Fin paramètres couleurs BBcodes
 // Purge des anciennes archives
@@ -81,7 +86,7 @@ if (isset($pub_submitpurg)) {
     // On optimize la table
     $query = "OPTIMIZE TABLE " . TABLE_ATTAQUES_ARCHIVES;
     if (!$db->sql_query($query)) die("erreur SQL");
-    echo "<span  style=\"font-size: x-small; color: #00FF40; \">Purge effectuée</span><br />";
+    echo "<span style='color: #00FF40;'>Purge effectu&eacute;e</span><br />";
 }
 // Fin de la purge
 // Nettoyage des valeurs non attribués dans la DB
@@ -107,7 +112,7 @@ if (isset($pub_submitid)) {
     if (!$db->sql_query($query)) die("erreur SQL");
     $query = "OPTIMIZE TABLE " . TABLE_ATTAQUES_RECYCLAGES;
     if (!$db->sql_query($query)) die("erreur SQL");
-    echo "<span  style=\"font-size: x-small; color: #00FF40; \">nettoyage effectu&eacute;e</span><br />";
+    echo "<span style='color: #00FF40;'>Nettoyage effectu&eacute;</span><br />";
 }
 // Fin du nettoyage
 // Connexion Xtense2
@@ -131,100 +136,54 @@ if (isset($pub_submitxt2)) {
 }
 
 // cadre autour des paramètres
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Administration ";
-echo help("attaques_Administration");
-echo "</font></b></legend>";
+echo "<div class='og-msg' style='max-width: 800px;'>";
+echo "<h3 class='og-title'>Administration " . help("attaques_Administration") . "</h3>";
+echo "<div class='og-content'>";
 // Formulaire des paramètres du module
-echo "<form name='form1' style=\"display: block;margin-left: auto;margin-right: auto;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
-echo "<table width='60%' border='0'>
-<tr>
-<td class='c' colspan='2'>Paramètres du module</td>
-</tr>
-<tr>
-<th>Activer le layer " . help("attaques_layer") . " : </th>
-<th><input type='checkbox' name='layer' value='true' ";
+echo "<form name='form1' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<div class='attaques-filter-row'><b>Param&egrave;tres du module</b></div>";
+echo "<div class='attaques-filter-row'><label>Activer le layer " . help("attaques_layer") . " : <input type='checkbox' name='layer' value='true' ";
 if ($config['layer'] == 1) {
     echo 'checked=checked';
 }
-echo "></th>
-</tr>
-<tr>
-<th> Valeur d'opacité " . help("attaques_transparence") . "&nbsp;: </th>
-<th><input type='textbox' name='transp' value='" . $config['transp'] . "' size='4'>&nbsp;%</th>
-</tr>
-<tr>
-<td class='c' colspan='2'>&nbsp;</td>
-</tr>
-<tr>
-<th>Prise en compte des Attaques subies</th>
-<th><input type='checkbox' name='defenseur' value='true' ";
+echo "></label></div>";
+echo "<div class='attaques-filter-row'><label>Valeur d'opacit&eacute; " . help("attaques_transparence") . " : <input type='text' name='transp' value='" . $config['transp'] . "' size='4'> %</label></div>";
+echo "<div class='attaques-filter-row'><label>Prise en compte des Attaques subies : <input type='checkbox' name='defenseur' value='true' ";
 if ($config['defenseur'] == 1) {
     echo 'checked=checked';
 }
-echo "></th>
-</tr>
-<tr>
-<th>Affichage des histogrammes</th>
-<th><input type='checkbox' name='histo' value='true' ";
+echo "></label></div>";
+echo "<div class='attaques-filter-row'><label>Affichage des histogrammes : <input type='checkbox' name='histo' value='true' ";
 if ($config['histo'] == 1) {
     echo 'checked=checked';
 }
-echo "></th>
-</tr>
-<tr>
-<td colspan='2' class='c' align='center'><input name='submit' type='submit' value='Envoyer'></td>
-</tr>
-";
-echo "</table></form>";
+echo "></label></div>";
+echo "<div class='attaques-filter-row'><label>Fuseau horaire (ex: Europe/Paris) : <input type='text' name='timezone' value='" . htmlspecialchars($config['timezone'] ?? 'UTC') . "' size='30' placeholder='UTC'></label></div>";
+echo "<div class='attaques-filter-row'><input name='submit' type='submit' value='Enregistrer' class='og-button'></div>";
+echo "</form>";
 
 // Formulaire des BBcodes
-echo "<br />";
-echo "<form name='form2' style='display: block;margin-left: auto;margin-right: auto;' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
-echo "<table width='60%' border='0'>
-<tr>
-  <td class='c' colspan='6'>BBCodes&nbsp;" . help("attaques_bbcolor") . "&nbsp;</td>
-</tr>";
-echo "<tr>
-  <th width=35%>Titre</th>
-  <th width='50px'align='center'><input type='textbox' name='title' value='" . $bbcolor['title'] . "' size='7'></th>
-  <th width=35%>M&eacute;tal gagn&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='m_g' value='" . $bbcolor['m_g'] . "' size='7'></th>
-</tr>";
-echo "<tr>
-  <th width=35%>Cristal gagn&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='c_g' value='" . $bbcolor['c_g'] . "' size='7'></th>
-  <th width=35%>Deut&eacute;rium gagn&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='d_g' value='" . $bbcolor['d_g'] . "' size='7'></th>
-</tr>";
-echo "<tr>
-  <th width=35%>M&eacute;tal recycl&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='m_r' value='" . $bbcolor['m_r'] . "' size='7'></th>
-  <th width=35%>Cristal recycl&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='c_r' value='" . $bbcolor['c_r'] . "' size='7'></th>
-</tr>";
-echo "<tr>
-  <th width=35%>Perte</th>
-  <th width='50px'align='center'><input type='textbox' name='perte' value='" . $bbcolor['perte'] . "' size='7'></th>
-  <th width=35%>Rentabilit&eacute;</th>
-  <th width='50px'align='center'><input type='textbox' name='renta' value='" . $bbcolor['renta'] . "' size='7'></th>
-</tr>";
-echo "<tr>
-    <td colspan='6' style='text-align:center'><a href='https://www.w3schools.com/colors/colors_picker.asp' alt='colorpicker' target='_blank'>Color Picker</a></td>
-    </tr>";
-
-echo "<tr>
-  <td colspan='6' class='c' align='center'><input name='submitbb' type='submit' value='Envoyer'></td>
-</tr>
-";
-echo "</table></form>";
-echo "<br />";
+echo "<hr style='border-color: var(--color-button-border); margin: 16px 0;'>";
+echo "<form name='form2' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<div class='attaques-filter-row'><b>BBCodes&nbsp;" . help("attaques_bbcolor") . "</b></div>";
+echo "<div style='display:grid; grid-template-columns: 1fr 100px 1fr 100px; gap: 8px; align-items: center; margin-bottom: 8px;'>";
+echo "<span>Titre</span><input type='text' name='title' value='" . $bbcolor['title'] . "' size='7'>";
+echo "<span>M&eacute;tal gagn&eacute;</span><input type='text' name='m_g' value='" . $bbcolor['m_g'] . "' size='7'>";
+echo "<span>Cristal gagn&eacute;</span><input type='text' name='c_g' value='" . $bbcolor['c_g'] . "' size='7'>";
+echo "<span>Deut&eacute;rium gagn&eacute;</span><input type='text' name='d_g' value='" . $bbcolor['d_g'] . "' size='7'>";
+echo "<span>M&eacute;tal recycl&eacute;</span><input type='text' name='m_r' value='" . $bbcolor['m_r'] . "' size='7'>";
+echo "<span>Cristal recycl&eacute;</span><input type='text' name='c_r' value='" . $bbcolor['c_r'] . "' size='7'>";
+echo "<span>Perte</span><input type='text' name='perte' value='" . $bbcolor['perte'] . "' size='7'>";
+echo "<span>Rentabilit&eacute;</span><input type='text' name='renta' value='" . $bbcolor['renta'] . "' size='7'>";
+echo "</div>";
+echo "<div class='attaques-filter-row'><a href='https://www.w3schools.com/colors/colors_picker.asp' target='_blank'>Color Picker</a></div>";
+echo "<div class='attaques-filter-row'><input name='submitbb' type='submit' value='Enregistrer' class='og-button'></div>";
+echo "</form>";
 
 // Formulaire "Base de Donnees"
-echo "<table width='60%' border='0'>
-<tr>
-  <td class='c' colspan='5'>Base de données " . help("attaques_mysql") . "&nbsp;</td>
-    </tr>";
-echo "<tr>";
+echo "<hr style='border-color: var(--color-button-border); margin: 16px 0;'>";
+echo "<form name='form3' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<div class='attaques-filter-row'><b>Base de donn&eacute;es " . help("attaques_mysql") . "</b></div>";
 // On récupère les dates des archives présentes dans la base de données par ordre croissant
 $query = "SELECT DISTINCT `archives_date` FROM " . TABLE_ATTAQUES_ARCHIVES . " order by `archives_date`";
 $result = $db->sql_query($query);
@@ -234,30 +193,19 @@ while (list($date) = $db->sql_fetch_row($result)) {
     $ann[] = $date;
 }
 if (isset($ann[0])) {
-    echo "<th colspan='5'>Vous avez des archives depuis " . date("M Y", $ann[0]) . ". A partir de quand souhaitez vous purger ?</th></tr><tr>";
-    // On affiche la liste des dates présentes avec un checkbox
+    echo "<div class='attaques-filter-row'>Vous avez des archives depuis " . date("M Y", $ann[0]) . ". A partir de quand souhaitez vous purger ?</div>";
+    echo "<div class='attaques-filter-row' style='display:flex; flex-wrap:wrap; gap:8px;'>";
     $count = 0;
     for ($i = 0; $i < count($ann); $i++) {
-        echo "<th><input type='radio' name='purge' value='" . $ann[$i] . "' > " . date("M Y", $ann[$i]) . "</th>";
+        echo "<label><input type='radio' name='purge' value='" . $ann[$i] . "'> " . date("M Y", $ann[$i]) . "</label>";
         $count += 1;
-        // on limite à 5 cases par ligne pour la mise en forme
-        if (($count / 5) == (intval($count / 5))) {
-            echo "</tr><tr>";
-        }
     }
-    // Pour la beauté du geste, si le nb de case ne tombe pas juste, on complète par des cases vides
-    if (($count / 5) != (intval($count / 5))) {
-        for ($i = 1; $i <= (((intval($count / 5) + 1) * 5) - $count); $i++) {
-            echo "<th>&nbsp;</th>";
-        }
-    }
-} else
-    echo "<th colspan='5'>Vous n'avez pas d'archives à purger</th>";
-echo "</tr>";
-
-echo "<tr><td colspan='5' class='c' align='center'><input name='submitpurg' type='submit' value='Envoyer'></td></tr>";
-echo "</table></form>";
-echo "<br />";
+    echo "</div>";
+} else {
+    echo "<div class='attaques-filter-row'>Vous n'avez pas d'archives &agrave; purger</div>";
+}
+echo "<div class='attaques-filter-row'><input name='submitpurg' type='submit' value='Purger' class='og-button'></div>";
+echo "</form>";
 // Controle de la base de données
 $query = "SELECT DISTINCT `archives_user_id` FROM " . TABLE_ATTAQUES_ARCHIVES . " ORDER BY `archives_user_id`";
 $result = $db->sql_query($query);
@@ -279,7 +227,7 @@ while (list($data) = $db->sql_fetch_row($result)) {
 }
 $inval_id = 0;
 //récupère la liste des users actifs
-$query = "SELECT `user_id`,`user_active` from " . TABLE_USER . " ORDER BY `user_id`";
+$query = "SELECT `id`,`active` from " . TABLE_USER . " ORDER BY `id`";
 $result = $db->sql_query($query);
 $count = 0;
 $id = array();
@@ -314,28 +262,23 @@ for ($i = 0; $i < count($recy); $i++) {
 if ($inval_id > 0) {
     //On serialize l'array pour le transmettre par $_POST dans le form
     $trans_id = json_encode($id);
-    echo "<form name='form4' style=\"display: block;margin-left: auto;margin-right: auto;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
-    echo "<table width='60%' border='0'><tr>";
-    echo "<th>Des données n'appartenant à aucun joueur actif ont été trouvées;
- dans la base de données</th>";
-    echo "</tr><tr>";
-    echo "<th> Souhaitez vous les supprimer ?";
+    echo "<hr style='border-color: var(--color-button-border); margin: 16px 0;'>";
+    echo "<form name='form4' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+    echo "<div class='attaques-filter-row'>Des donn&eacute;es n'appartenant &agrave; aucun joueur actif ont &eacute;t&eacute; trouv&eacute;es dans la base de donn&eacute;es.</div>";
+    echo "<div class='attaques-filter-row'>Souhaitez-vous les supprimer ?";
     echo "<input name='val_id' type='hidden' value='" . $trans_id . "'>";
-    echo "</th></tr>";
-    echo "<tr><td class='c' align='center'><input name='submitid' type='submit' value='Supprimer'></td></tr>";
-    echo "</table></form>";
+    echo "</div>";
+    echo "<div class='attaques-filter-row'><input name='submitid' type='submit' value='Supprimer' class='og-button'></div>";
+    echo "</form>";
 }
 
 //Connexion Xtense2
-echo "<form name='form5' style=\"display: block;margin-left: auto;margin-right: auto;\" action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
-echo "<table width='60%' border='0'>
-<tr>
-  <td class='c' colspan='5'>Xtense&nbsp;" . help("attaques_xtense") . "&nbsp;</td>
-</tr>";
-echo "<tr>";
+echo "<hr style='border-color: var(--color-button-border); margin: 16px 0;'>";
+echo "<form name='form5' action='index.php?action=attaques&page=admin' enctype='multipart/form-data' method='post'>";
+echo "<div class='attaques-filter-row'><b>Xtense&nbsp;" . help("attaques_xtense") . "</b></div>";
 //On vérifie que la table xtense_callbacks existe
 if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xtense_callbacks" . "'"))) {
-    echo "<th>Le Module Xtense semble ne pas être installée</th>";
+    echo "<div class='attaques-filter-row'>Le Module Xtense semble ne pas &ecirc;tre install&eacute;</div>";
 } else {
     // Si oui, on récupère le n° d'id du mod
     $query = "SELECT `id` FROM `" . TABLE_MOD . "` WHERE `action`='attaques' AND `active`='1' LIMIT 1";
@@ -347,14 +290,12 @@ if (!$db->sql_numrows($db->sql_query("SHOW TABLES LIKE '" . $table_prefix . "xte
     $result = $db->sql_query($query);
     // On doit avoir 2 entrées dans la table : une pour les RC, une pour les RR
     if ($db->sql_numrows($result) != 2) {
-        echo "<th>Le module 'Gestion des Attaques' n'est pas enregistré auprès de Xtense</th>";
-        echo "<tr>";
-        echo "<th>Souhaitez vous établir la connexion ?</th>";
-        echo "</tr>";
-        echo "<tr><td class='c' align='center'><input name='submitxt2' type='submit' value='Connecter Xtense'></td></tr>";
+        echo "<div class='attaques-filter-row'>Le module 'Gestion des Attaques' n'est pas enregistr&eacute; aupr&egrave;s de Xtense</div>";
+        echo "<div class='attaques-filter-row'>Souhaitez-vous &eacute;tablir la connexion ?</div>";
+        echo "<div class='attaques-filter-row'><input name='submitxt2' type='submit' value='Connecter Xtense' class='og-button'></div>";
     } else {
-        echo "<th>Le module 'Gestion des Attaques' est correctement enregistré auprès de Xtense</th>";
+        echo "<div class='attaques-filter-row'>Le module 'Gestion des Attaques' est correctement enregistr&eacute; aupr&egrave;s de Xtense</div>";
     }
 }
-echo "</tr></table></form>";
-echo "</center></fieldset>";
+echo "</form>";
+echo "</div></div>";

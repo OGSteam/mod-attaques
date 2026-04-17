@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  */
 
@@ -16,7 +16,7 @@ if (!defined('IN_SPYOGAME')) die("Hacking attempt");
 echo "<script type='text/javascript' language='javascript' src='" . FOLDER_ATTCK . "/attack.js'></script>";
 
 //Définitions
-global $db, $table_prefix;
+global $db, $log, $table_prefix, $prefixe;
 
 //Gestion des dates
 $date = date("j");
@@ -30,11 +30,13 @@ if ($yesterday < 1) $yesterday = 1;
 
 
 // On récupère la liste des utilisateurs dont on peut afficher les attaques
-$query = "SELECT DISTINCT u.`user_id`, u.`user_name` FROM " . TABLE_USER . " u
+$query = "SELECT DISTINCT u.`id`, COALESCE(p.`name`, u.`name`) as display_name FROM " . TABLE_USER . " u
             LEFT JOIN " . TABLE_MOD_USER_CFG . " mu
-                ON mu.`user_id` = u.`user_id`
-          WHERE u.`user_id` = " . $user_data['user_id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
-          ORDER BY u.`user_name`";
+                ON mu.`user_id` = u.`id`
+            LEFT JOIN " . TABLE_GAME_PLAYER . " p
+                ON p.`id` = u.`player_id`
+          WHERE u.`id` = " . $user_data['id'] . " OR (mu.`user_id` is not null AND mu.`config` = 'diffusion_rapports' AND mu.`mod` = 'Attaques')
+          ORDER BY display_name";
 
 $result = $db->sql_query($query);
 $users = array();
@@ -45,7 +47,7 @@ while ($row = $db->sql_fetch_row($result))
 if (isset($pub_user_id) && isset($users[$pub_user_id]))
     $user_id = $pub_user_id;
 else
-    $user_id = $user_data["user_id"];
+    $user_id = $user_data["id"];
 
 //Si les dates d'affichage ne sont pas définies, on affiche par défaut les attaques du jour,
 if (!isset($pub_date_from))
@@ -96,39 +98,36 @@ $pub_date_to = date('d M Y', $pub_date_to);
 
 
 //Création du field pour choisir l'affichage (attaque du jour, de la semaine ou du mois
-echo "<fieldset><legend><b><span style=\"color: #0080FF; \">Date d'affichage du bilan ";
-echo help("attaques_changer_affichage");
-echo "</font></b></legend>";
-
-echo "Afficher le bilan : ";
+echo "<div class='og-msg'>";
+echo "<h3 class='og-title'>Date d'affichage du bilan " . help("attaques_changer_affichage") . "</h3>";
+echo "<div class='og-content'>";
 echo "<form action='index.php?action=attaques&page=bilan' method='post' name='date'>";
+echo "<div class='attaques-filter-row'>";
 echo "du : <input type='text' name='date_from' id='date_from' size='15' value='$pub_date_from' /> ";
-echo "au : ";
-echo "<input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
-echo "<br>";
+echo "au : <input type='text' name='date_to' id='date_to' size='15' value='$pub_date_to' />";
+echo "</div>";
 ?>
-<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du
-    jour</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la
-    veille</a> |
-<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des
-    7 derniers jours</a> |
+<div class="attaques-filter-row">
+<a href="#haut" onclick="setDateFrom('<?php echo $date; ?>'); setDateTo('<?php echo $date; ?>'); valid();">du jour</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $yesterday; ?>'); setDateTo('<?php echo $yesterday; ?>'); valid();">de la veille</a> |
+<a href="#haut" onclick="setDateFrom('<?php echo $septjours; ?>'); setDateTo('<?php echo $date; ?>'); valid();">des 7 derniers jours</a> |
 <a href="#haut" onclick="setDateFrom('01'); setDateTo('<?php echo $date; ?>'); valid();">du mois</a>
-<br />
+</div>
+<div class="attaques-filter-row">
 <select name="user_id">
-    <?php foreach ($users as $id => $username) {
+    <?php foreach ($users as $id => $player_name) {
         echo "<option value='$id'";
         if ($id == $user_id)
             echo " SELECTED=SELECTED";
-        echo ">$username</option>";
+        echo ">$player_name</option>";
     }
     ?>
 </select>
+</div>
 <?php
-echo "<br><br>";
-echo "<input type='submit' value='Afficher' name='B1'></form>";
-echo "</fieldset>";
-echo "<br><br>";
+echo "<input type='submit' value='Afficher' name='B1' class='og-button'></form>";
+echo "</div></div>";
+echo "<br>";
 
 //Création du field pour voir les gains des attaques
 echo "<fieldset><legend><b><font color='#0080FF'>Bilan du " . $pub_date_from . " au " . $pub_date_to . " </font></b></legend>";
@@ -181,8 +180,8 @@ if ($config['histo'] == 1) {
     $mois = date("m");
     $annee = date("Y");
 
-    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
-    $query2 = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['user_id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
+    $query = "SELECT DAY(FROM_UNIXTIME(attack_date)) AS day, SUM(attack_metal) AS metal, SUM(attack_cristal) AS cristal, SUM(attack_deut) AS deut FROM " . TABLE_ATTAQUES_ATTAQUES . " WHERE attack_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(attack_date))=" . $mois . " and YEAR(FROM_UNIXTIME(attack_date))=" . $annee . " GROUP BY day";
+    $query2 = "SELECT DAY(FROM_UNIXTIME(recy_date)) AS day, SUM(recy_metal) AS metal, SUM(recy_cristal) AS cristal FROM " . TABLE_ATTAQUES_RECYCLAGES . " WHERE recy_user_id=" . $user_data['id'] . " and MONTH(FROM_UNIXTIME(recy_date))=" . $mois . " and YEAR(FROM_UNIXTIME(recy_date))=" . $annee . " GROUP BY day";
 
     // requète SQL pour récupérer le total par ressource par jour
     $result = $db->sql_query($query);
@@ -356,3 +355,4 @@ if ($config['histo'] == 1) {
 echo "<br />";
 echo "<br />";
 ?>
+

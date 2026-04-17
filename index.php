@@ -5,7 +5,7 @@
  *
  * @package Attaques
  * @author Verité - réécrit par ericc
- * @link http://www.ogsteam.eu
+ * @link https://www.ogsteam.eu
  * @version : 0.8a
  */
 //L'appel direct est interdit
@@ -43,7 +43,7 @@ if (!empty($server_config['language'])) {
     }
 } else {
     if (!is_dir(FOLDER_ATTCK . "/languages/french")) {
-        echo "Retélécharger le mod via : <a href='http://www.ogsteam.eu/downloadmod.php?mod=Attaques'>Zip link</a><br />\n";
+        echo "Retélécharger le mod via : <a href='https://www.ogsteam.eu/downloadmod.php?mod=Attaques'>Zip link</a><br />\n";
         exit;
     } else {
         require_once(FOLDER_ATTCK . "/languages/french/lang_main.php");
@@ -57,13 +57,12 @@ require_once("views/page_header.php");
 if ($config['layer'] == 1) {
     include_once(FOLDER_ATTCK . "/css.php");
 }
+// Affichage du layer transparent
+echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //Menu
 // Si la page a afficher n'est pas définie, on affiche la première
 if (!isset($pub_page)) $pub_page = "attaques";
 menu($pub_page);
-
-// Affichage du layer transparent
-echo "<div class='attack_box'><div class='attack_box_background'> </div> <div class='attack_box_contents'>";
 //On  affiche de la page demandée
 switch ($pub_page) {
     case "bilan":
